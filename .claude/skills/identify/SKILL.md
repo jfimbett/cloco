@@ -1,6 +1,6 @@
 ---
 name: identify
-description: Design identification strategy by dispatching the causal-strategist agent (proposer) and econometrics-critic agent (critic). Produces strategy memo, pseudo-code, robustness plan, and falsification tests. Use when asked to "identify the effect", "design the strategy", or "write the strategy memo".
+description: Design identification strategy by dispatching the causal-strategist agent (proposer) and identification-critic agent (critic). Produces strategy memo, pseudo-code, robustness plan, and falsification tests. Use when asked to "identify the effect", "design the strategy", or "write the strategy memo".
 disable-model-invocation: true
 argument-hint: "[research question or research-spec file path]"
 allowed-tools: ["Read", "Grep", "Glob", "Write", "Task"]
@@ -8,7 +8,7 @@ allowed-tools: ["Read", "Grep", "Glob", "Write", "Task"]
 
 # Identify
 
-Design an identification strategy by dispatching the **causal-strategist** (proposer) and **econometrics-critic** (critic).
+Design an identification strategy by dispatching the **causal-strategist** (proposer) and **identification-critic** (critic).
 
 **Input:** `$ARGUMENTS` — research question, description of available variation, or path to research spec.
 
@@ -43,9 +43,9 @@ If multiple credible strategies exist, present the top 2-3 with trade-offs.
 Save strategy memo to quality_reports/strategy_memo_[topic].md
 ```
 
-### Step 3: Launch econometrics-critic Agent (Strategy Review Mode)
+### Step 3: Launch identification-critic Agent (Strategy Review Mode)
 
-After causal-strategist returns, delegate to the `econometrics-critic` agent:
+After causal-strategist returns, delegate to the `identification-critic` agent:
 
 ```
 Prompt: Review the strategy memo at quality_reports/strategy_memo_[topic].md.
@@ -57,15 +57,15 @@ Check:
   - Does the robustness plan address the right concerns?
   - Are the falsification tests well-chosen?
 Score the strategy. Flag CRITICAL issues that must be resolved before coding.
-Save review to quality_reports/strategy_memo_[topic]_econometrics_review.md
+Save review to quality_reports/strategy_memo_[topic]_identification_review.md
 ```
 
 ### Step 4: Iterate if Needed
 
-If econometrics-critic finds CRITICAL issues:
+If identification-critic finds CRITICAL issues:
 1. Present issues to user
 2. Re-dispatch causal-strategist with specific fixes (max 3 rounds per three-strikes.md)
-3. Re-run econometrics-critic to verify
+3. Re-run identification-critic to verify
 
 If unresolved after 3 rounds: escalate to user with both perspectives.
 
@@ -84,7 +84,7 @@ If unresolved after 3 rounds: escalate to user with both perspectives.
 1. [Assumption 1] — [how it will be defended]
 2. [Assumption 2] — [how it will be defended]
 
-## econometrics-critic Assessment: [SOUND / CONCERNS / CRITICAL ISSUES]
+## identification-critic Assessment: [SOUND / CONCERNS / CRITICAL ISSUES]
 - Critical issues: N
 - Major issues: N
 - Strategy memo score: XX/100
@@ -104,8 +104,8 @@ If unresolved after 3 rounds: escalate to user with both perspectives.
 
 ## Principles
 
-- **causal-strategist proposes, econometrics-critic critiques.** The adversarial pairing catches design flaws early.
+- **causal-strategist proposes, identification-critic critiques.** The adversarial pairing catches design flaws early.
 - **Strategy memo is the contract.** Once approved, the Coder implements it faithfully.
 - **Catch problems before coding.** A flawed strategy caught now saves weeks of wasted analysis.
 - **Multiple strategies are OK.** Present trade-offs and let the user choose.
-- **The user decides.** If causal-strategist and econometrics-critic disagree after 3 rounds, the user resolves it.
+- **The user decides.** If causal-strategist and identification-critic disagree after 3 rounds, the user resolves it.

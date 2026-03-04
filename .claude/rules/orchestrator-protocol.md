@@ -33,10 +33,10 @@ Before dispatching any strategy-phase agents, the research-orchestrator reads `p
 
 | `project_type` | Strategy Agents Dispatched | Skipped |
 |----------------|--------------------------|---------|
-| `empirical` | explorer + data-quality-surveyor, causal-strategist + econometrics-critic | econ-finance-theorist, structural-estimation-expert |
-| `theory` | econ-finance-theorist + econometrics-critic | explorer, causal-strategist, structural-estimation-expert, Coder, replication-verifier |
-| `structural` | explorer + data-quality-surveyor, econ-finance-theorist + econometrics-critic, structural-estimation-expert + econometrics-critic | causal-strategist |
-| `empirical+theory` | explorer + data-quality-surveyor, econ-finance-theorist + econometrics-critic, causal-strategist + econometrics-critic | structural-estimation-expert |
+| `empirical` | explorer + data-quality-surveyor, causal-strategist + identification-critic | econ-finance-theorist, structural-estimation-expert |
+| `theory` | econ-finance-theorist + theory-critic | explorer, causal-strategist, structural-estimation-expert, Coder, replication-verifier |
+| `structural` | explorer + data-quality-surveyor, econ-finance-theorist + theory-critic, structural-estimation-expert + structural-critic | causal-strategist |
+| `empirical+theory` | explorer + data-quality-surveyor, econ-finance-theorist + theory-critic, causal-strategist + identification-critic | structural-estimation-expert |
 
 If `project_type` is absent from the spec, default to `empirical` and warn the user.
 
@@ -48,9 +48,9 @@ The research-orchestrator selects agents based on what the task requires:
 |--------------|-------------------|
 | Literature/references | academic-librarian + academic-editor |
 | Data sourcing | explorer + data-quality-surveyor |
-| Identification strategy (reduced-form) | causal-strategist + econometrics-critic |
-| Theoretical modeling | econ-finance-theorist + econometrics-critic |
-| Structural estimation | structural-estimation-expert + econometrics-critic |
+| Identification strategy (reduced-form) | causal-strategist + identification-critic |
+| Theoretical modeling | econ-finance-theorist + theory-critic |
+| Structural estimation | structural-estimation-expert + structural-critic |
 | R/Stata/Python scripts | Coder (main Claude) + debugger |
 | Paper manuscript | economics-paper-writer + academic-proofreader |
 | Peer review | academic-editor → blind-peer-referee (×2) |

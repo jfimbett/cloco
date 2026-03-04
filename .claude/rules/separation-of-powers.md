@@ -26,9 +26,9 @@ A creator cannot evaluate the quality of its own work. The score always comes fr
 |-------|---------|-----------|
 | academic-librarian | Annotated bibliography | academic-editor |
 | explorer | Data assessment | data-quality-surveyor |
-| causal-strategist | Strategy memo | econometrics-critic |
-| econ-finance-theorist | Theoretical model | econometrics-critic |
-| structural-estimation-expert | Structural model | econometrics-critic |
+| causal-strategist | Strategy memo | identification-critic |
+| econ-finance-theorist | Theoretical model | theory-critic |
+| structural-estimation-expert | Structural model | structural-critic |
 | Coder (main Claude) | R/Stata/Python scripts | debugger |
 | economics-paper-writer | Paper manuscript | academic-proofreader |
 

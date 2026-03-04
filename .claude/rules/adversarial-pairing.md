@@ -8,9 +8,9 @@
 |-----------------|-------------------|-----------------|
 | academic-librarian | academic-editor | Literature coverage, gaps, recency |
 | explorer | data-quality-surveyor | Data feasibility, quality, identification fit |
-| causal-strategist | econometrics-critic | Identification validity, assumptions, robustness |
-| econ-finance-theorist | econometrics-critic | Theoretical model validity, equilibrium correctness |
-| structural-estimation-expert | econometrics-critic | Structural model design, estimation validity |
+| causal-strategist | identification-critic | Identification validity, assumptions, robustness |
+| econ-finance-theorist | theory-critic | Theoretical model validity, equilibrium correctness |
+| structural-estimation-expert | structural-critic | Structural model design, estimation validity |
 | Coder (main Claude instance) | debugger | Code quality, reproducibility, code-strategy alignment |
 | economics-paper-writer | academic-proofreader | Manuscript polish, LaTeX quality, hedging |
 

@@ -10,7 +10,7 @@ The overall project score that gates submission (>= 95) is a weighted aggregate:
 |-----------|--------|-------------|
 | Literature coverage | 10% | academic-editor's score of academic-librarian |
 | Data quality | 10% | data-quality-surveyor's score of explorer |
-| Identification validity | 25% | econometrics-critic's score of causal-strategist |
+| Identification validity | 25% | identification-critic's score of causal-strategist |
 | Code quality | 15% | debugger's score of Coder (main Claude) |
 | Paper quality | 25% | Average of blind-peer-referee instance 1 + instance 2 scores |
 | Manuscript polish | 10% | academic-proofreader's score of economics-paper-writer |
@@ -44,9 +44,9 @@ The orchestrator reads `project_type` from the research spec and applies the mat
 |-----------|-------------|-----------|--------|------------|-----------------|
 | Literature coverage | academic-editor | 10% | 15% | 10% | 10% |
 | Data quality | data-quality-surveyor | 10% | — | 10% | 10% |
-| Theory model | econometrics-critic (theorist) | — | 40% | 15% | 10% |
-| Identification validity | econometrics-critic (strategist) | 25% | — | — | 20% |
-| Structural estimation | econometrics-critic (structural) | — | — | 20% | — |
+| Theory model | theory-critic | — | 40% | 15% | 10% |
+| Identification validity | identification-critic | 25% | — | — | 20% |
+| Structural estimation | structural-critic | — | — | 20% | — |
 | Code quality | debugger | 15% | — | 15% | 15% |
 | Paper quality | blind-peer-referee avg | 25% | 30% | 20% | 25% |
 | Manuscript polish | academic-proofreader | 10% | 15% | 5% | 5% |

@@ -20,7 +20,7 @@ Keep under 150 lines, since Claude loads it every session.
 - **Worker-critic pairs** -- every creator has a paired critic; critics never edit files
 - **[LEARN] tags** -- when corrected, save `[LEARN:category] wrong → right` to MEMORY.md
 - **Lessons log** -- after any mistake or user correction, append an entry to `.claude/lessons/LESSONS.md`; read it at the start of every session
-- **Update CLAUDE.md** -- if you find yourself writing the same instructions repeatedly, add a new command or guideline here.
+- **Update CLAUDE.md** -- if you find yourself writing the same instructions repeatedly, add a new command or guideline here. Also, update every time there is an important change.
 
 ---
 
@@ -90,7 +90,7 @@ See `scoring-protocol.md` for weighted aggregation formula.
 | `/interview-me [topic]` | Interactive research interview → spec + domain profile |
 | `/lit-review [topic]` | Librarian + Editor: literature search + synthesis |
 | `/find-data [question]` | Explorer + Surveyor: data discovery + assessment |
-| `/identify_reducedform [question]` | Strategist + Econometrician: design identification strategy |
+| `/identify_reducedform [question]` | causal-strategist + identification-critic: design identification strategy |
 | `/data-analysis [dataset]` | Coder + Debugger: end-to-end analysis |
 | `/draft-paper [section]` | Writer: draft paper sections + humanizer pass |
 | `/econometrics-check [file]` | Econometrician: 4-phase causal inference audit |
