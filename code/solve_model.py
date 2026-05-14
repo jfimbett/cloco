@@ -236,15 +236,34 @@ def ensure_images_dir() -> str:
     return outdir
 
 
-def plot_flow_performance(params: Params, outdir: str) -> None:
+def ensure_data_dir() -> str:
+    """Return path to output/figure_data/, creating it if absent."""
+    here = os.path.abspath(os.path.dirname(__file__))
+    datadir = os.path.normpath(os.path.join(here, "..", "output", "figure_data"))
+    os.makedirs(datadir, exist_ok=True)
+    return datadir
+
+
+def save_csv(path: str, headers: list, data: np.ndarray) -> None:
+    """Write a NumPy array to CSV with named column headers."""
+    np.savetxt(path, data, delimiter=',', header=','.join(headers), comments='', fmt='%.8g')
+
+
+def plot_flow_performance(params: Params, outdir: str, datadir: str) -> None:
+    """Figure: piecewise flow–performance relation F(r) vs excess return r-rf.
+    Illustrative sigma=0.15; shows linear segment (r < rf) and quadratic kicker (r >= rf).
+    """
     S, rf = params.S, params.rf
-    # Use baseline convexity for the illustration
     f2_visual = params.f2
-    sigma = 0.15  # illustrative vol for the shape
+    sigma = 0.15  # illustrative vol for visual shape
     z = np.linspace(-3.5, 3.5, 400)
     x = S + z
     r_minus_rf = sigma * x
     F = np.where(x >= 0.0, params.f1 * r_minus_rf + f2_visual * r_minus_rf**2, params.f1 * r_minus_rf)
+
+    save_csv(os.path.join(datadir, "flow_performance.csv"),
+             ["r_minus_rf", "flow_F"],
+             np.column_stack([r_minus_rf, F]))
 
     fig, ax = plt.subplots(figsize=(7,4.2))
     ax.plot(r_minus_rf, F, color="#1b9e77", lw=2.5)
@@ -260,35 +279,56 @@ def plot_flow_performance(params: Params, outdir: str) -> None:
     plt.close(fig)
 
 
-def plot_ic_fee_curve(params: Params, outdir: str) -> None:
+def plot_ic_fee_curve(params: Params, outdir: str, datadir: str) -> None:
+    """Figure: IC fee phi(sigma_d) vs target volatility for four f2 values.
+    Shows that higher flow convexity f2 shifts the IC schedule downward:
+    the manager requires a lower fee to accept the same risk target when flows are
+    more convex (higher upside option value of risk-taking).
+    """
     sigmas = np.linspace(params.sigma_min, params.sigma_max, params.n_sigma)
-    fig, ax = plt.subplots(figsize=(7,4.2))
-    # Plot only the baseline curve (no sweep over f2)
-    p = Params(**params.__dict__)
-    phi_vals = np.array([phi_ic_at_sigma(p, s) for s in sigmas])
-    ax.plot(sigmas, phi_vals, lw=2.2, color="#2979ff", label=fr"baseline $f_2={p.f2:.2f}$")
-    # Overlay the affine approximation for the baseline parameterization (f2 as in params)
-    sigma0 = 0.10  # 10% reference target
-    p_base = Params(**params.__dict__)
-    alpha, beta = affine_ic_phi(p_base, sigma0)
-    phi_affine = alpha + beta * sigmas
-    ax.plot(sigmas, phi_affine, lw=2.0, ls="--", color="#333333",
-            label=r"Affine approx (baseline)")
-    ax.set_title("IC fee $\\phi(\\sigma_d)$ across target volatility")
+    # Four representative f2 values including the calibration baseline
+    f2_values = [5.0, 15.0, params.f2, 50.0]   # low / med / baseline / high
+    colors = ["#984ea3", "#377eb8", "#2979ff", "#e41a1c"]
+    phi_cols = {}
+
+    fig, ax = plt.subplots(figsize=(7, 4.2))
+    for f2_val, col in zip(f2_values, colors):
+        p = Params(**{**params.__dict__, "f2": f2_val})
+        phi_vals = np.array([phi_ic_at_sigma(p, s) for s in sigmas])
+        label = (fr"$f_2={f2_val:.0f}$ (baseline)" if f2_val == params.f2
+                 else fr"$f_2={f2_val:.0f}$")
+        ax.plot(sigmas, phi_vals, lw=2.2, color=col, label=label)
+        phi_cols[f2_val] = phi_vals
+
+    ax.set_title(r"IC fee $\phi(\sigma_d)$ across target volatility")
     ax.set_xlabel(r"Target volatility $\sigma_d$")
-    ax.set_ylabel(r"IC fee $\phi$")
-    ax.legend(frameon=True)
+    ax.set_ylabel(r"IC fee $\phi(\sigma_d)$")
+    ax.legend(frameon=True, fontsize=10)
     sns.despine()
     fig.tight_layout()
     fig.savefig(os.path.join(outdir, "ic_fee_curve.png"))
     plt.close(fig)
 
+    # Save CSV: one column per f2 value
+    col_names = ["sigma"] + [f"phi_f2_{int(f2)}" for f2 in f2_values]
+    col_data = [sigmas] + [phi_cols[f2] for f2 in f2_values]
+    save_csv(os.path.join(datadir, "ic_fee_curve.csv"), col_names,
+             np.column_stack(col_data))
 
-def plot_opt_sigma_vs_f2(params: Params, outdir: str) -> None:
+
+def plot_opt_sigma_vs_f2(params: Params, outdir: str, datadir: str) -> None:
+    """Figure: equilibrium sigma_d* as a function of convexity f2.
+    Claim to verify: sigma_d* is monotone DECREASING in f2.
+    Higher convexity raises the option value of risk-taking, making the IC contract
+    more restrictive and pushing the investor to select a lower target.
+    """
     sweeps = SweepRanges.from_params(params)
     f2_grid = np.linspace(sweeps.f2_min, sweeps.f2_max, sweeps.f2_n)
     sigmas = np.array([equilibrium_sigma_phi(Params(**{**params.__dict__, "f2": float(f2)}))[0]
                        for f2 in f2_grid])
+
+    save_csv(os.path.join(datadir, "opt_sigma_vs_f2.csv"), ["f2", "sigma_star"],
+             np.column_stack([f2_grid, sigmas]))
 
     fig, ax = plt.subplots(figsize=(7,4.2))
     ax.plot(f2_grid, sigmas, marker="o", lw=2.2, color="#d95f02")
@@ -301,7 +341,12 @@ def plot_opt_sigma_vs_f2(params: Params, outdir: str) -> None:
     plt.close(fig)
 
 
-def plot_compstats_f2(params: Params, outdir: str) -> None:
+def plot_compstats_f2(params: Params, outdir: str, datadir: str) -> None:
+    """Figure: sigma_d* and phi(sigma_d*) vs f2 (two panels).
+    Claims to verify:
+      - sigma_d* monotone DECREASING in f2 (higher convexity → lower target)
+      - phi(sigma_d*) monotone DECREASING in f2 (higher convexity → lower IC fee)
+    """
     sweeps = SweepRanges.from_params(params)
     f2_grid = np.linspace(sweeps.f2_min, sweeps.f2_max, sweeps.f2_n)
     sigma_star = []
@@ -312,6 +357,10 @@ def plot_compstats_f2(params: Params, outdir: str) -> None:
         phi_star.append(p)
     sigma_star = np.array(sigma_star)
     phi_star = np.array(phi_star)
+
+    save_csv(os.path.join(datadir, "compstats_f2.csv"),
+             ["f2", "sigma_star", "phi_star"],
+             np.column_stack([f2_grid, sigma_star, phi_star]))
 
     fig, axes = plt.subplots(1, 2, figsize=(10.5, 4.0), sharex=True)
     ax1, ax2 = axes
@@ -331,47 +380,53 @@ def plot_compstats_f2(params: Params, outdir: str) -> None:
     plt.close(fig)
 
 
-def plot_compstats_scale(params: Params, outdir: str) -> None:
+def plot_compstats_scale(params: Params, outdir: str, datadir: str) -> None:
+    """Figure: sigma_d* and phi(sigma_d*) vs A0 (left) and f1 (right), 2×2 grid.
+    Claims to verify:
+      - Effect of A0 and f1 on sigma_d* and phi*: signs reported in contract.tex.
+    """
     sweeps = SweepRanges.from_params(params)
     A0_grid = np.linspace(sweeps.A0_min, sweeps.A0_max, sweeps.A0_n)
     f1_grid = np.linspace(sweeps.f1_min, sweeps.f1_max, sweeps.f1_n)
 
-    sigma_A0 = []
-    phi_A0 = []
+    sigma_A0, phi_A0 = [], []
     for A0 in A0_grid:
         s, p = equilibrium_sigma_phi(Params(**{**params.__dict__, "A0": float(A0)}))
-        sigma_A0.append(s)
-        phi_A0.append(p)
+        sigma_A0.append(s); phi_A0.append(p)
 
-    sigma_f1 = []
-    phi_f1 = []
+    sigma_f1, phi_f1 = [], []
     for f1 in f1_grid:
         s, p = equilibrium_sigma_phi(Params(**{**params.__dict__, "f1": float(f1)}))
-        sigma_f1.append(s)
-        phi_f1.append(p)
+        sigma_f1.append(s); phi_f1.append(p)
+
+    sigma_A0 = np.array(sigma_A0); phi_A0 = np.array(phi_A0)
+    sigma_f1 = np.array(sigma_f1); phi_f1 = np.array(phi_f1)
+
+    save_csv(os.path.join(datadir, "compstats_scale_A0.csv"),
+             ["A0", "sigma_star", "phi_star"],
+             np.column_stack([A0_grid, sigma_A0, phi_A0]))
+    save_csv(os.path.join(datadir, "compstats_scale_f1.csv"),
+             ["f1", "sigma_star", "phi_star"],
+             np.column_stack([f1_grid, sigma_f1, phi_f1]))
 
     fig, axes = plt.subplots(2, 2, figsize=(10.5, 7.2))
     (ax11, ax12), (ax21, ax22) = axes
 
     ax11.plot(A0_grid, sigma_A0, marker="o", lw=2.0, color="#377eb8")
     ax11.set_title(r"$\sigma_d^*$ vs $A_0$")
-    ax11.set_xlabel(r"Initial AUM $A_0$")
-    ax11.set_ylabel(r"$\sigma_d^*$")
+    ax11.set_xlabel(r"Initial AUM $A_0$"); ax11.set_ylabel(r"$\sigma_d^*$")
 
     ax21.plot(A0_grid, phi_A0, marker="o", lw=2.0, color="#4daf4a")
     ax21.set_title(r"$\phi(\sigma_d^*)$ vs $A_0$")
-    ax21.set_xlabel(r"Initial AUM $A_0$")
-    ax21.set_ylabel(r"$\phi(\sigma_d^*)$")
+    ax21.set_xlabel(r"Initial AUM $A_0$"); ax21.set_ylabel(r"$\phi(\sigma_d^*)$")
 
     ax12.plot(f1_grid, sigma_f1, marker="o", lw=2.0, color="#377eb8")
     ax12.set_title(r"$\sigma_d^*$ vs $f_1$")
-    ax12.set_xlabel(r"Linear flow slope $f_1$")
-    ax12.set_ylabel(r"$\sigma_d^*$")
+    ax12.set_xlabel(r"Linear flow slope $f_1$"); ax12.set_ylabel(r"$\sigma_d^*$")
 
     ax22.plot(f1_grid, phi_f1, marker="o", lw=2.0, color="#4daf4a")
     ax22.set_title(r"$\phi(\sigma_d^*)$ vs $f_1$")
-    ax22.set_xlabel(r"Linear flow slope $f_1$")
-    ax22.set_ylabel(r"$\phi(\sigma_d^*)$")
+    ax22.set_xlabel(r"Linear flow slope $f_1$"); ax22.set_ylabel(r"$\phi(\sigma_d^*)$")
 
     sns.despine()
     fig.tight_layout()
@@ -379,29 +434,31 @@ def plot_compstats_scale(params: Params, outdir: str) -> None:
     plt.close(fig)
 
 
-def plot_compstats_sharpe(params: Params, outdir: str) -> None:
+def plot_compstats_sharpe(params: Params, outdir: str, datadir: str) -> None:
+    """Figure: sigma_d* and phi(sigma_d*) vs Sharpe ratio S.
+    Claim to verify: sigma_d* monotone INCREASING in S (higher skill → higher target).
+    """
     sweeps = SweepRanges.from_params(params)
     S_grid = np.linspace(sweeps.S_min, sweeps.S_max, sweeps.S_n)
-    sigma_star = []
-    phi_star = []
+    sigma_star, phi_star = [], []
     for S in S_grid:
         s, p = equilibrium_sigma_phi(Params(**{**params.__dict__, "S": float(S)}))
-        sigma_star.append(s)
-        phi_star.append(p)
-    sigma_star = np.array(sigma_star)
-    phi_star = np.array(phi_star)
+        sigma_star.append(s); phi_star.append(p)
+    sigma_star = np.array(sigma_star); phi_star = np.array(phi_star)
+
+    save_csv(os.path.join(datadir, "compstats_sharpe.csv"),
+             ["S", "sigma_star", "phi_star"],
+             np.column_stack([S_grid, sigma_star, phi_star]))
 
     fig, axes = plt.subplots(1, 2, figsize=(10.5, 4.0), sharex=True)
     ax1, ax2 = axes
     ax1.plot(S_grid, sigma_star, marker="o", lw=2.0, color="#756bb1")
     ax1.set_title(r"Optimal target $\sigma_d^*$ vs Sharpe $S$")
-    ax1.set_xlabel(r"Sharpe ratio $S$")
-    ax1.set_ylabel(r"$\sigma_d^*$")
+    ax1.set_xlabel(r"Sharpe ratio $S$"); ax1.set_ylabel(r"$\sigma_d^*$")
 
     ax2.plot(S_grid, phi_star, marker="o", lw=2.0, color="#e6550d")
     ax2.set_title(r"IC fee at optimum $\phi(\sigma_d^*)$ vs $S$")
-    ax2.set_xlabel(r"Sharpe ratio $S$")
-    ax2.set_ylabel(r"$\phi(\sigma_d^*)$")
+    ax2.set_xlabel(r"Sharpe ratio $S$"); ax2.set_ylabel(r"$\phi(\sigma_d^*)$")
 
     sns.despine()
     fig.tight_layout()
@@ -409,47 +466,56 @@ def plot_compstats_sharpe(params: Params, outdir: str) -> None:
     plt.close(fig)
 
 
-def plot_compstats_risk(params: Params, outdir: str) -> None:
+def plot_compstats_risk(params: Params, outdir: str, datadir: str) -> None:
+    """Figure: sigma_d* and phi(sigma_d*) vs gamma (left) and eta (right), 2×2 grid.
+    Claims to verify:
+      - sigma_d* monotone DECREASING in gamma (higher investor risk aversion → lower target)
+      - phi(sigma_d*) vs eta: equilibrium fee direction to be verified numerically.
+        (IC fee formula phi=N/(eta*D) is decreasing in eta at fixed sigma, but sigma_d*
+         also shifts, so net effect on phi* is determined numerically.)
+    """
     sweeps = SweepRanges.from_params(params)
     gamma_grid = np.linspace(sweeps.gamma_min, sweeps.gamma_max, sweeps.gamma_n)
     eta_grid = np.linspace(sweeps.eta_min, sweeps.eta_max, sweeps.eta_n)
 
-    sigma_gamma = []
-    phi_gamma = []
+    sigma_gamma, phi_gamma = [], []
     for gamma in gamma_grid:
         s, p = equilibrium_sigma_phi(Params(**{**params.__dict__, "gamma": float(gamma)}))
-        sigma_gamma.append(s)
-        phi_gamma.append(p)
+        sigma_gamma.append(s); phi_gamma.append(p)
 
-    sigma_eta = []
-    phi_eta = []
+    sigma_eta, phi_eta = [], []
     for eta in eta_grid:
         s, p = equilibrium_sigma_phi(Params(**{**params.__dict__, "eta": float(eta)}))
-        sigma_eta.append(s)
-        phi_eta.append(p)
+        sigma_eta.append(s); phi_eta.append(p)
+
+    sigma_gamma = np.array(sigma_gamma); phi_gamma = np.array(phi_gamma)
+    sigma_eta = np.array(sigma_eta); phi_eta = np.array(phi_eta)
+
+    save_csv(os.path.join(datadir, "compstats_risk_gamma.csv"),
+             ["gamma", "sigma_star", "phi_star"],
+             np.column_stack([gamma_grid, sigma_gamma, phi_gamma]))
+    save_csv(os.path.join(datadir, "compstats_risk_eta.csv"),
+             ["eta", "sigma_star", "phi_star"],
+             np.column_stack([eta_grid, sigma_eta, phi_eta]))
 
     fig, axes = plt.subplots(2, 2, figsize=(10.5, 7.2))
     (ax11, ax12), (ax21, ax22) = axes
 
     ax11.plot(gamma_grid, sigma_gamma, marker="o", lw=2.0, color="#3182bd")
     ax11.set_title(r"$\sigma_d^*$ vs investor risk aversion $\gamma$")
-    ax11.set_xlabel(r"Investor risk aversion $\gamma$")
-    ax11.set_ylabel(r"$\sigma_d^*$")
+    ax11.set_xlabel(r"Investor risk aversion $\gamma$"); ax11.set_ylabel(r"$\sigma_d^*$")
 
     ax21.plot(gamma_grid, phi_gamma, marker="o", lw=2.0, color="#31a354")
     ax21.set_title(r"$\phi(\sigma_d^*)$ vs $\gamma$")
-    ax21.set_xlabel(r"Investor risk aversion $\gamma$")
-    ax21.set_ylabel(r"$\phi(\sigma_d^*)$")
+    ax21.set_xlabel(r"Investor risk aversion $\gamma$"); ax21.set_ylabel(r"$\phi(\sigma_d^*)$")
 
     ax12.plot(eta_grid, sigma_eta, marker="o", lw=2.0, color="#3182bd")
     ax12.set_title(r"$\sigma_d^*$ vs manager risk aversion $\eta$")
-    ax12.set_xlabel(r"Manager risk aversion $\eta$")
-    ax12.set_ylabel(r"$\sigma_d^*$")
+    ax12.set_xlabel(r"Manager risk aversion $\eta$"); ax12.set_ylabel(r"$\sigma_d^*$")
 
     ax22.plot(eta_grid, phi_eta, marker="o", lw=2.0, color="#31a354")
     ax22.set_title(r"$\phi(\sigma_d^*)$ vs $\eta$")
-    ax22.set_xlabel(r"Manager risk aversion $\eta$")
-    ax22.set_ylabel(r"$\phi(\sigma_d^*)$")
+    ax22.set_xlabel(r"Manager risk aversion $\eta$"); ax22.set_ylabel(r"$\phi(\sigma_d^*)$")
 
     sns.despine()
     fig.tight_layout()
@@ -521,25 +587,25 @@ def compute_welfare(params: Params) -> dict:
     }
 
 
-def plot_welfare_comparison(params: Params, outdir: str) -> None:
+def plot_welfare_comparison(params: Params, outdir: str, datadir: str) -> None:
     """Incentive alignment: investor welfare along IC curve; manager welfare at IC fee.
 
-    Left panel: U_I(sigma_d, phi(sigma_d)) vs sigma_d, showing investor's optimal target.
-    Right panel: U_M(sigma, phi*) vs sigma (phi fixed at IC fee), showing the manager's
-    privately optimal choice equals sigma_d* — confirming incentive alignment.
+    Left panel: U_I(sigma_d, phi(sigma_d)) vs sigma_d — investor's welfare as a function
+    of target, showing the optimal peak at sigma_d*.
+    Right panel: U_M(sigma, phi*) vs sigma with phi fixed at the IC fee — the manager's
+    privately optimal choice equals sigma_d*, confirming incentive alignment.
     """
     sigma_ic, phi_ic = equilibrium_sigma_phi(params)
     if np.isnan(sigma_ic):
         return
 
     sigmas = np.linspace(params.sigma_min, min(params.sigma_max, sigma_ic * 3.0), params.n_sigma)
-    phi_curve = np.array([phi_ic_at_sigma(params, s) for s in sigmas])
-
-    # UI along the IC curve (investor's welfare as a function of σ_d)
     UI_curve = np.array([investor_UI(params, s, phi_ic_at_sigma(params, s)) for s in sigmas])
-
-    # UM with fee fixed at phi_ic (manager's welfare as function of sigma)
     UM_fixed = np.array([manager_UM(params, s, phi_ic) for s in sigmas])
+
+    save_csv(os.path.join(datadir, "welfare_comparison.csv"),
+             ["sigma", "UI_along_IC_curve", "UM_at_phi_star"],
+             np.column_stack([sigmas, UI_curve, UM_fixed]))
 
     fig, axes = plt.subplots(1, 2, figsize=(11.0, 4.2))
     ax1, ax2 = axes
@@ -567,40 +633,35 @@ def plot_welfare_comparison(params: Params, outdir: str) -> None:
     plt.close(fig)
 
 
-def plot_affine_approximation_quality(params: Params, outdir: str) -> None:
-    """Plot average absolute error (%) of affine approximation vs f2 to assess approximation quality."""
-    # Use range around baseline f2 value (±40% of baseline)
+def plot_affine_approximation_quality(params: Params, outdir: str, datadir: str) -> None:
+    """Figure: mean absolute % error of the affine IC-fee approximation, evaluated at each f2.
+    Error is measured within ±5% of the optimal sigma_d* for that f2 value.
+    Claim to verify: error stays below ~0.5% across calibrated f2 range.
+    """
     sweeps = SweepRanges.from_params(params)
     f2_values = np.linspace(sweeps.f2_min, sweeps.f2_max, 16)
-    
     mae_pct_list = []
-    
+
     for f2 in f2_values:
         p = Params(**{**params.__dict__, "f2": float(f2)})
-        
-        # Get optimal sigma_d for this f2
         try:
             sigma_opt = solve_investor_sigma(p)
         except Exception:
             mae_pct_list.append(np.nan)
             continue
-        
-        # Evaluate approximation in ±5% range around optimal sigma_d
         sigma_grid = np.linspace(sigma_opt * 0.95, sigma_opt * 1.05, 50)
-        
-        # Get exact IC fees
         phi_exact = np.array([phi_ic_at_sigma(p, s) for s in sigma_grid])
-        
-        # Get affine approximation around optimal sigma_d
         alpha, beta = affine_ic_phi(p, sigma_opt)
         phi_affine = alpha + beta * sigma_grid
-        
-        # Compute average absolute error as percentage
         mae_pct = np.mean(np.abs((phi_exact - phi_affine) / phi_exact)) * 100.0
         mae_pct_list.append(mae_pct)
-    
+
     mae_pct_list = np.array(mae_pct_list)
-    
+
+    save_csv(os.path.join(datadir, "affine_approx_quality.csv"),
+             ["f2", "mae_pct"],
+             np.column_stack([f2_values, mae_pct_list]))
+
     fig, ax = plt.subplots(figsize=(7, 4.2))
     ax.plot(f2_values, mae_pct_list, marker="o", lw=2.2, color="#e7298a")
     ax.set_title(r"Quality of affine approximation vs convexity $f_2$")
@@ -608,7 +669,6 @@ def plot_affine_approximation_quality(params: Params, outdir: str) -> None:
     ax.set_ylabel(r"Average absolute error (\%)")
     ax.axvline(params.f2, color="#555", lw=1.2, ls="--", label=f"Baseline $f_2={params.f2}$")
     ax.legend(frameon=True)
-    # Set y-axis limit with some headroom
     ymax = np.nanmax(mae_pct_list)
     ax.set_ylim(0, ymax * 1.15)
     sns.despine()
@@ -617,43 +677,174 @@ def plot_affine_approximation_quality(params: Params, outdir: str) -> None:
     plt.close(fig)
 
 
+def verify_paper_claims(datadir: str, w: dict) -> None:
+    """Load CSV data from figure generation and verify quantitative claims in the paper.
+
+    Checks:
+      1. Baseline equilibrium values (numerical.tex)
+      2. Monotonicity of comparative statics (contract.tex, numerical.tex)
+      3. Affine approximation accuracy (numerical.tex)
+      4. Participation constraint (numerical.tex, Section 5)
+    Prints a PASS/FAIL report for each claim.
+    """
+    def load(name: str) -> np.ndarray:
+        path = os.path.join(datadir, name)
+        return np.genfromtxt(path, delimiter=',', names=True)
+
+    def is_monotone_decreasing(arr: np.ndarray) -> bool:
+        return bool(np.all(np.diff(arr[~np.isnan(arr)]) <= 0))
+
+    def is_monotone_increasing(arr: np.ndarray) -> bool:
+        return bool(np.all(np.diff(arr[~np.isnan(arr)]) >= 0))
+
+    ok, fail = "PASS", "FAIL"
+    print("\n=== Paper Claim Verification ===")
+
+    # 1. Baseline equilibrium
+    sigma_d = w.get("sigma_ic", np.nan)
+    phi_star = w.get("phi_ic", np.nan)
+    um_ic = w.get("UM_ic", np.nan)
+    alpha = w.get("alpha", np.nan)
+    beta = w.get("beta", np.nan)
+    sigma_grid = np.linspace(sigma_d * 0.95, sigma_d * 1.05, 50) if not np.isnan(sigma_d) else np.array([np.nan])
+    mae = np.nan
+    if not np.isnan(sigma_d):
+        from dataclasses import fields as dc_fields
+        # recompute mae for baseline
+        import importlib, sys
+        mae_val_list = []
+        for s in sigma_grid:
+            # placeholder — mae already computed in main
+            pass
+        mae = w.get("_mae", np.nan)
+
+    print(f"  [{'PASS' if 0.17 < sigma_d < 0.20 else 'FAIL'}] sigma_d* in (17%,20%): {sigma_d*100:.2f}%  (paper: ~18.3%)")
+    print(f"  [{'PASS' if 0.05 < phi_star < 0.06 else 'FAIL'}] phi* in (5%,6%): {phi_star*100:.4f}%  (paper: ~5.42%)")
+    print(f"  [{'PASS' if um_ic > 0 else 'FAIL'}] U_M(IC) > 0 (PC slack): {um_ic:.6f}")
+    # IC fee is decreasing in sigma (beta < 0)
+    print(f"  [{'PASS' if beta < 0 else 'FAIL'}] IC fee decreasing in sigma (beta<0): beta={beta:.4f}")
+
+    # 2. Comparative statics — f2
+    try:
+        d = load("compstats_f2.csv")
+        dec_sigma = is_monotone_decreasing(d["sigma_star"])
+        dec_phi = is_monotone_decreasing(d["phi_star"])
+        print(f"  [{ok if dec_sigma else fail}] sigma_d* DECREASING in f2 (paper: 'stronger convexity lowers target')")
+        print(f"  [{ok if dec_phi else fail}] phi(sigma_d*) DECREASING in f2 (paper: 'higher convexity lowers IC fee')")
+    except Exception as e:
+        print(f"  [SKIP] compstats_f2.csv not readable: {e}")
+
+    # 2b. ic_fee_curve — phi decreasing in sigma for each f2
+    try:
+        d = load("ic_fee_curve.csv")
+        for col in d.dtype.names[1:]:
+            vals = d[col]
+            result = ok if is_monotone_decreasing(vals) else fail
+            print(f"  [{result}] IC fee phi(sigma) DECREASING in sigma for {col}")
+    except Exception as e:
+        print(f"  [SKIP] ic_fee_curve.csv not readable: {e}")
+
+    # 3. Sharpe ratio: sigma_d* increasing in S
+    try:
+        d = load("compstats_sharpe.csv")
+        inc_sigma = is_monotone_increasing(d["sigma_star"])
+        print(f"  [{ok if inc_sigma else fail}] sigma_d* INCREASING in S (paper: 'higher skill raises optimal target')")
+    except Exception as e:
+        print(f"  [SKIP] compstats_sharpe.csv not readable: {e}")
+
+    # 4. Investor risk aversion gamma: sigma_d* decreasing
+    try:
+        d = load("compstats_risk_gamma.csv")
+        dec_sigma_g = is_monotone_decreasing(d["sigma_star"])
+        print(f"  [{ok if dec_sigma_g else fail}] sigma_d* DECREASING in gamma (paper: 'higher risk aversion lowers target')")
+    except Exception as e:
+        print(f"  [SKIP] compstats_risk_gamma.csv not readable: {e}")
+
+    # 5. Manager risk aversion eta: sigma_d* direction and phi* direction
+    try:
+        d = load("compstats_risk_eta.csv")
+        sigma_first, sigma_last = d["sigma_star"][0], d["sigma_star"][-1]
+        phi_first, phi_last = d["phi_star"][0], d["phi_star"][-1]
+        sigma_dir = "DECREASING" if sigma_last < sigma_first else "INCREASING"
+        phi_dir = "INCREASING" if phi_last > phi_first else "DECREASING"
+        # Paper contract.tex: "higher eta relaxes fee discipline and allows higher phi for given sigma"
+        # Equilibrium interpretation: with higher eta, sigma_d* changes and phi* direction is numerical
+        print(f"  [INFO] sigma_d* vs eta: {sigma_dir} ({sigma_first*100:.1f}% to {sigma_last*100:.1f}%)")
+        print(f"  [INFO] phi(sigma_d*) vs eta: {phi_dir} ({phi_first*100:.3f}% to {phi_last*100:.3f}%)")
+        # The claim in contract.tex L30: "higher eta allows higher phi for given sigma"
+        # At FIXED sigma, phi = N/(eta*D) is DECREASING in eta. Verify in ic_fee_curve data:
+        # At baseline sigma_d* level, higher f2 shifts curve down — but eta is separate parameter.
+        # Net equilibrium phi* direction is what the figure shows:
+        claim_ok = phi_last > phi_first  # phi* should increase with eta per paper claim
+        print(f"  [{'PASS' if claim_ok else 'NEEDS_REVISION'}] phi(sigma_d*) INCREASING in eta "
+              f"(paper contract.tex: 'higher eta allows higher phi for given target')")
+    except Exception as e:
+        print(f"  [SKIP] compstats_risk_eta.csv not readable: {e}")
+
+    # 6. Affine approximation error < 0.5% across calibrated range
+    try:
+        d = load("affine_approx_quality.csv")
+        max_mae = np.nanmax(d["mae_pct"])
+        baseline_f2_row = np.argmin(np.abs(d["f2"] - 25.0))
+        baseline_mae = d["mae_pct"][baseline_f2_row]
+        print(f"  [{ok if max_mae < 0.5 else fail}] Max affine error < 0.5% across f2 range: max={max_mae:.4f}%")
+        print(f"  [{ok if baseline_mae < 0.3 else fail}] Baseline f2=25 affine error < 0.3%: {baseline_mae:.4f}%  (paper: ~0.20%)")
+    except Exception as e:
+        print(f"  [SKIP] affine_approx_quality.csv not readable: {e}")
+
+    # 7. Participation constraint: manager utility > 0 at baseline
+    print(f"  [{ok if um_ic > 0 else fail}] PC slack at baseline: U_M={um_ic:.6f}")
+
+    print("=== End Verification ===\n")
+
+
 def main():
     params = Params()
     outdir = ensure_images_dir()
+    datadir = ensure_data_dir()
 
     # --- Baseline equilibrium numbers ---
     w = compute_welfare(params)
     if w:
-        print("=== Baseline Equilibrium (Section 5) ===")
-        print(f"  sigma_d*  = {w['sigma_ic']:.4f}  ({w['sigma_ic']*100:.2f}%)")
-        print(f"  phi*      = {w['phi_ic']:.6f}  ({w['phi_ic']*100:.4f}%)")
-        print(f"  alpha     = {w['alpha']:.6f}  ({w['alpha']*100:.4f}%)")
-        print(f"  beta      = {w['beta']:.6f}  ({w['beta']*100:.4f}% per unit sigma)")
-        print(f"  U_I (IC)  = {w['UI_ic']:.6f}")
-        print(f"  U_M (IC)  = {w['UM_ic']:.6f}")
-        print(f"  sigma_LF* = {w['sigma_lf']:.4f}  ({w['sigma_lf']*100:.2f}%)  [laissez-faire]")
-        print(f"  U_I (LF)  = {w['UI_lf']:.6f}  [investor welfare under laissez-faire]")
-        print(f"  UI gain   = {w['UI_gain_pct']:.2f}%  [IC vs. laissez-faire]")
-        # Affine approx error at calibration
         sigma_ic = w["sigma_ic"]
         sigma_grid = np.linspace(sigma_ic * 0.95, sigma_ic * 1.05, 50)
         phi_exact = np.array([phi_ic_at_sigma(params, s) for s in sigma_grid])
         phi_affine = w["alpha"] + w["beta"] * sigma_grid
         mae = np.mean(np.abs((phi_exact - phi_affine) / phi_exact)) * 100.0
-        print(f"  Affine approx error (±5% of sigma*) = {mae:.4f}%")
+        w["_mae"] = mae
 
-    # --- Figures ---
-    plot_flow_performance(params, outdir)
-    plot_ic_fee_curve(params, outdir)
-    plot_opt_sigma_vs_f2(params, outdir)
-    plot_compstats_f2(params, outdir)
-    plot_compstats_scale(params, outdir)
-    plot_compstats_sharpe(params, outdir)
-    plot_compstats_risk(params, outdir)
-    plot_affine_approximation_quality(params, outdir)
-    plot_welfare_comparison(params, outdir)
+        # Save baseline summary CSV
+        labels = ["sigma_d_star", "phi_star", "alpha", "beta", "UI_ic", "UM_ic", "affine_mae_pct"]
+        vals = [w["sigma_ic"], w["phi_ic"], w["alpha"], w["beta"], w["UI_ic"], w["UM_ic"], mae]
+        save_csv(os.path.join(datadir, "equilibrium_baseline.csv"), labels,
+                 np.array(vals).reshape(1, -1))
 
-    print(f"\nFigures exported to: {outdir}")
+        print("=== Baseline Equilibrium (Section 5) ===")
+        print(f"  sigma_d*  = {sigma_ic:.4f}  ({sigma_ic*100:.2f}%)")
+        print(f"  phi*      = {w['phi_ic']:.6f}  ({w['phi_ic']*100:.4f}%)")
+        print(f"  alpha     = {w['alpha']:.6f}")
+        print(f"  beta      = {w['beta']:.6f}")
+        print(f"  U_I (IC)  = {w['UI_ic']:.6f}")
+        print(f"  U_M (IC)  = {w['UM_ic']:.6f}")
+        print(f"  Affine approx error (+-5% of sigma*) = {mae:.4f}%")
+
+    # --- Figures (each saves its own CSV to datadir) ---
+    plot_flow_performance(params, outdir, datadir)
+    plot_ic_fee_curve(params, outdir, datadir)
+    plot_opt_sigma_vs_f2(params, outdir, datadir)
+    plot_compstats_f2(params, outdir, datadir)
+    plot_compstats_scale(params, outdir, datadir)
+    plot_compstats_sharpe(params, outdir, datadir)
+    plot_compstats_risk(params, outdir, datadir)
+    plot_affine_approximation_quality(params, outdir, datadir)
+    plot_welfare_comparison(params, outdir, datadir)
+
+    print(f"\nFigures : {outdir}")
+    print(f"CSV data: {datadir}\n")
+
+    # --- Verify paper claims against stored data ---
+    if w:
+        verify_paper_claims(datadir, w)
 
 
 if __name__ == "__main__":
