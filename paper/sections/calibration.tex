@@ -1,13 +1,13 @@
 \section{Calibration}
 \label{sec:calibration}
 
-We calibrate the model to empirically grounded parameter values from the mutual fund and portfolio choice literature, ensuring the equilibrium targets fall within realistic ranges for delegated portfolio management.
+We calibrate the model to empirically grounded parameter values from the mutual fund and portfolio choice literature, ensuring that the implied equilibrium outcomes fall within empirically plausible ranges for delegated portfolio management.
 
 \paragraph{Investor risk aversion (\(\gamma\)).}
 We set \(\gamma=5\) as the baseline, with sensitivity analysis spanning \(\gamma\in[2,10]\). These values are consistent with standard portfolio-choice calibrations \citep[][]{campbell2002strategic} and reflect the observed heterogeneity in risk preferences across investors \citep[][]{guiso2018time}.
 
 \paragraph{Manager risk aversion over fee revenue (\(\eta\)).}
-We use \(\eta=3\) as the baseline, allowing \(\eta\in[1,8]\) in sensitivity exercises. If the manager is an individual portfolio manager with concentrated human capital, \(\eta\ge\gamma\) is plausible. If the manager represents a diversified fund family, \(\eta\le\gamma\) can be reasonable. Our baseline reflects a moderately risk-averse manager facing career concerns \citep[][]{chevalier1997risk}.
+We use \(\eta=3\) as the baseline, allowing \(\eta\in[1,8]\) in sensitivity exercises. If the manager is an individual portfolio manager with concentrated human capital, \(\eta\ge\gamma\) is plausible. If the manager represents a diversified fund family, \(\eta\le\gamma\) can be reasonable. This baseline captures a manager who is moderately risk-averse to fee-income volatility, consistent with the presence of career concerns and compensation risk \citep[][]{chevalier1997risk}.
 
 \paragraph{Fund Sharpe ratio (\(\Sharpe\)).}
 We set \(\Sharpe=0.35\) (annualized) for an active mutual fund baseline, consistent with the performance range documented for skilled managers net of transaction costs \citep[][]{carhart1997persistence}. We explore \(\Sharpe\in[0.10,1.00]\) in sensitivity analysis, with higher values (e.g., \(\Sharpe=0.60\)) representing particularly skilled managers or hedge fund strategies \citep[][]{fung2004hedge}.
@@ -16,11 +16,10 @@ We set \(\Sharpe=0.35\) (annualized) for an active mutual fund baseline, consist
 We use \(r_f=3.70\%\) (annual), based on the 3-month U.S. Treasury constant maturity rate as of January 2026.\footnote{Source: FRED series DGS3MO, 2026-01-23: 3.70\%. For euro-denominated settings, the ECB €STR (euro short-term rate) was approximately 1.93\% as of the same date.} Sensitivity analysis spans \(r_f\in[0,5\%]\) to assess robustness across interest-rate regimes.
 
 \paragraph{Flow-performance sensitivity (\(f_1\), \(f_2\)).}
-Empirical studies document strong convexity in the flow-performance relationship: top-performing funds attract disproportionately large inflows \citep[][]{sirri1998costly, ferreira2012flow}. To match realistic annual flow responses, we set \(f_1=1.5\) and \(f_2=25\), where excess returns are measured in decimal units (e.g., 5\% excess return = 0.05). This parameterization implies that a fund with \(+5\%\) excess return experiences flows of approximately \(+13.8\%\) of AUM, while a fund with \(+10\%\) excess return sees flows around \(+40\%\)—capturing the "winner-takes-a-lot" dynamic in mutual fund flows.\footnote{Specifically, \(F(0.05) = 1.5 \times 0.05 + 25 \times 0.05^2 = 0.1375\) and \(F(0.10) = 1.5 \times 0.10 + 25 \times 0.10^2 = 0.40\).} We explore \(f_1\in[0.5,3]\) and \(f_2\in[5,60]\) to assess sensitivity to flow convexity.
+Empirical studies document strong convexity in the flow-performance relationship, whereby top-performing funds attract disproportionately large inflows \citep[][]{sirri1998costly, ferreira2012flow}. To match realistic annual flow responses, we set $f_1=1.5$ and $f_2=25$, where excess returns are measured in decimal units (e.g., a 5\% excess return corresponds to 0.05). This parameterization implies that a fund with \(+5\%\) excess return experiences flows of approximately \(+13.8\%\) of AUM, while a fund with \(+10\%\) excess return sees flows around \(+40\%\), capturing the strong convexity observed in empirical flow--performance relationships. We explore \(f_1\in[0.5,3]\) and \(f_2\in[5,60]\) to assess sensitivity to flow convexity.
 
 \paragraph{Initial AUM (\(A_0\)).}
 We normalize \(A_0=1\) since the problem is scale-invariant with proportional fees and homogeneous preferences. If one were to incorporate decreasing returns to scale or capacity constraints, AUM scale would interact with fund performance \citep[][]{berk2004mutual}, but we abstract from such effects in our baseline specification.
 
 \paragraph{Target volatility range.}
-With these parameters, the model produces optimal volatility targets \(\sigma_d^*\in[8\%,20\%]\) (annualized), consistent with empirical volatilities for actively managed equity mutual funds. For reference, \citet[][]{barras2010false} use a monthly market-return standard deviation of approximately 4.6\%, corresponding to roughly 16\% annualized. Individual fund volatilities can be higher or lower depending on style and leverage, but our target range aligns with typical delegated equity portfolio volatilities.
-
+With these parameters, the model produces optimal volatility targets \(\sigma_d^*\in[8\%,20\%]\) (annualized), which are consistent with observed volatility levels for actively managed equity mutual funds. For reference, \citet[][]{barras2010false} use a monthly market-return standard deviation of approximately 4.6\%, corresponding to roughly 16\% annualized. Individual fund volatilities can be higher or lower depending on style and leverage, but our target range aligns with typical volatilities of delegated equity portfolios.
