@@ -2,15 +2,12 @@
 % appendix.tex
 % =========================
 
-% Appendix: Proofs and derivations
-\section*{Appendix}
-\addcontentsline{toc}{section}{Appendix}
 \setcounter{equation}{0}
-\renewcommand{\theequation}{A.\arabic{equation}}
+\renewcommand{\theequation}{\Alph{section}.\arabic{equation}}
 \setcounter{lemma}{0}
-\renewcommand{\thelemma}{A.\arabic{lemma}}
+\renewcommand{\thelemma}{\Alph{section}.\arabic{lemma}}
 \setcounter{proposition}{0}
-\renewcommand{\theproposition}{A.\arabic{proposition}}
+\renewcommand{\theproposition}{\Alph{section}.\arabic{proposition}}
 
 \section{Gaussian tail identities}
 \label{app:tails}
@@ -22,9 +19,11 @@ Let $Z\sim\mathcal N(0,1)$ and $\varphi(z)$, $\Phi(z)$ denote its pdf/cdf, where
 \int_a^{\infty} z^4\,\varphi(z)\,dz &= (a^3+3a)\,\varphi(a) + 3\,(1-\Phi(a)).\label{eq:tail4}
 \end{align}
 
-\paragraph{Derivation sketch.} These identities follow from integration by parts using $\varphi'(z)=-z\varphi(z)$. For \eqref{eq:tail1}: $\int_a^\infty z\varphi(z)dz = -\varphi(z)\big|_a^\infty = \varphi(a)$. For \eqref{eq:tail2}: write $z^2\varphi(z)=-z\cdot\varphi'(z)$ and integrate by parts to get $-z\varphi(z)\big|_a^\infty + \int_a^\infty\varphi(z)dz = a\varphi(a) + [1-\Phi(a)]$. Higher moments follow recursively.
+\subsection*{A.1\quad Derivation sketch}
+These identities follow from integration by parts using $\varphi'(z)=-z\varphi(z)$. For \eqref{eq:tail1}: $\int_a^\infty z\varphi(z)dz = -\varphi(z)\big|_a^\infty = \varphi(a)$. For \eqref{eq:tail2}: write $z^2\varphi(z)=-z\cdot\varphi'(z)$ and integrate by parts to get $-z\varphi(z)\big|_a^\infty + \int_a^\infty\varphi(z)dz = a\varphi(a) + [1-\Phi(a)]$. Higher moments follow recursively.
 
-\paragraph{Application to our model.} Setting $a=-S$ and defining $X:=S+Z$, note that $\{X\ge 0\} = \{Z \ge -S\}$. Therefore:
+\subsection*{A.2\quad Application to our model}
+Setting $a=-S$ and defining $X:=S+Z$, note that $\{X\ge 0\} = \{Z \ge -S\}$. Therefore:
 \begin{align}
 \Pr[Z\ge -S] &= \Phi(S),\\
 \E[Z\,\mathbf 1_{\{Z\ge -S\}}] &= \varphi(S),\\
@@ -47,29 +46,25 @@ With $Z\sim\Normal(0,1)$, $X=S+Z$, and the indicator $\mathbf 1_{\{\cdot\}}$:
 \label{app:variance}
 Let $\Kcal:=A_0+f_1$, $X=S+Z$, $I:=\mathbf 1_{\{X\ge 0\}}$. Recall that fund returns are $r=r_f+\sigma X$ and excess returns are $r-r_f=\sigma X$. The flow function is $F(r-r_f)=f_1(r-r_f)+f_2(r-r_f)^2 I$. Therefore, end-of-period AUM is
 \begin{align}
-A &= A_0(1+r) + F(r-r_f) \nonumber\\
-&= A_0(1+r_f+\sigma X) + f_1\sigma X + f_2\sigma^2 X^2 I \nonumber\\
-&= A_0(1+r_f) + (A_0+f_1)\sigma X + f_2\sigma^2 X^2 I \nonumber\\
-&= A_0(1+r_f) + \Kcal\,\sigma X + f_2\,\sigma^2 X^2 I.
+A &= A_0(1+r_f) + \Kcal\,\sigma X + f_2\,\sigma^2 X^2 I.
 \end{align}
 The constant term $A_0(1+r_f)$ represents the riskless growth of initial AUM. The term $\Kcal\,\sigma X$ captures both (i) the risky return on initial AUM and (ii) the linear flow response to performance. The term $f_2\,\sigma^2 X^2 I$ represents the convex flow kicker that activates when excess returns are positive.
 
-\paragraph{Mean of AUM.}
+\subsection*{B.1\quad Mean of AUM}
 Using $\E[X]=S$ and Appendix~\ref{app:tails} for $\E[X^2 I]$, we obtain
 \begin{align}
 \E[A] &= A_0(1+r_f) + \Kcal\,S\,\sigma + f_2\,\sigma^2\,C_1,\label{eq:EA-correct}\\
-C_1 &:= (S^2+1)\,\Phi(S) + S\,\varphi(S).\label{eq:C1}
+C_1 &:= (S^2+1)\,\Phi(S) + S\,\varphi(S).\label{eq:C1-app}
 \end{align}
 
-\paragraph{Variance of AUM.}
+\subsection*{B.2\quad Variance of AUM}
 Since the constant term $A_0(1+r_f)$ has zero variance, and writing $A - A_0(1+r_f) = \Kcal\,\sigma X + f_2\,\sigma^2 X^2 I$, we have
 \[
 \V[A] = \V[\Kcal\,\sigma X + f_2\,\sigma^2 X^2 I].
 \]
 Using the variance formula $\V[aU+bV]=a^2\V[U]+b^2\V[V]+2ab\,\Cov(U,V)$ with $U=X$ and $V=X^2 I$, and the fact that $\V[X]=1$ since $X=S+Z$ with $Z\sim\Normal(0,1)$, we obtain
 \begin{align}
-\V[A] &= \Kcal^2\,\sigma^2\,\V[X] + 2\,\Kcal f_2\,\sigma^3\,\Cov(X, X^2 I) + f_2^2\,\sigma^4\,\V(X^2 I) \nonumber\\
-&= \Kcal^2\,\sigma^2 + 2\,\Kcal f_2\,\sigma^3\,\Cov(X, X^2 I) + f_2^2\,\sigma^4\,\V(X^2 I).\label{eq:VarA}
+\V[A] &= \Kcal^2\,\sigma^2 + 2\,\Kcal f_2\,\sigma^3\,\Cov(X, X^2 I) + f_2^2\,\sigma^4\,\V(X^2 I).\label{eq:VarA-app}
 \end{align}
 Compute the cross and quadratic terms from Appendix~\ref{app:tails}:
 \begin{align}
@@ -78,22 +73,20 @@ Compute the cross and quadratic terms from Appendix~\ref{app:tails}:
 \end{align}
 Hence, using the definition $\Cov(U,V)=\E[UV]-\E[U]\E[V]$ and noting that $\E[X]=S$:
 \begin{align}
-\Cov(X, X^2 I) &= \E[X \cdot X^2 I] - \E[X]\,\E[X^2 I] \nonumber\\
-&= \E[X^3 I] - S\,\E[X^2 I] \nonumber\\
+\Cov(X, X^2 I) &= \E[X^3 I] - S\,\E[X^2 I] \nonumber\\
 &= (S^3+3S)\Phi(S) + (S^2+2)\varphi(S) - S\,C_1.\label{eq:Cov}
 \end{align}
 Similarly, for the variance of $X^2 I$:
 \begin{align}
-\V(X^2 I) &= \E[(X^2 I)^2] - [\E[X^2 I]]^2 \nonumber\\
-&= \E[X^4 I] - C_1^2 \nonumber\\
+\V(X^2 I) &= \E[X^4 I] - C_1^2 \nonumber\\
 &= (S^4+6S^2+3)\Phi(S) + (S^3+5S)\varphi(S) - C_1^2.\label{eq:VarX2I}
 \end{align}
 
-\paragraph{Derivatives in $\sigma$.}
+\subsection*{B.3\quad Derivatives in $\sigma$}
 Differentiate with respect to $\sigma$:
 \begin{align}
-\partial_\sigma \E[A] &= \Kcal\,S + 2 f_2\,\sigma\,C_1,\label{eq:dEA}\\
-\partial_\sigma \V[A] &= 2\Kcal^2\sigma + 6\Kcal f_2\,\sigma^2\,\Cov(X, X^2 I) + 4 f_2^2\,\sigma^3\,\V(X^2 I).\label{eq:dVarA}
+\partial_\sigma \E[A] &= \Kcal\,S + 2 f_2\,\sigma\,C_1,\label{eq:dEA-app}\\
+\partial_\sigma \V[A] &= 2\Kcal^2\sigma + 6\Kcal f_2\,\sigma^2\,\Cov(X, X^2 I) + 4 f_2^2\,\sigma^3\,\V(X^2 I).\label{eq:dVarA-app}
 \end{align}
 Define
 \begin{equation}
@@ -101,33 +94,38 @@ Define
 \end{equation}
 so that $\partial_\sigma \V[A]=2\Kcal^2\sigma+\Delta_{\text{quad}}(S,f_2;\sigma)$.
 
-\section{Manager’s problem, best response, and IC fee}
+\section{Manager's problem, best response, and IC fee}
 \label{app:manager-solution}
+
+In this appendix we derive the manager's first-order condition and the incentive-compatible fee schedule used in Section~\ref{subsec:IC}. The appendix shows how the manager's optimal volatility choice depends on the marginal effect of volatility on expected AUM and AUM risk, and then derives the fee that implements a target volatility chosen by the investor.
+
+\subsection*{C.1\quad Manager's First-Order Condition}
 The manager's objective is to maximize mean-variance utility over fee revenue $\phi A$:
 \[
 \max_\sigma \; U_M(\sigma,\phi) = \phi\,\E[A] - \frac{\eta\phi^2}{2}\,\V[A],
 \]
-where $\eta>0$ is the manager's risk aversion coefficient. Taking the first-order condition with respect to $\sigma$ and using the derivatives from \eqref{eq:dEA} and \eqref{eq:dVarA}:
+where $\eta>0$ is the manager's risk aversion coefficient. Taking the first-order condition with respect to $\sigma$ and using the derivatives from \eqref{eq:dEA-app} and \eqref{eq:dVarA-app}:
 \begin{align}
 \frac{\partial U_M}{\partial \sigma} &= \phi\,\partial_\sigma \E[A] - \eta\phi^2\,\partial_\sigma \V[A] \nonumber\\
 &= \phi\Big(\Kcal S + 2 f_2\,\sigma\,C_1\Big) - \eta\phi^2\Big(2\Kcal^2\sigma + \Delta_{\text{quad}}\Big) \nonumber\\
-&= 0.\label{eq:manager-FOC}
+&= 0.\label{eq:manager-FOC-app}
 \end{align}
-The left side represents the marginal net benefit of increasing volatility: the first term captures the increase in expected fee revenue (through both higher expected returns when $S>0$ and convex flow effects when $f_2>0$), while the second term captures the disutility from increased fee revenue risk.
+The left side represents the marginal net benefit of increasing volatility: the first term captures the increase in expected fee revenue (through both higher expected returns when $S>0$ and convex flow effects when $f_2>0$), while the second term captures the disutility associated with increased fee-revenue risk.
 
-When $\eta\phi\cdot 2\Kcal^2 > 2f_2 C_1$, the quadratic term $-\eta\phi^2\cdot 2\Kcal^2\sigma$ dominates for large $\sigma$, making \eqref{eq:manager-FOC} a strictly decreasing function of $\sigma$. Since the FOC is positive at $\sigma=0$ (when $S>0$) and eventually negative for large $\sigma$, the intermediate value theorem guarantees a unique interior solution $\sigma^*(\phi)>0$.
+\subsection*{C.2\quad Existence and Uniqueness of the Manager's Best Response}
+Under the condition that $\eta\phi\cdot 2\Kcal^2 > 2f_2 C_1$, the marginal cost grows faster than the marginal benefit for large values of $\sigma$. As a result, the quadratic term $-\eta\phi^2\cdot 2\Kcal^2\sigma$ dominates for large $\sigma$, making \eqref{eq:manager-FOC-app} a strictly decreasing function of $\sigma$. Since the FOC is positive at $\sigma=0$ (when $S>0$) and eventually negative for large $\sigma$, the intermediate value theorem guarantees a unique interior solution $\sigma^*(\phi)>0$.
 
-\paragraph{Closed-form approximation.}
-Under the linearized variance slope $\partial_\sigma \V[A]\approx 2\Kcal^2\sigma$, the closed-form best response is
+\subsection*{C.3\quad Closed-Form Approximation}
+To obtain additional analytical insight, it is useful to consider an approximation to the manager's best response. Under the linearized variance slope $\partial_\sigma \V[A]\approx 2\Kcal^2\sigma$, which captures the leading-order contribution of the linear term in AUM variance, the first-order condition simplifies. Solving for $\sigma$, the manager's best response admits the closed-form approximation
 \begin{equation}
 \label{eq:sigma-star}
 \sigma^*(\phi) = \frac{\Kcal S}{2\,(\eta\phi\,\Kcal^2 - f_2 C_1)},\qquad \text{valid when } \eta\phi\,\Kcal^2> f_2 C_1.
 \end{equation}
 
-\paragraph{IC fee implementing $\sigma_d$.}
-Incentive compatibility requires the manager’s FOC to hold at $\sigma=\sigma_d$, yielding
+\subsection*{C.4\quad Incentive Compatibility}
+Incentive compatibility requires that the manager's first-order condition holds at the target volatility $\sigma=\sigma_d$. Imposing this condition yields
 \begin{equation}
-\label{eq:phi-IC}
+\label{eq:phi-IC-app}
 \phi(\sigma_d)
 \;=\;
 \frac{\partial_\sigma \E[A]\big|_{\sigma_d}}
@@ -136,38 +134,42 @@ Incentive compatibility requires the manager’s FOC to hold at $\sigma=\sigma_d
 \frac{\Kcal\,S + 2 f_2 \,\sigma_d\,C_1}
 {\eta\Big(2 \Kcal^2 \,\sigma_d + \Delta_{\text{quad}}(S,f_2;\sigma_d)\Big)}.
 \end{equation}
+This expression characterizes the fee schedule that implements the desired volatility target $\sigma_d$ by equating the manager's marginal benefit and marginal cost of risk-taking.
 
-\section{Investor’s FOC and equilibrium condition}
+\section{Investor's FOC and equilibrium condition}
 \label{app:investor}
+
+\subsection*{D.1\quad Investor's First-Order Condition}
 With net returns $r^{\text{net}}=(1-\phi)r-\phi$ and investor utility
 \[
 U_I(\sigma,\phi)=\E[r^{\text{net}}] - \frac{\gamma}{2}\V[r^{\text{net}}] = (1-\phi)(r_f+S\sigma)-\phi-\frac{\gamma}{2}(1-\phi)^2\sigma^2,
 \]
-the investor chooses the target volatility $\sigma_d$ to maximize $U_I(\sigma_d,\phi(\sigma_d))$, where the fee $\phi(\sigma_d)$ is pinned down by the incentive compatibility constraint \eqref{eq:phi-IC}.
+the investor chooses the target volatility $\sigma_d$ to maximize $U_I(\sigma_d,\phi(\sigma_d))$, where the fee $\phi(\sigma_d)$ is pinned down by the incentive compatibility constraint \eqref{eq:phi-IC-app}.
 
 Differentiating the investor's objective with respect to $\sigma_d$ using the chain rule:
 \begin{align}
 \frac{d U_I}{d \sigma_d} &= \frac{\partial U_I}{\partial \sigma}\Big|_{\sigma=\sigma_d} + \frac{\partial U_I}{\partial \phi}\Big|_{\phi=\phi(\sigma_d)} \cdot \frac{d\phi}{d\sigma_d} \nonumber\\
-&= \Big[(1-\phi)S - \gamma(1-\phi)^2\sigma_d\Big] + \Big[-(r_f+S\sigma_d) -1 + \gamma(1-\phi)\sigma_d^2\Big]\frac{d\phi}{d\sigma_d}.\label{eq:investor-FOC}
+&= \Big[(1-\phi)S - \gamma(1-\phi)^2\sigma_d\Big] + \Big[-(r_f+S\sigma_d) -1 + \gamma(1-\phi)\sigma_d^2\Big]\frac{d\phi}{d\sigma_d}.\label{eq:investor-FOC-app}
 \end{align}
-Setting this equal to zero gives the equilibrium condition. The first bracketed term is the \textbf{direct effect}: increasing volatility raises expected net returns (by $S$) but also increases risk. The second term is the \textbf{contract adjustment}: changing the target requires adjusting the fee via the IC constraint, which affects investor utility through both the mean (by reducing the share of returns) and the variance (by reducing exposure to fund risk).
+Setting this equal to zero gives the equilibrium condition. The first bracketed term is the \textbf{direct effect}: increasing volatility raises expected net returns (by $S$) but also increases risk. The second term is the \textbf{contract adjustment}: changing the target requires adjusting the fee via the IC constraint, which affects investor utility through both the mean and the variance.
 
-For brevity, define
+\subsection*{D.2\quad Equilibrium Characterization}
+For notational convenience, define
 \begin{align}
 N(\sigma) &:= \Kcal\,S \;+\; 2 f_2 \sigma\,C_1, \\
 D(\sigma) &:= \eta\Big(2 \Kcal^2 \sigma + \Delta_{\text{quad}}(S,f_2;\sigma)\Big), \\
 \phi(\sigma) &:= \frac{N(\sigma)}{D(\sigma)},\qquad
-\phi'(\sigma) \;=\; \frac{N'(\sigma)D(\sigma) - N(\sigma)D'(\sigma)}{D(\sigma)^2}.
+\phi'(\sigma) \;=\; \frac{N'(\sigma)D(\sigma) - N(\sigma)D'(\sigma)}{D(\sigma)^2},
 \end{align}
-where $N(\sigma)$ is the numerator and $D(\sigma)$ is the denominator of the IC fee \eqref{eq:phi-IC}.
+where $N(\sigma)$ is the numerator and $D(\sigma)$ is the denominator of the IC fee \eqref{eq:phi-IC-app}.
 
-Plugging $\phi(\sigma)$ and $\phi'(\sigma)$ into \eqref{eq:investor-FOC} and defining
+Plugging $\phi(\sigma)$ and $\phi'(\sigma)$ into \eqref{eq:investor-FOC-app} and defining
 \begin{equation}
 G(\sigma) := (1-\phi(\sigma))S - \gamma(1-\phi(\sigma))^2\sigma + \Big[-(r_f+S\sigma) -1 + \gamma(1-\phi(\sigma))\sigma^2\Big]\phi'(\sigma),
 \end{equation}
 the equilibrium target $\sigma_d^*$ satisfies $G(\sigma_d^*)=0$. This is a single nonlinear equation in one unknown that can be solved numerically via bisection or Newton's method.
 
-\paragraph{Linear rule for the IC fee (details).}
+\subsection*{D.3\quad Linear Approximation of the IC Fee}
 For practical implementation, we linearize the IC fee schedule around a reference volatility $\sigma_0$ (typically chosen as the optimal target $\sigma_d^*$). Using a first-order Taylor approximation:
 \begin{equation}
 \phi(\sigma_d) \;\approx\; \phi(\sigma_0) + \phi'(\sigma_0)(\sigma_d - \sigma_0) = \underbrace{[\phi(\sigma_0) - \phi'(\sigma_0)\sigma_0]}_{\alpha} + \underbrace{\phi'(\sigma_0)}_{\beta}\,\sigma_d,
@@ -176,7 +178,7 @@ where
 \begin{equation}
 \alpha := \phi(\sigma_0) - \phi'(\sigma_0)\,\sigma_0, \qquad \beta := \phi'(\sigma_0).
 \end{equation}
-The parameter $\alpha$ acts as a "base fee" and $\beta$ represents the marginal fee per unit of target volatility. This affine structure makes the contract transparent and easy to implement: the investor and manager agree on a volatility target $\sigma_d$, and the fee is computed as $\phi = \alpha + \beta\sigma_d$. This is the basis for Eq.~(\ref{eq:phi-linear-approx}) in the main text. As shown in Figure~\ref{fig:affine-approx}, this approximation is highly accurate within $\pm 5\%$ of the optimal target, with average absolute errors around 0.1\%.
+The parameter $\alpha$ acts as a base fee, while $\beta$ captures the marginal fee adjustment with respect to the volatility target. This affine representation provides a transparent and practical implementation of the contract: once a volatility target is specified, the corresponding fee follows directly from a linear rule. As shown in Figure~\ref{fig:affine-approx}, this approximation is highly accurate in the neighborhood of the optimal target, with small approximation errors over empirically relevant ranges.
 
 \section{Fee base equivalence}
 \label{app:fee-base}
@@ -184,7 +186,7 @@ Different fee conventions can be reconciled as follows. Suppose fees are charged
 \[
 r^{\text{net}} = \frac{A_0(1+r) - \tilde\phi A_0}{A_0} = r - \tilde\phi.
 \]
-In our model, fees are charged on end-of-period AUM at rate $\phi$, so the investor receives $(1-\phi)A$ from terminal AUM $A=A_0(1+r)$, giving a net return of
+In the model, fees are charged on end-of-period AUM at rate $\phi$, so the investor receives $(1-\phi)A$ from terminal AUM $A=A_0(1+r)$, giving a net return of
 \[
 r^{\text{net}} = \frac{(1-\phi)A_0(1+r)}{A_0} = (1-\phi)(1+r) - 1 = (1-\phi)r - \phi + O(\phi^2).
 \]
@@ -194,7 +196,7 @@ Matching expected net returns to first order in fees:
 \]
 For typical parameter values (e.g., $r_f=2\%$, $S\sigma \approx 5\%-10\%$, $\phi \approx 1\%-2\%$), the difference between conventions is second-order and negligible for practical purposes. Throughout the paper, we use the end-of-period convention as it aligns naturally with the flow-based AUM dynamics.
 
-\section{Performance fees with high–water marks (sketch)}
+\section{Performance fees with high--water marks (sketch)}
 \label{app:perf-fee}
 Many hedge funds charge performance fees with high-water marks (HWM). A stylized HWM structure charges a performance fee $\psi(r-r_f)^+$ on returns exceeding the risk-free rate (or previous peak). With fund return $r=r_f+\sigma X$ where $X=S+Z$, this becomes
 \[
@@ -211,28 +213,28 @@ Incorporating both management and performance fees into the framework requires c
 \section{Numerical implementation notes}
 \label{app:numerical}
 
-\paragraph{Solving for equilibrium.}
-To find the optimal target $\sigma_d^*$, solve $G(\sigma)=0$ where $G$ is defined in Section~\ref{app:investor}. We recommend bisection on an interval $[\underline\sigma,\overline\sigma]$ where:
+\subsection*{G.1\quad Solving for equilibrium}
+To find the optimal target $\sigma_d^*$, solve $G(\sigma)=0$ where $G$ is defined in Appendix~\ref{app:investor}. We recommend bisection on an interval $[\underline\sigma,\overline\sigma]$ where:
 \begin{itemize}
 \item $\underline\sigma > 0$ is chosen small (e.g., $0.01$ or 1\% annualized) to avoid numerical issues near zero.
 \item $\overline\sigma$ is chosen as an upper bound where the investor's direct utility gain from volatility becomes negative. A conservative choice is to set $\overline\sigma$ such that $(1-\phi)S - \gamma(1-\phi)^2\overline\sigma < 0$ when ignoring the contract adjustment term. For instance, with $\phi\approx 0.02$, $S=0.5$, $\gamma=3$, this gives $\overline\sigma \approx 0.5/(3\cdot 0.98) \approx 0.17$. In practice, we use $\overline\sigma = 0.40$ to be conservative.
 \end{itemize}
 Bisection is robust and converges rapidly since $G$ is continuous and typically has a unique zero in the relevant range.
 
-\paragraph{Precomputing tail blocks.}
+\subsection*{G.2\quad Precomputing tail blocks}
 For computational efficiency, precompute the Gaussian tail moments $\Phi(S)$, $\varphi(S)$, $C_1$, $\E[X^3 I]$, and $\E[X^4 I]$ once for each Sharpe ratio $S$ using the formulas in Appendix~\ref{app:tails}. These quantities depend only on $S$ (not on $\sigma$, $f_2$, etc.) and can be reused across all evaluations of $\phi(\sigma)$ and $G(\sigma)$ for that value of $S$.
 
-\paragraph{Parameter ranges.}
-The baseline parameter values for the numerical exercise are $S=0.5$, $r_f=0.02$, $\gamma=3$, $\eta=2$, $A_0=1$, $f_1=0.2$, $f_2=0.5$. Comparative statics sweep the following ranges:
+\subsection*{G.3\quad Parameter ranges}
+The baseline parameter values for the numerical exercise are $S=0.35$, $r_f=0.037$, $\gamma=5$, $\eta=3$, $A_0=1$, $f_1=1.5$, $f_2=25$. Comparative statics sweep the following ranges:
 \begin{itemize}
-\item Convexity $f_2 \in [0.02, 0.25]$ 
+\item Convexity $f_2 \in [5, 60]$
 \item Initial AUM $A_0 \in [0.5, 3.0]$
-\item Linear flow $f_1 \in [0.05, 0.45]$
-\item Sharpe ratio $S \in [0.1, 0.9]$
-\item Investor risk aversion $\gamma \in [1, 8]$
-\item Manager risk aversion $\eta \in [0.5, 6]$
+\item Linear flow $f_1 \in [0.5, 3.0]$
+\item Sharpe ratio $S \in [0.1, 1.0]$
+\item Investor risk aversion $\gamma \in [2, 10]$
+\item Manager risk aversion $\eta \in [1, 8]$
 \end{itemize}
 These ranges cover empirically plausible scenarios while ensuring the FOCs remain well-behaved.
 
-\paragraph{Affine approximation.}
-To construct the linear approximation $\phi(\sigma_d) \approx \alpha + \beta\sigma_d$, first solve for the optimal target $\sigma_d^*$, then compute $\phi(\sigma_d^*)$ and $\phi'(\sigma_d^*)$ using the formulas in Sections~\ref{app:manager-solution} and \ref{app:investor}. The approximation is then $\alpha = \phi(\sigma_d^*) - \beta\sigma_d^*$ and $\beta = \phi'(\sigma_d^*)$. As Figure~\ref{fig:affine-approx} demonstrates, this approximation remains accurate within $\pm 5\%$ of $\sigma_d^*$ with average errors around 0.1\%.
+\subsection*{G.4\quad Affine approximation}
+To construct the linear approximation $\phi(\sigma_d) \approx \alpha + \beta\sigma_d$, first solve for the optimal target $\sigma_d^*$, then compute $\phi(\sigma_d^*)$ and $\phi'(\sigma_d^*)$ using the formulas in Appendix~\ref{app:manager-solution} and Appendix~\ref{app:investor}. The approximation is then $\alpha = \phi(\sigma_d^*) - \beta\sigma_d^*$ and $\beta = \phi'(\sigma_d^*)$. As Figure~\ref{fig:affine-approx} demonstrates, this approximation remains accurate within $\pm 5\%$ of $\sigma_d^*$ with average errors around 0.1\%.
