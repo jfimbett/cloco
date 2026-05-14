@@ -1,0 +1,102 @@
+\section{The Model}
+\label{sec:environment}
+\subsection{Setup}
+Consider a two-period economy $t\in\{0,1\}$ populated by a representative fund and a continuum of investors. The fund generates excess returns over a risk–free rate with a constant Sharpe ratio as follows:
+\begin{equation}
+    r-\rf \;=\; \Sharpe\,\sigma \;+\; \sigma\,\epsilon,
+    \qquad \epsilon \sim \Normal(0,1),\ \sigma>0,
+\end{equation}
+where \(\Sharpe\) is the Sharpe Ratio of the fund which is assumed to be known to both manager and investors. The volatility $\sigma$ is a decision variable of the asset manager. In the framework of the traditional Capital Asset Pricing Model this volatility $\sigma$ can be thought of as levering a constant Sharpe Ratio position with debt.
+Intuitively, $\sigma$ is the risk knob: raising it increases expected excess return, but it also increases the dispersion of outcomes around that mean.
+
+With this setup, expected excess returns increase linearly with volatility:
+\[
+\E[r-\rf]=\Sharpe \sigma,\qquad \V[r-\rf]=\sigma^2,
+\]
+Thus, taking more risk by increasing $\sigma$ raises average performance but also increases uncertainty, and \(r=\rf+\sigma(\Sharpe+\epsilon)\).
+
+Both current and potential investors exhibit a convex response to the fund's positive performance. They invest disproportionally more after periods of good performance, and redeem after bad times.\footnote{To keep the model tractable, we ignore the risk of avalanche redemptions, which may take place when investors rush to exit funds as no investor desires to be the last to exit. Such behavior would introduce concavity in the flow-performance relation for negative excess returns. }
+
+We assume a reduced form relation between past performance and fund flows. Let flows to the fund after current and potential investors observe \(r\) be
+\begin{align}
+    \label{eq:flow}
+    F(r) = \begin{cases}
+      f_1 (r-\rf) + f_2 (r-\rf)^2 & \text{if } r \ge \rf,\\[3pt]
+      f_1 (r-\rf) & \text{if } r< \rf,
+   \end{cases}
+\end{align}
+with \(f_1,f_2\ge 0\). This flow function captures the asymmetric response of investors to performance: when returns fall below the risk–free rate, investors withdraw capital at a constant linear rate, whereas once returns exceed $\rf$, inflows become convex in performance. The quadratic term amplifies flows after good outcomes, reflecting performance chasing in the right tail (Figure~\ref{fig:flow-performance}).
+
+Assets under management (AUM) at the end of the period evolve based on the return of the fund and the new net flows.
+\begin{equation}
+    A \;=\; A_0(1+r)\;+\;F(r),
+\end{equation}
+so AUM is the sum of a pure performance component (initial assets grown by the return) and a scale component coming from investor reallocations after observing performance.
+
+We model the management fee at rate \(\phi\) as applied to end-of-period AUM. In practice, mutual funds typically charge based on the beginning-of-period or average AUM. In this single–period setting, charging on end–of–period or average AUM is equivalent up to first order in \(\phi\); Appendix~\ref{app:fee-base} shows the equivalence and how to translate between conventions. The investor's \emph{net} return per unit of initial wealth is then
+\begin{equation}
+\label{eq:net-return}
+r^{\text{net}} \;=\; r \;-\; \phi\,(1+r) \;=\; (1-\phi)\,r - \phi.
+\end{equation}
+This relation shows that management fees reduce the investor's payoff in two ways: they scale down the gross return and subtract the fee rate.
+
+For small \(\phi\), it is common to use an approximation: \(r^{\text{net}}\approx r-\phi\). Eq.~\eqref{eq:net-return} is exact and we will use it across the paper. We are aware that the asset management industry applies different fee structures; in the next remark we show how our decision to model fees linearly can easily be modified to account for other compensation schemes.
+
+If a performance fee \(\psi\) is charged on positive excess performance, a reduced–form net return is
+\[
+r^{\text{net}} \;=\; r - \phi(1+r) - \psi\,(r-\rf)^+.
+\]
+In this specification, the performance fee is applied only when the fund beats the risk–free rate. Relative to a pure management fee, this shifts more compensation into upside states. Since the manager's incentives already tilt toward the right tail when flows are convex, performance fees can materially affect the equilibrium. In the extension with performance fees, the economic mechanism is unchanged but closed-form expressions become less transparent, so we rely on numerical solutions and the corresponding fee/volatility curves.
+
+This specification ignores high–water marks (HWM) that are common in alternative investment funds. Omitting HWM slightly overstates the right–tail convexity in manager pay. Appendix~\ref{app:perf-fee} sketches how to incorporate HWM in our normal–returns setting.
+
+The manager has mean variance preferences with a constant absolute risk aversion $\eta>0$ over fee revenue \(\phi A\):
+\begin{equation}
+    U_M \;=\; \phi\E[ A] \;-\; \frac{\eta \phi^2}{2}\,\V[A],
+\end{equation}
+so the manager values higher expected fee income but dislikes fluctuations in AUM because they make fee income risky.
+
+Investors have mean-variance preferences over net returns with a risk aversion captured by $\gamma>0$:
+\begin{equation}
+\label{eq:UI}
+    U_I(\sigma,\phi)\;=\;\E[r^{\text{net}}] \;-\; \frac{\gamma}{2}\,\V[r^{\text{net}}].
+\end{equation}
+Using \eqref{eq:net-return}, a convenient representation is
+\begin{equation}
+\label{eq:UI-expanded}
+U_I(\sigma,\phi) \;=\; (1-\phi)\,(\rf+\Sharpe\sigma) - \phi \;-\; \frac{\gamma}{2}\,(1-\phi)^2\,\sigma^2.
+\end{equation}
+This makes the investor's trade-off transparent: higher volatility $\sigma$ raises expected return when the fund has skill ($\Sharpe>0$), but it raises risk quadratically; fees lower the investor's mean payoff and rescale effective exposure.
+
+
+
+\subsection{Manager's problem and incentives}
+\label{sec:manager}
+
+The manager controls volatility $\sigma$, and through $\sigma$ affects both the fund's return distribution and investor flows. This creates a simple but powerful incentive: when flows are convex in good states, taking more risk increases the likelihood and magnitude of "great years", and great years attract disproportionately large inflows. Since fees are proportional to AUM, the manager benefits from this right-tail scaling.
+
+To isolate the mechanism, it is helpful to think of end-of-period AUM as having a deterministic base plus a component that increases with realized performance and flows. With skill ($\Sharpe>0$), raising $\sigma$ increases expected performance, and thus expected AUM. With convex flows ($f_2>0$), raising $\sigma$ does more than that: it increases the weight on upside states where inflows accelerate, so expected fee revenue becomes especially sensitive to volatility. At the same time, AUM becomes riskier when $\sigma$ increases. The exact mean and variance expressions (and their derivatives with respect to $\sigma$) are derived in Appendix~\ref{app:variance}.
+
+The manager chooses \(\sigma\) to maximize
+\[
+U_M(\sigma,\phi)\;=\;\phi\,\E[A] - \frac{\eta\phi^2}{2}\,\V[A].
+\]
+The resulting best response $\sigma^*(\phi)$ is characterized in Appendix~\ref{app:manager-solution}. The comparative statistics are intuitive: higher risk aversion $\eta$ reduces risk-taking because the manager dislikes fee revenue volatility; higher convexity $f_2$ increases risk-taking because convex flows make upside states more valuable.
+
+For implementation, a simple and accurate approximation to the incentive–compatible schedule is to set the management fee approximately linear in the desired volatility target $\sigma_d$:
+\begin{equation}
+\label{eq:phi-linear-approx}
+\phi(\sigma_d) \,\approx\, \alpha \, + \, \beta\,\sigma_d,
+\end{equation}
+This approximation says that, over the relevant range of risk targets, one can treat the incentive–compatible fee as an affine function of the desired volatility. In practice, $\alpha$ plays the role of a base fee level, while $\beta$ governs how strongly fees adjust when the investor raises or lowers the volatility target. In the model, $\alpha$ and $\beta$ can be obtained by locally linearizing the exact incentive–compatible fee around a reference volatility (Appendix~\ref{app:investor}).
+
+
+
+\subsection{Incentive compatibility (IC): implementing a target \texorpdfstring{$\sigma_d$}{sigma\_d}}
+\label{subsec:IC}
+
+Our goal is to align the interests of the manager and the investor or, in other words, make their incentives compatible. Let \(\sigma_d\) be the investor's desired volatility target. An IC fee \(\phi(\sigma_d)\) must make the manager willing to choose exactly \(\sigma_d\).
+
+The IC condition has a simple economic form: at the target, the manager's marginal benefit of raising volatility (through higher expected AUM and flows) must be exactly offset by the marginal cost (through higher AUM risk). This pins down a unique fee level as a function of the target, under mild regularity conditions. The exact expression and existence/uniqueness conditions are in Appendix~\ref{app:manager-solution}, and Figure~\ref{fig:ic-fee-curve} visualizes the mapping $\sigma_d\mapsto \phi(\sigma_d)$.
+
+The main comparative statistics follow directly from the mechanism. Stronger flow convexity $f_2$ makes volatility more privately valuable to the manager because it increases upside scaling; therefore, keeping the manager at the desired risk target requires stricter discipline through the contract, which in the model shows up as a lower incentive-compatible management fee. Conversely, a more risk-averse manager (higher $\eta$) is naturally disciplined and can be offered a higher fee for a given target without inducing excessive risk shifting.
