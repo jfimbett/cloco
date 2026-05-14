@@ -1,0 +1,21 @@
+\section{Contract design: investor's problem}
+\label{sec:contract}
+\subsection{Investor's problem and equilibrium}
+\label{sec:investor}
+The investor chooses \(\sigma_d\) (hence \(\phi(\sigma_d)\)) to maximize its utility \eqref{eq:UI-expanded} subject to IC and the manager's participation constraint:\footnote{We assume that investors do not have a minimum utility to achieve. In the presence of an outside option it is possible to add a reservation utility constraint $U_I\big(\sigma_d,\phi(\sigma_d)\big) \geq \bar{U}_I$ }.
+\begin{align}
+\max_{\sigma_d>0}\quad & U_I\big(\sigma_d,\phi(\sigma_d)\big) \\
+\text{s.t.}\quad & U_M\big(\sigma_d,\phi(\sigma_d)\big)\ge \bar U. \nonumber
+\end{align}
+This program summarizes the investor's contract design problem: choose a volatility target $\sigma_d$ that maximizes investor's utility while guaranteeing that the manager is willing to participate and implement the target.
+
+The collision of interests is immediate in the model. The investor values higher $\sigma_d$ only to the extent that the fund's skill (Sharpe ratio) compensates for additional risk, net of fees. The manager, in contrast, values higher $\sigma$ not only because it increases expected performance when $\Sharpe>0$, but also because it increases the probability and magnitude of inflows that are triggered by very strong outcomes. Incentive compatibility is the silver lining: for each target $\sigma_d$ there is a fee level that makes the manager choose exactly that risk, turning the investor's policy choice into an implementable contract. The equilibrium target and the associated fee can be computed numerically; the first-order condition and the derivative of the fee schedule are given in Appendix~\ref{app:investor}.
+
+Without solving for the optimal contract numerically, it is possible to compute comparative statistics of the optimal contract. First, an increase in flow convexity $f_2$ increases the option value of volatility for the manager, hence the IC fee \(\phi(\sigma_d)\) must fall to keep incentives aligned (Figure~\ref{fig:comp-f2}). For the investor, the contract becomes more "expensive" to adjust (large \(|d\phi/d\sigma_d|\)), pushing optimal \(\sigma_d\) down.
+Second, an increase in the scale of the agency problem (higher initial AUM $A_0$ or the linear term $f_1$) amplifies AUM sensitivity to performance; as shown in Figure~\ref{fig:comp-scale}, both desired volatility \(\sigma_d\) and the IC fee \(\phi(\sigma_d)\) tend to decrease.
+Third, managerial skill (an increase in the Sharpe Ratio of the fund) improves the direct mean gain from risk taking; this tends to raise the optimal target, but the IC adjustment offsets part of the effect (Figure~\ref{fig:comp-sharpe}).
+Finally, as illustrated in Figure~\ref{fig:comp-risk}, an increase in the investor's risk aversion ($\gamma$) reduces \(\sigma_d\); while a higher manager \(\eta\) relaxes the need for fee discipline and allows a higher \(\phi\) for a given \(\sigma_d\).
+
+
+For implementation, the linear approximation \eqref{eq:phi-linear-approx} provides a simple way to communicate the contract as "base fee plus a per–unit charge for volatility." Over the relevant range of volatility targets (e.g., 6–15\% annualized), this affine rule closely tracks the exact IC fee (Appendix~\ref{app:investor}).
+
