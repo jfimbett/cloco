@@ -22,8 +22,8 @@
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\linewidth]{figures/opt_sigma_vs_f2.png}
-    \caption{Optimal investor target volatility \(\sigma_d^*\) as a function of the convexity parameter \(f_2\). Stronger convexity lowers \(\sigma_d^*\), consistent with the comparative statistics.}
-    \fnote{\textit{Note:} Other parameters held at baseline: $\Sharpe=0.5$, $r_f=2\%$, $\gamma=3$, $\eta=2$, $A_0=1$, $f_1=0.2$.}
+    \caption{Optimal investor target volatility \(\sigma_d^*\) as a function of the convexity parameter \(f_2\). Stronger convexity lowers \(\sigma_d^*\), consistent with the comparative statics.}
+    \fnote{\textit{Note:} Other parameters held at calibration baseline: $\Sharpe=0.35$, $r_f=3.70\%$, $\gamma=5$, $\eta=3$, $A_0=1$, $f_1=1.5$.}
     \label{fig:opt-sigma-vs-f2}
 \end{figure}
 }{}
@@ -32,8 +32,8 @@
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/compstats_f2.png}
-    \caption{Comparative statistics with respect to convexity: optimal target \(\sigma_d^*\) and IC fee at the optimum \(\phi(\sigma_d^*)\) as functions of \(f_2\).}
-    \fnote{\textit{Note:} Other parameters held at baseline: $\Sharpe=0.5$, $r_f=2\%$, $\gamma=3$, $\eta=2$, $A_0=1$, $f_1=0.2$.}
+    \caption{Comparative statics with respect to convexity: optimal target \(\sigma_d^*\) and IC fee at the optimum \(\phi(\sigma_d^*)\) as functions of \(f_2\).}
+    \fnote{\textit{Note:} Other parameters held at calibration baseline: $\Sharpe=0.35$, $r_f=3.70\%$, $\gamma=5$, $\eta=3$, $A_0=1$, $f_1=1.5$.}
     \label{fig:comp-f2}
 \end{figure}
 }{}
@@ -43,7 +43,7 @@
     \centering
     \includegraphics[width=0.95\linewidth]{figures/compstats_scale.png}
     \caption{Scale effects: optimal target \(\sigma_d^*\) and IC fee at the optimum \(\phi(\sigma_d^*)\) as functions of initial AUM \(A_0\) and the linear flow slope \(f_1\).}
-    \fnote{\textit{Note:} Other parameters held at baseline: $\Sharpe=0.5$, $r_f=2\%$, $\gamma=3$, $\eta=2$, $f_2=0.5$. Left panel varies $A_0$ with $f_1=0.2$; right panel varies $f_1$ with $A_0=1$.}
+    \fnote{\textit{Note:} Other parameters held at calibration baseline: $\Sharpe=0.35$, $r_f=3.70\%$, $\gamma=5$, $\eta=3$, $f_2=25$. Left panel varies $A_0$ with $f_1=1.5$; right panel varies $f_1$ with $A_0=1$.}
     \label{fig:comp-scale}
 \end{figure}
 }{}
@@ -53,7 +53,7 @@
     \centering
     \includegraphics[width=0.95\linewidth]{figures/compstats_sharpe.png}
     \caption{Managerial skill effects: optimal target \(\sigma_d^*\) and IC fee at the optimum \(\phi(\sigma_d^*)\) as functions of the Sharpe ratio \(S\).}
-    \fnote{\textit{Note:} Other parameters held at baseline: $r_f=2\%$, $\gamma=3$, $\eta=2$, $A_0=1$, $f_1=0.2$, $f_2=0.5$.}
+    \fnote{\textit{Note:} Other parameters held at calibration baseline: $r_f=3.70\%$, $\gamma=5$, $\eta=3$, $A_0=1$, $f_1=1.5$, $f_2=25$.}
     \label{fig:comp-sharpe}
 \end{figure}
 }{}
@@ -63,8 +63,18 @@
     \centering
     \includegraphics[width=0.95\linewidth]{figures/compstats_risk.png}
     \caption{Risk-aversion effects: optimal target \(\sigma_d^*\) and IC fee at the optimum \(\phi(\sigma_d^*)\) as functions of investor risk aversion \(\gamma\) and manager risk aversion \(\eta\).}
-    \fnote{\textit{Note:} Other parameters held at baseline: $\Sharpe=0.5$, $r_f=2\%$, $A_0=1$, $f_1=0.2$, $f_2=0.5$. Left panel varies $\gamma$ with $\eta=2$; right panel varies $\eta$ with $\gamma=3$.}
+    \fnote{\textit{Note:} Other parameters held at calibration baseline: $\Sharpe=0.35$, $r_f=3.70\%$, $A_0=1$, $f_1=1.5$, $f_2=25$. Left panel varies $\gamma$ with $\eta=3$; right panel varies $\eta$ with $\gamma=5$.}
     \label{fig:comp-risk}
+\end{figure}
+}{}
+
+\IfFileExists{figures/welfare_comparison.png}{%
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/welfare_comparison.png}
+    \caption{Incentive alignment under the IC contract. \textit{Left panel:} investor welfare $U_I(\sigma_d,\phi(\sigma_d))$ as a function of the volatility target $\sigma_d$ along the IC fee curve, with the optimal target $\sigma_d^*$ marked. \textit{Right panel:} manager welfare $U_M(\sigma, \phi^*)$ as a function of realized volatility $\sigma$, holding the IC fee fixed at $\phi^* = \phi(\sigma_d^*)$, showing that the manager's privately optimal choice equals $\sigma_d^*$.}
+    \fnote{\textit{Note:} Calibrated baseline parameters: $\Sharpe=0.35$, $r_f=3.70\%$, $\gamma=5$, $\eta=3$, $A_0=1$, $f_1=1.5$, $f_2=25$.}
+    \label{fig:welfare}
 \end{figure}
 }{}
 
@@ -73,7 +83,7 @@
     \centering
     \includegraphics[width=0.85\linewidth]{figures/affine_approx_quality.png}
     \caption{Quality of the affine approximation: average absolute error (as percentage) between the exact IC fee \(\phi(\sigma_d)\) and its linear approximation. For each convexity parameter \(f_2\), the approximation is centered at the optimal target \(\sigma_d^*\) and evaluated within \(\pm 5\%\) of that target.}
-    \fnote{\textit{Note:} Other parameters held at baseline: $\Sharpe=0.5$, $r_f=2\%$, $\gamma=3$, $\eta=2$, $A_0=1$, $f_1=0.2$.}
+    \fnote{\textit{Note:} Other parameters held at calibration baseline: $\Sharpe=0.35$, $r_f=3.70\%$, $\gamma=5$, $\eta=3$, $A_0=1$, $f_1=1.5$.}
     \label{fig:affine-approx}
 \end{figure}
 }{}

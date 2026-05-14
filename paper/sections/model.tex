@@ -55,7 +55,7 @@ This specification ignores high--water marks (HWM) that are common in alternativ
 
 The manager has mean variance preferences with a constant absolute risk aversion $\eta>0$ over fee revenue \(\phi A\):
 \begin{equation}
-    U_M \;=\; \phi\E[ A] \;-\; \frac{\eta \phi^2}{2}\,\V[A],
+    U_M \;=\; \phi\E[ A] \;-\; \eta \phi^2\,\V[A],
 \end{equation}
 so the manager values higher expected fee income but dislikes fluctuations in AUM because they make fee income risky.
 
@@ -104,9 +104,9 @@ where $\Delta_{\text{quad}}$ collects higher-order terms defined in Appendix~\re
 
 The manager chooses \(\sigma\) to maximize
 \[
-U_M(\sigma,\phi)\;=\;\phi\,\E[A] - \frac{\eta\phi^2}{2}\,\V[A].
+U_M(\sigma,\phi)\;=\;\phi\,\E[A] - \eta\phi^2\,\V[A].
 \]
-The resulting best response $\sigma^*(\phi)$ is characterized in Appendix~\ref{app:manager-solution}. The comparative statistics are intuitive: higher risk aversion $\eta$ reduces risk-taking because the manager dislikes fee revenue volatility; higher convexity $f_2$ increases risk-taking because convex flows make upside states more valuable. This characterization highlights the core agency friction in the model: in the absence of contractual discipline, the manager's privately optimal volatility generally exceeds the level preferred by investors.
+The resulting best response $\sigma^*(\phi)$ is characterized in Appendix~\ref{app:manager-solution}. The comparative statics are intuitive: higher risk aversion $\eta$ reduces risk-taking because the manager dislikes fee revenue volatility; higher convexity $f_2$ increases risk-taking because convex flows make upside states more valuable. This characterization highlights the core agency friction in the model: in the absence of contractual discipline, the manager's privately optimal volatility generally exceeds the level preferred by investors.
 
 For implementation, a simple and accurate approximation to the incentive--compatible schedule is to set the management fee approximately linear in the desired volatility target $\sigma_d$:
 \begin{equation}
@@ -126,7 +126,7 @@ The IC condition has a simple economic form: at the target, the manager's margin
 
 The manager solves
 \[
-\max_\sigma \; \phi\,\E[A] - \frac{\eta\phi^2}{2}\,\V[A],
+\max_\sigma \; \phi\,\E[A] - \eta\phi^2\,\V[A],
 \]
 which yields the first-order condition
 \begin{equation}
@@ -142,3 +142,10 @@ For any target volatility $\sigma_d$, the incentive-compatible fee that induces 
 {\eta\Big(2 \Kcal^2 \,\sigma_d + \Delta_{\text{quad}}(\Sharpe,f_2;\sigma_d)\Big)}.
 \end{equation}
 This mapping is central to the analysis, as it translates a desired risk policy into an implementable compensation scheme. The implications of this mapping for equilibrium contract design are analyzed in the next section.
+
+\paragraph{``Pay for risk, not luck.''}
+The incentive-compatible fee schedule $\phi(\sigma_d)$ embodies a specific principle: the manager is compensated for the level of risk undertaken, not for realized outcomes. To formalize this, decompose end-of-period AUM as
+\[
+A \;=\; \underbrace{\E[A]}_{\text{risk component}} \;+\; \underbrace{(A - \E[A])}_{\text{luck component}},
+\]
+where $\E[A] = A_0(1+\rf) + \Kcal\,\Sharpe\,\sigma + f_2\,\sigma^2\,C_1$ depends on the manager's volatility choice $\sigma$ but not on the realized shock $\epsilon$, while $A - \E[A]$ depends on $\epsilon$ but has mean zero. Manager fee revenue $\phi A$ inherits this decomposition: the risk component $\phi\E[A]$ is determined entirely by $\sigma$ (the manager's action), while the luck component $\phi(A-\E[A])$ reflects pure realized variation. The IC contract sets $\phi = \phi(\sigma_d)$ as a function solely of the volatility target $\sigma_d$, ensuring that the manager is rewarded for choosing the right level of risk. The affine approximation $\phi \approx \alpha + \beta\sigma_d$ makes this principle transparent: the base fee $\alpha$ covers fixed compensation and the linear charge $\beta\sigma_d$ rises with the risk target.

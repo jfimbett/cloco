@@ -457,6 +457,116 @@ def plot_compstats_risk(params: Params, outdir: str) -> None:
     plt.close(fig)
 
 
+# AUM mean and variance (exact, used for utility computation)
+
+def E_A(params: Params, sigma: float) -> float:
+    K = params.A0 + params.f1
+    return params.A0 * (1.0 + params.rf) + K * params.S * sigma + params.f2 * sigma**2 * C1(params.S)
+
+
+def V_A(params: Params, sigma: float) -> float:
+    K = params.A0 + params.f1
+    E_X2I, E_X3I, E_X4I = moments_for_variance(params.S)
+    cov_X_X2I = E_X3I - params.S * E_X2I
+    var_X2I = E_X4I - E_X2I**2
+    return (K**2 * sigma**2
+            + 2.0 * K * params.f2 * sigma**3 * cov_X_X2I
+            + params.f2**2 * sigma**4 * var_X2I)
+
+
+def manager_UM(params: Params, sigma: float, phi: float) -> float:
+    """Manager utility: U_M = phi*E[A] - eta*phi^2*V[A] (no factor of 1/2)."""
+    return phi * E_A(params, sigma) - params.eta * phi**2 * V_A(params, sigma)
+
+
+def manager_best_response(params: Params, phi: float) -> float:
+    """Manager's privately optimal sigma for a given fee phi (solves manager FOC)."""
+    K = params.A0 + params.f1
+    def foc(sigma):
+        N = dEAdsigma(params.S, K, params.f2, sigma)
+        D = dVAdsigma(params.S, K, params.f2, sigma)
+        return N - params.eta * phi * D
+    try:
+        Ga = foc(0.001)
+        Gb = foc(0.8)
+        if Ga * Gb > 0:
+            return np.nan
+        return optimize.bisect(foc, 0.001, 0.8, maxiter=200, xtol=1e-8)
+    except Exception:
+        return np.nan
+
+
+def compute_welfare(params: Params) -> dict:
+    """Compare IC equilibrium vs. laissez-faire (manager chooses sigma freely)."""
+    sigma_ic, phi_ic = equilibrium_sigma_phi(params)
+    if np.isnan(sigma_ic):
+        return {}
+    sigma_lf = manager_best_response(params, phi_ic)
+    UI_ic = investor_UI(params, sigma_ic, phi_ic)
+    UI_lf = investor_UI(params, sigma_lf, phi_ic) if not np.isnan(sigma_lf) else np.nan
+    UM_ic = manager_UM(params, sigma_ic, phi_ic)
+    UM_lf = manager_UM(params, sigma_lf, phi_ic) if not np.isnan(sigma_lf) else np.nan
+    alpha, beta = affine_ic_phi(params, sigma_ic)
+    return {
+        "sigma_ic": sigma_ic,
+        "phi_ic": phi_ic,
+        "sigma_lf": sigma_lf,
+        "UI_ic": UI_ic,
+        "UI_lf": UI_lf,
+        "UM_ic": UM_ic,
+        "UM_lf": UM_lf,
+        "alpha": alpha,
+        "beta": beta,
+        "UI_gain_pct": (UI_ic - UI_lf) / abs(UI_lf) * 100.0 if not np.isnan(UI_lf) else np.nan,
+    }
+
+
+def plot_welfare_comparison(params: Params, outdir: str) -> None:
+    """Incentive alignment: investor welfare along IC curve; manager welfare at IC fee.
+
+    Left panel: U_I(sigma_d, phi(sigma_d)) vs sigma_d, showing investor's optimal target.
+    Right panel: U_M(sigma, phi*) vs sigma (phi fixed at IC fee), showing the manager's
+    privately optimal choice equals sigma_d* — confirming incentive alignment.
+    """
+    sigma_ic, phi_ic = equilibrium_sigma_phi(params)
+    if np.isnan(sigma_ic):
+        return
+
+    sigmas = np.linspace(params.sigma_min, min(params.sigma_max, sigma_ic * 3.0), params.n_sigma)
+    phi_curve = np.array([phi_ic_at_sigma(params, s) for s in sigmas])
+
+    # UI along the IC curve (investor's welfare as a function of σ_d)
+    UI_curve = np.array([investor_UI(params, s, phi_ic_at_sigma(params, s)) for s in sigmas])
+
+    # UM with fee fixed at phi_ic (manager's welfare as function of sigma)
+    UM_fixed = np.array([manager_UM(params, s, phi_ic) for s in sigmas])
+
+    fig, axes = plt.subplots(1, 2, figsize=(11.0, 4.2))
+    ax1, ax2 = axes
+
+    ax1.plot(sigmas, UI_curve, lw=2.2, color="#1b9e77")
+    ax1.axvline(sigma_ic, ls="--", color="#555", lw=1.2,
+                label=fr"$\sigma_d^*={sigma_ic*100:.1f}\%$")
+    ax1.set_title(r"Investor welfare $U_I(\sigma_d,\,\phi(\sigma_d))$")
+    ax1.set_xlabel(r"Target volatility $\sigma_d$")
+    ax1.set_ylabel(r"$U_I$")
+    ax1.legend(frameon=True)
+
+    ax2.plot(sigmas, UM_fixed, lw=2.2, color="#d95f02")
+    ax2.axvline(sigma_ic, ls="--", color="#555", lw=1.2,
+                label=fr"$\sigma_d^*={sigma_ic*100:.1f}\%$ (IC)")
+    ax2.axhline(0.0, ls=":", color="#888", lw=1.0)
+    ax2.set_title(r"Manager welfare $U_M(\sigma,\,\phi^*)$ at IC fee")
+    ax2.set_xlabel(r"Realized volatility $\sigma$")
+    ax2.set_ylabel(r"$U_M$")
+    ax2.legend(frameon=True)
+
+    sns.despine()
+    fig.tight_layout()
+    fig.savefig(os.path.join(outdir, "welfare_comparison.png"))
+    plt.close(fig)
+
+
 def plot_affine_approximation_quality(params: Params, outdir: str) -> None:
     """Plot average absolute error (%) of affine approximation vs f2 to assess approximation quality."""
     # Use range around baseline f2 value (±40% of baseline)
@@ -511,6 +621,28 @@ def main():
     params = Params()
     outdir = ensure_images_dir()
 
+    # --- Baseline equilibrium numbers ---
+    w = compute_welfare(params)
+    if w:
+        print("=== Baseline Equilibrium (Section 5) ===")
+        print(f"  sigma_d*  = {w['sigma_ic']:.4f}  ({w['sigma_ic']*100:.2f}%)")
+        print(f"  phi*      = {w['phi_ic']:.6f}  ({w['phi_ic']*100:.4f}%)")
+        print(f"  alpha     = {w['alpha']:.6f}  ({w['alpha']*100:.4f}%)")
+        print(f"  beta      = {w['beta']:.6f}  ({w['beta']*100:.4f}% per unit sigma)")
+        print(f"  U_I (IC)  = {w['UI_ic']:.6f}")
+        print(f"  U_M (IC)  = {w['UM_ic']:.6f}")
+        print(f"  sigma_LF* = {w['sigma_lf']:.4f}  ({w['sigma_lf']*100:.2f}%)  [laissez-faire]")
+        print(f"  U_I (LF)  = {w['UI_lf']:.6f}  [investor welfare under laissez-faire]")
+        print(f"  UI gain   = {w['UI_gain_pct']:.2f}%  [IC vs. laissez-faire]")
+        # Affine approx error at calibration
+        sigma_ic = w["sigma_ic"]
+        sigma_grid = np.linspace(sigma_ic * 0.95, sigma_ic * 1.05, 50)
+        phi_exact = np.array([phi_ic_at_sigma(params, s) for s in sigma_grid])
+        phi_affine = w["alpha"] + w["beta"] * sigma_grid
+        mae = np.mean(np.abs((phi_exact - phi_affine) / phi_exact)) * 100.0
+        print(f"  Affine approx error (±5% of sigma*) = {mae:.4f}%")
+
+    # --- Figures ---
     plot_flow_performance(params, outdir)
     plot_ic_fee_curve(params, outdir)
     plot_opt_sigma_vs_f2(params, outdir)
@@ -519,8 +651,9 @@ def main():
     plot_compstats_sharpe(params, outdir)
     plot_compstats_risk(params, outdir)
     plot_affine_approximation_quality(params, outdir)
+    plot_welfare_comparison(params, outdir)
 
-    print(f"Figures exported to: {outdir}")
+    print(f"\nFigures exported to: {outdir}")
 
 
 if __name__ == "__main__":

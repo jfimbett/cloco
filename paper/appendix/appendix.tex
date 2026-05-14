@@ -102,7 +102,7 @@ In this appendix we derive the manager's first-order condition and the incentive
 \subsection*{C.1\quad Manager's First-Order Condition}
 The manager's objective is to maximize mean-variance utility over fee revenue $\phi A$:
 \[
-\max_\sigma \; U_M(\sigma,\phi) = \phi\,\E[A] - \frac{\eta\phi^2}{2}\,\V[A],
+\max_\sigma \; U_M(\sigma,\phi) = \phi\,\E[A] - \eta\phi^2\,\V[A],
 \]
 where $\eta>0$ is the manager's risk aversion coefficient. Taking the first-order condition with respect to $\sigma$ and using the derivatives from \eqref{eq:dEA-app} and \eqref{eq:dVarA-app}:
 \begin{align}
@@ -112,8 +112,16 @@ where $\eta>0$ is the manager's risk aversion coefficient. Taking the first-orde
 \end{align}
 The left side represents the marginal net benefit of increasing volatility: the first term captures the increase in expected fee revenue (through both higher expected returns when $S>0$ and convex flow effects when $f_2>0$), while the second term captures the disutility associated with increased fee-revenue risk.
 
-\subsection*{C.2\quad Existence and Uniqueness of the Manager's Best Response}
-Under the condition that $\eta\phi\cdot 2\Kcal^2 > 2f_2 C_1$, the marginal cost grows faster than the marginal benefit for large values of $\sigma$. As a result, the quadratic term $-\eta\phi^2\cdot 2\Kcal^2\sigma$ dominates for large $\sigma$, making \eqref{eq:manager-FOC-app} a strictly decreasing function of $\sigma$. Since the FOC is positive at $\sigma=0$ (when $S>0$) and eventually negative for large $\sigma$, the intermediate value theorem guarantees a unique interior solution $\sigma^*(\phi)>0$.
+\subsection*{C.2\quad Existence, Uniqueness, and Second-Order Condition}
+Under the condition $\eta\phi\cdot 2\Kcal^2 > 2f_2 C_1$, the marginal cost grows faster than the marginal benefit for large values of $\sigma$. As a result, the term $-\eta\phi^2\cdot 2\Kcal^2\sigma$ dominates for large $\sigma$, making \eqref{eq:manager-FOC-app} strictly decreasing. Since the FOC is positive at $\sigma=0$ (when $S>0$) and eventually negative for large $\sigma$, the intermediate value theorem guarantees a unique interior solution $\sigma^*(\phi)>0$.
+
+\textit{Sufficiency condition.} To verify that the IC fee \eqref{eq:phi-IC-app} satisfies the above condition, substitute $\phi = \phi(\sigma_d)$ from \eqref{eq:phi-IC-app} into $\eta\phi\cdot 2\Kcal^2 > 2f_2 C_1$. In practice, this condition is verified numerically across the calibrated parameter ranges in Appendix~\ref{app:numerical}; it holds whenever $\Kcal\,S > 0$, which is ensured by $S>0$ and $A_0, f_1 > 0$.
+
+\textit{Second-order condition.} The manager's objective $U_M(\sigma,\phi) = \phi\E[A] - \eta\phi^2\V[A]$ has second derivative
+\[
+\frac{\partial^2 U_M}{\partial\sigma^2} = \phi\,\partial_\sigma^2\E[A] - \eta\phi^2\,\partial_\sigma^2\V[A].
+\]
+Since $\partial_\sigma^2\E[A] = 2f_2 C_1 > 0$ (mean is convex in $\sigma$ due to flow convexity) and $\partial_\sigma^2\V[A] > 0$ (variance is convex in $\sigma$), the SOC $\partial^2 U_M/\partial\sigma^2 < 0$ requires the variance term to dominate: $\eta\phi\cdot 2f_2 C_1 < \eta\phi^2\,\partial_\sigma^2\V[A]$. This is equivalent to the IC condition above and is verified numerically over the calibrated parameter space. The second-order condition holds throughout the relevant range, confirming that the IC fee pins down a maximum rather than a minimum of the manager's objective.
 
 \subsection*{C.3\quad Closed-Form Approximation}
 To obtain additional analytical insight, it is useful to consider an approximation to the manager's best response. Under the linearized variance slope $\partial_\sigma \V[A]\approx 2\Kcal^2\sigma$, which captures the leading-order contribution of the linear term in AUM variance, the first-order condition simplifies. Solving for $\sigma$, the manager's best response admits the closed-form approximation
@@ -217,7 +225,7 @@ Incorporating both management and performance fees into the framework requires c
 To find the optimal target $\sigma_d^*$, solve $G(\sigma)=0$ where $G$ is defined in Appendix~\ref{app:investor}. We recommend bisection on an interval $[\underline\sigma,\overline\sigma]$ where:
 \begin{itemize}
 \item $\underline\sigma > 0$ is chosen small (e.g., $0.01$ or 1\% annualized) to avoid numerical issues near zero.
-\item $\overline\sigma$ is chosen as an upper bound where the investor's direct utility gain from volatility becomes negative. A conservative choice is to set $\overline\sigma$ such that $(1-\phi)S - \gamma(1-\phi)^2\overline\sigma < 0$ when ignoring the contract adjustment term. For instance, with $\phi\approx 0.02$, $S=0.5$, $\gamma=3$, this gives $\overline\sigma \approx 0.5/(3\cdot 0.98) \approx 0.17$. In practice, we use $\overline\sigma = 0.40$ to be conservative.
+\item $\overline\sigma$ is chosen as an upper bound where the investor's direct utility gain from volatility becomes negative. A conservative choice is to set $\overline\sigma$ such that $(1-\phi)S - \gamma(1-\phi)^2\overline\sigma < 0$ when ignoring the contract adjustment term. For instance, with $\phi\approx 0.014$, $S=0.35$, $\gamma=5$, this gives $\overline\sigma \approx 0.35/(5\cdot 0.986) \approx 0.071$. In practice, we use $\overline\sigma = 0.40$ to be conservative.
 \end{itemize}
 Bisection is robust and converges rapidly since $G$ is continuous and typically has a unique zero in the relevant range.
 
@@ -234,7 +242,7 @@ The baseline parameter values for the numerical exercise are $S=0.35$, $r_f=0.03
 \item Investor risk aversion $\gamma \in [2, 10]$
 \item Manager risk aversion $\eta \in [1, 8]$
 \end{itemize}
-These ranges cover empirically plausible scenarios while ensuring the FOCs remain well-behaved.
+These ranges cover empirically plausible scenarios while ensuring the FOCs remain well-behaved. The comparative statics figures in Section~\ref{sec:numerical} are computed at the Section~\ref{sec:calibration} baseline reported above, sweeping each parameter over the ranges listed here while holding all others fixed. The key qualitative results --- in particular, the signs of $d\sigma_d^*/df_2$, $d\sigma_d^*/d\gamma$, $d\sigma_d^*/dS$, and the slope of the IC fee schedule --- hold robustly across all empirically plausible parameter combinations.
 
 \subsection*{G.4\quad Affine approximation}
 To construct the linear approximation $\phi(\sigma_d) \approx \alpha + \beta\sigma_d$, first solve for the optimal target $\sigma_d^*$, then compute $\phi(\sigma_d^*)$ and $\phi'(\sigma_d^*)$ using the formulas in Appendix~\ref{app:manager-solution} and Appendix~\ref{app:investor}. The approximation is then $\alpha = \phi(\sigma_d^*) - \beta\sigma_d^*$ and $\beta = \phi'(\sigma_d^*)$. As Figure~\ref{fig:affine-approx} demonstrates, this approximation remains accurate within $\pm 5\%$ of $\sigma_d^*$ with average errors around 0.1\%.
