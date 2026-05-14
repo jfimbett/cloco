@@ -1,0 +1,135 @@
+% =========================
+% main.tex
+% =========================
+
+\documentclass[11pt]{article}
+
+% --- Core packages ---
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{textcomp}
+\usepackage{amssymb,amsmath,amsfonts,eurosym,geometry,graphicx,xcolor}
+\usepackage{setspace,sectsty,comment,footmisc,array,soul,gensymb,float,multicol}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{dsfont}
+\usepackage{tabularx}
+\usepackage{threeparttable}
+\usepackage{pdflscape}
+\usepackage{subcaption}
+\usepackage[longnamesfirst]{natbib}
+\usepackage{xurl}
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue]{hyperref}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{rotating}
+\usepackage{pdfpages}
+\usepackage{mathtools}
+
+% --- Page layout ---
+\geometry{margin=1in}
+
+% --- Title/section styling like QJE (optional) ---
+\usepackage[sc]{titlesec}
+
+% --- Math helpers ---
+\def\E{{\mathbb{E}}\,}
+\def\V{{\mathbb{V}}\,}
+\def\Cov{{\mathrm{Cov}}}
+\def\1{{\mathds{1}}}
+\def\posreal{{\mathbb{R_{++}}}\,}
+\def\nnegreal{{\mathbb{R_{+}}}\,}
+\DeclareMathOperator*{\plim}{plim}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\newcommand{\Normal}{\mathcal{N}}
+\newcommand{\phiStd}{\varphi}     % standard normal pdf
+\newcommand{\PhiStd}{\Phi}        % standard normal cdf
+% Notation used in the text
+\newcommand{\Kcal}{\mathcal{K}}
+\newcommand{\CDF}{\PhiStd(\Sharpe)}
+\newcommand{\pdf}{\phiStd(\Sharpe)}
+
+% --- Theorems ---
+\newtheorem{condition}{Condition}
+\newtheorem{conditionb}{Condition}
+\newtheorem{proposition}{Proposition}
+\newtheorem{propositionb}{Proposition}
+\newtheorem{definition}{Definition}
+\newtheorem{definitionb}{Definition}
+\newtheorem{cor}[proposition]{Corollary}
+\newtheorem{corb}[propositionb]{Corollary}
+\newtheorem{remark}{Remark}
+\newtheorem{lemma}{Lemma}
+
+% --- Captions & footnotes ---
+\usepackage[labelfont=normalfont, textfont=normalfont]{caption}
+\newcommand\fnote[1]{\captionsetup{font=footnotesize, textfont=normalfont}\caption*{#1}}
+
+% --- Shorthands ---
+\newcommand{\Sharpe}{S}
+\newcommand{\rf}{r_f}
+
+\begin{document}
+
+% -------- Title Page --------
+\begin{titlepage}
+\title{\Large\bf Agency Problems: What Fee Structure Is Conducive To A Fair Choice Of Portfolio Volatility?}
+\author{\normalsize Juan F. Imbet\\ \normalsize Université Paris Dauphine
+\and
+\normalsize Igor Yelnik\\ \normalsize Alphidence Capital Ltd}
+\date{\today}
+
+\maketitle
+
+\begin{center}
+\textbf{Key Findings}
+\begin{itemize}
+    \item Fund investors and managers have conflicting interests: while the investor is interested in maximizing its expected returns subject to investment risk, the manager maximizes its fee flow subject to the risk of this flow. In the absence of the risk of ruin, this causes the manager and the investor desire different levels of volatility of fund's returns.
+\item Performance chasing behavior pertinent to investors as a group causes an option-like payoff for managers, which, in turn, may be detrimental for each individual investor.
+\item A level of volatility that will optimize investor's utility while keeping the manager engaged can be evaluated by using a simple model that calls for paying for the risk contracted and taken.
+\end{itemize}
+\end{center}
+
+\begin{abstract}
+\noindent \small
+This paper studies the agency conflicts in delegated portfolio management. We develop a tractable principal-agent model in which fund managers have incentives to load on high volatility investments as a convex flow-performance relation increases their upside. This risk-seeking behavior is beneficial to managers, but not to investors. We derive the optimal incentive compatible management fee that implements the desired volatility target. Our paper provides a tractable framework with the aim to study this type of agency frictions in delegated portfolio management, and provide guidance on its implementation. We demonstrate that a simple linear approximation makes the contract between the manager and the investor easy to communicate and implement as a "pay for risk, not luck" framework.
+\vspace{1cm}
+
+\noindent\textbf{Keywords:} delegated portfolio management; flow–performance convexity; incentive contracts; risk shifting \\
+\vspace{0in}
+\noindent\textbf{JEL Codes:} G11; G23; D82
+
+\bigskip
+\end{abstract}
+
+\setcounter{page}{0}
+\thispagestyle{empty}
+\end{titlepage}
+
+\doublespacing
+\pagenumbering{arabic}
+\setlength{\parindent}{1cm}
+
+\input{sections/introduction}
+\input{sections/model}
+\input{sections/contract}
+\input{sections/calibration}
+\input{sections/numerical}
+\input{sections/conclusion}
+
+\pagebreak
+\input{sections/figures}
+
+\pagebreak
+\addcontentsline{toc}{section}{References}
+\bibliographystyle{chicago}
+\bibliography{references}
+\normalsize
+
+% Appendix lives in a separate file for readability
+\clearpage
+\appendix
+\input{appendix/appendix}
+
+\end{document}
