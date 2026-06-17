@@ -10,7 +10,7 @@ Consider a two-period economy $t\in\{0,1\}$ populated by a representative fund a
     \qquad \epsilon \sim \Normal(0,1),\ \sigma>0,
 \end{equation}
 where \(\Sharpe\) is the Sharpe Ratio of the fund, assumed to be common knowledge between manager and investors. The volatility $\sigma$ is a decision variable of the asset manager. Within a standard asset pricing interpretation, $\sigma$ can be viewed as scaling exposure to a strategy with constant Sharpe ratio, for example through leverage.
-Intuitively, $\sigma$ is the risk knob: raising it increases expected excess return, but it also increases the dispersion of outcomes around that mean.
+Intuitively, $\sigma$ is the risk knob: raising it increases expected excess return, but it also increases the dispersion of outcomes around that mean. The model treats $\sigma$ as the contracting variable: the investor specifies a target $\sigma_d$ and the IC contract implements it. In practice, $\sigma$ must be estimated from a time series of realized returns, and estimation noise introduces measurement error into the implemented contract; Section~\ref{sec:numerical} discusses this practical limitation and implementation strategies.
 
 With this setup, expected excess returns increase linearly with volatility:
 \[
@@ -55,9 +55,9 @@ This specification ignores high--water marks (HWM) that are common in alternativ
 
 The manager has mean variance preferences with a constant absolute risk aversion $\eta>0$ over fee revenue \(\phi A\):
 \begin{equation}
-    U_M \;=\; \phi\E[ A] \;-\; \eta \phi^2\,\V[A],
+    U_M \;=\; \phi\E[ A] \;-\; \frac{\eta}{2}\phi^2\,\V[A],
 \end{equation}
-so the manager values higher expected fee income but dislikes fluctuations in AUM because they make fee income risky.
+so the manager values higher expected fee income but dislikes fluctuations in AUM because they make fee income risky. We take this mean-variance functional as a primitive specification for the manager's preferences over fee revenue. It corresponds to the certainty equivalent of a CARA agent with coefficient $\eta$ facing a Gaussian distribution of $\phi A$: under Gaussian returns and linear flows ($f_2=0$), $\phi A$ is exactly Gaussian and the functional is exact. With $f_2>0$, AUM inherits non-Gaussian components from the convex kicker $f_2\sigma^2 X^2 I$; the specification is then best understood as a tractable first-order approximation to CARA certainty equivalence that preserves the key economic forces --- the marginal cost of risk-taking scales with $\phi^2$ --- while maintaining analytical tractability.\footnote{The $\phi^2 V[A]$ scaling is consistent with a CARA-Gaussian certainty equivalent if one approximates $\phi A$ by its first two moments. The approximation is exact when $f_2=0$ (linear flows, Gaussian fee revenue) and remains accurate for the parameter values considered in Section~\ref{sec:numerical}.}
 
 Investors have mean-variance preferences over net returns with a risk aversion captured by $\gamma>0$:
 \begin{equation}
@@ -104,7 +104,7 @@ where $\Delta_{\text{quad}}$ collects higher-order terms defined in Appendix~\re
 
 The manager chooses \(\sigma\) to maximize
 \[
-U_M(\sigma,\phi)\;=\;\phi\,\E[A] - \eta\phi^2\,\V[A].
+U_M(\sigma,\phi)\;=\;\phi\,\E[A] - \frac{\eta}{2}\phi^2\,\V[A].
 \]
 The resulting best response $\sigma^*(\phi)$ is characterized in Appendix~\ref{app:manager-solution}. The comparative statics are intuitive: higher risk aversion $\eta$ reduces risk-taking because the manager dislikes fee revenue volatility; higher convexity $f_2$ increases risk-taking because convex flows make upside states more valuable. This characterization highlights the core agency friction in the model: in the absence of contractual discipline, the manager's privately optimal volatility generally exceeds the level preferred by investors.
 
@@ -126,11 +126,11 @@ The IC condition has a simple economic form: at the target, the manager's margin
 
 The manager solves
 \[
-\max_\sigma \; \phi\,\E[A] - \eta\phi^2\,\V[A],
+\max_\sigma \; \phi\,\E[A] - \frac{\eta}{2}\phi^2\,\V[A],
 \]
 which yields the first-order condition
 \begin{equation}
-\phi\Big(\Kcal \Sharpe + 2 f_2\,\sigma\,C_1\Big) - \eta\phi^2\Big(2 \Kcal^2 \sigma + \Delta_{\text{quad}}\Big) \;=\; 0.
+\phi\Big(\Kcal \Sharpe + 2 f_2\,\sigma\,C_1\Big) - \frac{\eta}{2}\phi^2\Big(2 \Kcal^2 \sigma + \Delta_{\text{quad}}\Big) \;=\; 0.
 \label{eq:manager-FOC}
 \end{equation}
 For any target volatility $\sigma_d$, the incentive-compatible fee that induces the manager to choose $\sigma_d$ is given by imposing the FOC at $\sigma=\sigma_d$:
@@ -138,14 +138,15 @@ For any target volatility $\sigma_d$, the incentive-compatible fee that induces 
 \label{eq:phi-IC}
 \phi(\sigma_d)
 \;=\;
-\frac{\Kcal\,\Sharpe + 2 f_2 \,\sigma_d\,C_1}
+\frac{2\Big(\Kcal\,\Sharpe + 2 f_2 \,\sigma_d\,C_1\Big)}
 {\eta\Big(2 \Kcal^2 \,\sigma_d + \Delta_{\text{quad}}(\Sharpe,f_2;\sigma_d)\Big)}.
 \end{equation}
 This mapping is central to the analysis, as it translates a desired risk policy into an implementable compensation scheme. The implications of this mapping for equilibrium contract design are analyzed in the next section.
 
-\paragraph{``Pay for risk, not luck.''}
 The incentive-compatible fee schedule $\phi(\sigma_d)$ embodies a specific principle: the manager is compensated for the level of risk undertaken, not for realized outcomes. To formalize this, decompose end-of-period AUM as
 \[
 A \;=\; \underbrace{\E[A]}_{\text{risk component}} \;+\; \underbrace{(A - \E[A])}_{\text{luck component}},
 \]
-where $\E[A] = A_0(1+\rf) + \Kcal\,\Sharpe\,\sigma + f_2\,\sigma^2\,C_1$ depends on the manager's volatility choice $\sigma$ but not on the realized shock $\epsilon$, while $A - \E[A]$ depends on $\epsilon$ but has mean zero. Manager fee revenue $\phi A$ inherits this decomposition: the risk component $\phi\E[A]$ is determined entirely by $\sigma$ (the manager's action), while the luck component $\phi(A-\E[A])$ reflects pure realized variation. The IC contract sets $\phi = \phi(\sigma_d)$ as a function solely of the volatility target $\sigma_d$, ensuring that the manager is rewarded for choosing the right level of risk. The affine approximation $\phi \approx \alpha + \beta\sigma_d$ makes this principle transparent: the base fee $\alpha$ covers fixed compensation and the linear charge $\beta\sigma_d$ rises with the risk target.
+where $\E[A] = A_0(1+\rf) + \Kcal\,\Sharpe\,\sigma + f_2\,\sigma^2\,C_1$ depends on the manager's volatility choice $\sigma$ but not on the realized shock $\epsilon$, while $A - \E[A]$ depends on $\epsilon$ but has mean zero. Manager fee revenue $\phi A$ inherits this decomposition: the risk component $\phi\E[A]$ is determined entirely by $\sigma$ (the manager's action), while the luck component $\phi(A-\E[A])$ reflects pure realized variation. The IC contract sets the fee \emph{rate} $\phi = \phi(\sigma_d)$ as a function solely of the volatility target $\sigma_d$; realized compensation $\phi A$ still varies with the return shock $\epsilon$ through the luck component $\phi(A-\E[A])$. What the IC contract achieves is that the \emph{rate} at which the manager is compensated depends only on the chosen risk level, not on realized outcomes --- the manager cannot increase the fee by selecting a different volatility. The affine approximation $\phi \approx \alpha + \beta\sigma_d$ makes this structure transparent: the base fee $\alpha$ covers fixed compensation and the marginal charge $\beta\sigma_d$ rises with the risk target.
+
+It is important to clarify the interpretation of $\phi(\sigma_d)$ in the model versus its implementation. In the theoretical model, the equilibrium is a single fee \emph{level} $\phi^* = \phi(\sigma_d^*)$: the investor announces this fee rate ex ante, and the IC condition ensures that the manager's privately optimal response is exactly $\sigma_d^*$. The manager does not face a fee that adjusts with realized volatility; the fee is fixed at $\phi^*$ regardless of the manager's action. What aligns incentives is that, at the fee level $\phi^*$, the manager's FOC is satisfied at $\sigma_d^*$. In practice, one natural implementation maps estimated realized volatility $\hat\sigma$ to a fee via the affine rule $\phi \approx \alpha + \beta\hat\sigma$; this is a \emph{contingent schedule} on $\hat\sigma$, and its IC properties in the presence of estimation noise are an important direction for future work (discussed further in Section~\ref{sec:numerical}).

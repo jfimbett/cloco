@@ -108,7 +108,8 @@ See `scoring-protocol.md` for weighted aggregation formula.
 | `/humanizer [file]` | Strip 24 AI writing patterns |
 | `/journal` | Research journal timeline |
 | `/compile-latex [file]` | 3-pass XeLaTeX + bibtex |
-| `/validate-bib` | Cross-reference citations |
+| `/validate-bib` | Cross-reference citations (structural only) |
+| `/verify-citations [bib]` | Full citation audit: structural + web hallucination check |
 | `/commit [msg]` | Stage, commit, PR, merge |
 | `/research-ideation [topic]` | Research questions + strategies |
 | `/visual-audit [file]` | Slide layout audit |
