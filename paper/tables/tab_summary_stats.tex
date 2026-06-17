@@ -1,0 +1,32 @@
+\begin{table}[htbp]
+\centering
+\caption{Summary Statistics}
+\label{tab:summary_stats}
+\begin{threeparttable}
+\begin{tabular}{lccccccc}
+\toprule
+Variable & Mean & Std & p10 & p50 & p90 & p95 & N \\
+\midrule
+Book leverage & 0.2044 & 0.1942 & 0.0000 & 0.1678 & 0.4858 & 0.5786 & 625,105 \\
+Market leverage & 0.2035 & 0.2281 & 0.0000 & 0.1227 & 0.5598 & 0.6945 & 625,105 \\
+$\widehat{W}_{1,\text{shape}}$ & 0.0349 & 0.0747 & 0.0117 & 0.0230 & 0.0333 & 0.0811 & 625,105 \\
+$\widehat{W}_1$ (full) & 0.0674 & 0.1051 & 0.0229 & 0.0439 & 0.1078 & 0.1432 & 625,105 \\
+CF mean & -0.0124 & 0.1388 & -0.1843 & 0.0279 & 0.0962 & 0.1191 & 625,105 \\
+CF volatility & 0.0832 & 0.0739 & 0.0279 & 0.0581 & 0.1792 & 0.2652 & 625,105 \\
+Log assets & 5.3648 & 2.4946 & 2.2124 & 5.2833 & 8.6646 & 9.6147 & 625,105 \\
+Market-to-book & 4.1147 & 7.9567 & 0.6539 & 2.0177 & 7.6667 & 13.107 & 625,105 \\
+Profitability & -0.0009 & 0.0872 & -0.0870 & 0.0221 & 0.0610 & 0.0771 & 625,105 \\
+Tangibility & 0.2956 & 0.2680 & 0.0273 & 0.2035 & 0.7466 & 0.8592 & 625,105 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item Book leverage = (dlttq + dlcq) / atq. Market leverage = debt / (debt + mktcap).
+$\widehat{W}_{1,\text{shape}}$ = mean-adjusted Wasserstein-1 distance between firm
+cash-flow distribution and aggregate capital supply distribution.
+CF mean (vol) = rolling 20-quarter mean (std) of oibdpq/atq (quarterly EBITDA/assets).
+\textit{Note on} $\widehat{W}_{1,\text{shape}}$\textit{:} The mean (0.035) exceeds the 90th percentile (0.033) because this variable has an extremely heavy right tail: only 9.6\% of observations exceed the mean, but these are in decile 10 with mean $\widehat{W}_{1,\text{shape}} = 0.167$ (up to max $= 1.26$). The p95 = 0.081 lies clearly above the mean, confirming the typical right-skew pattern. This is a standard property of heavy-tailed non-negative distributions where the mean is pulled far above the median by a thin but extreme upper tail.
+Sample: Compustat quarterly 1989--2024, non-financial, non-utility firms.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

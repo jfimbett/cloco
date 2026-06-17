@@ -5,7 +5,7 @@ Keep under 150 lines, since Claude loads it every session.
 -->
 
 **Project**: [Your Project Name]
-**Institution**: Paris Dauphine University - PSL
+**Institution**: EDHEC Business School
 **Branch**: main
 **Authors**: Juan F. Imbet 
 

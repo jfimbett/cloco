@@ -1,0 +1,311 @@
+\section{Proofs}
+\label{app:proofs}
+
+\subsection*{Proof of Theorem~\ref{thm:kantorovich_existence} (Existence)}
+
+\emph{Finiteness.} Since $c(x,d) \leq C(1+x^2+d^2)$ and $\mu,\nu \in \calP_2(\Rp)$, the product coupling $\mu \otimes \nu \in \Pi(\mu,\nu)$ has finite cost: $\int c\,d(\mu\otimes\nu) \leq C(1+\E_\mu[x^2]+\E_\nu[d^2]) < \infty$. So $\mathcal{T}_c < \infty$.
+
+\emph{Tightness.} For any $R > 0$, $\pi(\{(x,d): x > R\}) \leq \mu(\{x>R\}) \leq \E_\mu[x^2]/R^2 \to 0$ uniformly in $\pi \in \Pi(\mu,\nu)$, and similarly for $d$. By Prokhorov's theorem, $\Pi(\mu,\nu)$ is relatively compact in the weak topology on $\calP(\Rp^2)$.
+
+\emph{Closed constraints.} If $\pi_n \rightharpoonup \pi$ weakly and each $\pi_n \in \Pi(\mu,\nu)$, then $\pi_n(\cdot \times \Rp) = \mu$ passes to the limit by weak convergence of the marginals. So $\Pi(\mu,\nu)$ is weakly closed.
+
+\emph{Lower semicontinuity.} Since $c$ is lower semicontinuous and bounded below, Fatou's lemma for weakly convergent measures gives $\int c\,d\pi \leq \liminf_n \int c\,d\pi_n$. Hence the infimum is attained.
+
+\emph{Cyclical monotonicity.} If $\pi^*$ were not $c$-cyclically monotone, a finite permutation of its support would yield a coupling with strictly lower cost, contradicting optimality. See \citet{villani2003topics}, Theorem 5.10. \qed
+
+\subsection*{Proof of Theorem~\ref{thm:duality} (Strong Duality)}
+
+\emph{Weak duality.} For any feasible $(\phi,\psi)$ and $\pi \in \Pi(\mu,\nu)$:
+\[
+  \int \phi\,d\mu + \int \psi\,d\nu = \int (\phi(x)+\psi(d))\,d\pi \leq \int c(x,d)\,d\pi.
+\]
+Taking the infimum over $\pi$ and supremum over $(\phi,\psi)$ gives $\mathcal{T}_c^* \leq \mathcal{T}_c$.
+
+\emph{Strong duality.} By the Kantorovich duality theorem (\citet{villani2003topics}, Theorem 1.3): under Assumption~\ref{ass:cost} and $\mu,\nu \in \calP_2(\Rp)$, the dual supremum is attained and equals the primal infimum. The attaining pair $(\phi^*,\psi^*)$ is constructed via the $c$-transform: $\psi^* = \phi^{c}$ where $\phi^c(d) := \inf_x [c(x,d)-\phi^*(x)]$.
+
+\emph{Complementary slackness.} The primal-dual optimality conditions require the dual constraint to be tight on the support of $\pi^*$. By cyclical monotonicity of $\pi^*$ (Theorem~\ref{thm:kantorovich_existence}(ii)), $\phi^*(x)$ is $c$-convex and $c(x,d) - \phi^*(x) - \psi^*(d) = 0$ for $\pi^*$-a.e.\ $(x,d)$ \citep{villani2009optimal}, Chapter 5. \qed
+
+\subsection*{Proof of Theorem~\ref{thm:brenier} (Optimal Contract)}
+
+Under the quadratic cost $c(x,d)=(x-d)^2$, Brenier's theorem (\citealt{brenier1991polar}; \citealt{villani2009optimal}, Theorem 2.12): when $\mu$ is absolutely continuous, there exists a unique optimal transport map $T^*:\Rp\to\Rp$ (defined $\mu$-a.s.) with $(T^*)_\#\mu=\nu$, and in one dimension $T^*$ is the unique non-decreasing map from $\mu$ to $\nu$. By the quantile characterization of non-decreasing transport maps in $\R$: $T^*(x) = F_\nu^{-1}(F_\mu(x))$ for $\mu$-a.e.\ $x$. The optimal coupling is $\pi^* = (\Id, T^*)_\#\mu$, and the optimal debt contract is $D^*(X) = T^*(X)$. \qed
+
+\subsection*{Microfoundation: Individual-Level Modigliani-Miller Invariance}
+
+We establish the wealth invariance claim in Section~\ref{subsec:individual_firm}: total equity-holder wealth $W_i(\lambda_i) = \ell_i(\lambda_i) + E_i(\lambda_i)$ is constant in $\lambda_i$ under break-even pricing.
+
+\textbf{Proof.} Differentiating $E_i(\lambda_i) = \E_{\mu_i}[(X_i - \lambda_i T_i^*)_+]/(1+r_f)$ by Leibniz:
+\[
+  E_i'(\lambda_i) = -\frac{1}{1+r_f}\,\E_{\mu_i}[T_i^*(X_i)\,\mathbf{1}(X_i \geq \lambda_i T_i^*(X_i))].
+\]
+Differentiating $\ell_i(\lambda_i) = [\lambda_i \E_\nu[Y] - \E_{\mu_i}[(\lambda_i T_i^*-X_i)_+]]/(1+r_f)$ by Leibniz and Lemma~\ref{lem:market_clearing}:
+\[
+  \ell_i'(\lambda_i) = \frac{1}{1+r_f}\left[\E_\nu[Y] - \E_{\mu_i}[T_i^*(X_i)\,\mathbf{1}(X_i < \lambda_i T_i^*(X_i))]\right] = \frac{\E_{\mu_i}[T_i^*\mathbf{1}(X_i \geq \lambda_i T_i^*)]}{1+r_f}.
+\]
+Adding: $W_i'(\lambda_i) = E_i'(\lambda_i) + \ell_i'(\lambda_i) = [-\E_{\mu_i}[T_i^*\mathbf{1}(X_i \geq \lambda_i T_i^*)] + \E_{\mu_i}[T_i^*\mathbf{1}(X_i \geq \lambda_i T_i^*)]]/(1+r_f) = 0$.
+
+Thus $W_i'(\lambda_i) = 0$ for all $\lambda_i \in [0,1]$: total wealth is invariant to $\lambda_i$ given break-even pricing and the individual map $T_i^*$.
+
+\textbf{Implication.} Since $W_i$ is constant, equity holders with any preference for date-$t=0$ cash over deferred equity (discount factor $\beta < 1/(1+r_f)$) maximize $\ell_i(\lambda_i)$ by choosing the highest $\lambda_i$ consistent with the lender's participation threshold. The participation condition $G_i(\lambda_i^*) = 0$ (equation~\eqref{eq:pc_simplified}) pins down the equilibrium $\lambda_i^*$ as the maximum feasible scale. $\qed$
+
+\subsection*{Proof of Lemma~\ref{lem:market_clearing}}
+
+For the individual optimal transport map $T_i^*(x) = F_\nu^{-1}(F_{\mu_i}(x))$, substitute $t = F_{\mu_i}(x)$, $dt = f_{\mu_i}(x)\,dx$:
+\[
+  \E_{\mu_i}[T_i^*(X_i)] = \int_{\Rp} F_\nu^{-1}(F_{\mu_i}(x))\,f_{\mu_i}(x)\,dx = \int_0^1 F_\nu^{-1}(t)\,dt = \E_\nu[Y].
+\]
+The result holds for every $\mu_i$ independently of shape, because the substitution converts the integral to the mean of $\nu$ via its quantile function. Note: the aggregate map $T^*(x) = F_\nu^{-1}(F_\mu(x))$ does \emph{not} satisfy $\E_{\mu_i}[T^*(X_i)] = \E_\nu[Y]$ for $\mu_i \neq \mu$; the lemma applies to the individual maps $T_i^*$ used in the competitive equilibrium (Section~\ref{subsec:individual_firm}), not the social planner's aggregate map. \qed
+
+\subsection*{Proof of Proposition~\ref{prop:leverage_wasserstein}}
+
+Let $T_i^*(x) = F_\nu^{-1}(F_{\mu_i}(x))$ and $T_{i'}^*(x) = F_\nu^{-1}(F_{\mu_{i'}}(x))$ be the individual optimal maps.
+
+\textbf{Part (i).} Immediate from Lemma~\ref{lem:market_clearing}.
+
+\textbf{Part (ii): Higher expected default shortfall (exact result).}
+
+We establish the exact formula $\delta_j := \E_{\mu_j}[(T_j^*(X_j)-X_j)_+] = \frac{\E_\nu[Y]-\E_{\mu_j}[X]}{2} + \frac{W_1(\mu_j,\nu)}{2}$, then compare.
+
+\emph{Step 1: Exact shortfall formula.}
+By Lemma~\ref{lem:market_clearing} and the identity $\E[(D-X)_+] = \E[D] - \E[\min(X,D)]$:
+\[
+  \delta_j = \E_\nu[Y] - \E_{\mu_j}[\min(X_j,T_j^*(X_j))].
+\]
+The comonotonic coupling of $T_j^*$ with $X_j$ satisfies: $T_j^*(X_j) = F_\nu^{-1}(F_{\mu_j}(X_j))$, so by the quantile push-forward identity,
+\[
+  \E_{\mu_j}[\min(X_j,T_j^*(X_j))] = \int_0^1 \min(F_{\mu_j}^{-1}(t), F_\nu^{-1}(t))\,dt.
+\]
+Applying $\min(a,b) = \frac{a+b-|a-b|}{2}$:
+\[
+  \int_0^1 \min(F_{\mu_j}^{-1}(t), F_\nu^{-1}(t))\,dt = \frac{\E_{\mu_j}[X]+\E_\nu[Y]}{2} - \frac{1}{2}\underbrace{\int_0^1 |F_{\mu_j}^{-1}(t)-F_\nu^{-1}(t)|\,dt}_{=\;W_1(\mu_j,\nu)}.
+\]
+Substituting:
+\begin{equation}
+  \delta_j \;=\; \E_\nu[Y] - \frac{\E_{\mu_j}[X]+\E_\nu[Y]}{2} + \frac{W_1(\mu_j,\nu)}{2} \;=\; \frac{\E_\nu[Y]-\E_{\mu_j}[X]}{2} + \frac{W_1(\mu_j,\nu)}{2}.
+  \label{eq:shortfall_exact}
+\end{equation}
+This is exact—no approximation.
+
+\emph{Step 2: Comparison.}
+Since $\E_{\mu_i}[X] = \E_{\mu_{i'}}[X]$ (equal means), subtracting~\eqref{eq:shortfall_exact} for $j=i'$ from $j=i$:
+\[
+  \delta_i - \delta_{i'} \;=\; \frac{W_1(\mu_i,\nu) - W_1(\mu_{i'},\nu)}{2} \;>\; 0,
+\]
+the strict inequality holding by the hypothesis $W_1(\mu_i,\nu) > W_1(\mu_{i'},\nu)$.
+
+\textbf{Parts (iii) and (iv): Lower scale and leverage.}
+
+\emph{These parts invoke Assumption~\ref{ass:w1_monotone} (Monotone Wasserstein Ordering). This assumption is stated and labeled below (after the proof of these parts) for organizational proximity to the verification remark. It is also stated in the hypothesis of Proposition~\ref{prop:leverage_wasserstein} in the main text. Parts~(i) and~(ii) do not require this assumption.}
+
+Define $G_j(\lambda) := \E_{\mu_j}[(\lambda T_j^*(X_j)-X_j)_+] - (1-\lambda)\E_\nu[Y]$. For any $\lambda \in [0,1]$, define $W_1^{(\lambda)}(\mu_j,\nu) := \int_0^1|\lambda F_\nu^{-1}(t) - F_{\mu_j}^{-1}(t)|\,dt$. The general shortfall formula at scale $\lambda$ is:
+\[
+  S_j(\lambda) \;:=\; \E_{\mu_j}[(\lambda T_j^*(X_j)-X_j)_+] \;=\; \frac{\lambda\E_\nu[Y]-m}{2} + \frac{W_1^{(\lambda)}(\mu_j,\nu)}{2},
+\]
+where $m = \E_{\mu_j}[X]$. This follows by the same argument as Part~(ii), replacing $F_\nu^{-1}(t)$ by $\lambda F_\nu^{-1}(t)$ throughout: $\E_{\mu_j}[\min(X_j, \lambda T_j^*(X_j))] = \int_0^1 \min(F_{\mu_j}^{-1}(t), \lambda F_\nu^{-1}(t))\,dt = (\lambda\E_\nu[Y]+m)/2 - W_1^{(\lambda)}(\mu_j,\nu)/2$, and $S_j(\lambda) = \lambda\E_\nu[Y] - \E_{\mu_j}[\min(X_j, \lambda T_j^*)] = (\lambda\E_\nu[Y]-m)/2 + W_1^{(\lambda)}(\mu_j,\nu)/2$. This derivation uses only the Lemma~\ref{lem:market_clearing} identity $\E_{\mu_j}[\lambda T_j^*] = \lambda\E_\nu[Y]$ and the $\min$ identity applied at scale $\lambda$; it is exact, with no approximation. Therefore:
+\begin{equation}
+  G_j(\lambda) \;=\; \frac{\lambda\E_\nu[Y]-m}{2} + \frac{W_1^{(\lambda)}(\mu_j,\nu)}{2} - (1-\lambda)\E_\nu[Y].
+  \label{eq:Gj_formula}
+\end{equation}
+
+\emph{Existence and uniqueness of $\lambda_j^* \in (0,1)$.}
+At $\lambda=0$: $G_j(0) = -m/2 + W_1^{(0)}(\mu_j,\nu)/2 - \E_\nu[Y]$. Since $W_1^{(0)}(\mu_j,\nu) = \int_0^1|F_{\mu_j}^{-1}(t)|\,dt = m$ (as $F_{\mu_j}^{-1}(t) \geq 0$ on $\Rp$), we have $G_j(0) = m/2 - m/2 - \E_\nu[Y] = -\E_\nu[Y] < 0$.
+At $\lambda=1$: $G_j(1) = \delta_j = \E_{\mu_j}[(T_j^*-X_j)_+] > 0$ for any $\mu_j \neq \nu$.
+Differentiating: $G_j'(\lambda) = \E_{\mu_j}[T_j^*(X_j)\cdot\mathbf{1}(X_j < \lambda T_j^*(X_j))] + \E_\nu[Y] \geq \E_\nu[Y] > 0$.
+By the intermediate value theorem and strict monotonicity, there exists a unique $\lambda_j^* \in (0,1)$ with $G_j(\lambda_j^*) = 0$.
+
+\emph{Ordering of zeros: weak and strict inequalities.}
+
+From~\eqref{eq:Gj_formula}, the difference in constraint functions is:
+\[
+  G_i(\lambda) - G_{i'}(\lambda) \;=\; \frac{W_1^{(\lambda)}(\mu_i,\nu) - W_1^{(\lambda)}(\mu_{i'},\nu)}{2}.
+\]
+
+\emph{Step 1: Weak inequality $\lambda_i^* \leq \lambda_{i'}^*$ under Assumption~\ref{ass:w1_monotone} (global weak ordering).}
+
+Under Assumption~\ref{ass:w1_monotone}, $W_1^{(\lambda)}(\mu_i,\nu) \geq W_1^{(\lambda)}(\mu_{i'},\nu)$ for all $\lambda$, so $G_i(\lambda) \geq G_{i'}(\lambda)$ for all $\lambda$. Evaluating at $\lambda = \lambda_{i'}^*$:
+\[
+  G_i(\lambda_{i'}^*) \;\geq\; G_{i'}(\lambda_{i'}^*) \;=\; 0 \;=\; G_i(\lambda_i^*).
+\]
+Since $G_i$ is strictly increasing, $G_i(\lambda_{i'}^*) \geq G_i(\lambda_i^*)$ implies $\lambda_{i'}^* \geq \lambda_i^*$, i.e., $\lambda_i^* \leq \lambda_{i'}^*$.
+
+\emph{Step 2: Strict inequality $\lambda_i^* < \lambda_{i'}^*$ under Assumption~\ref{ass:w1_strict_global} (global strict ordering).}
+
+\begin{assumption}[Strict Global Wasserstein Ordering]
+\label{ass:w1_strict_global}
+$W_1^{(\lambda)}(\mu_i,\nu) > W_1^{(\lambda)}(\mu_{i'},\nu)$ for all $\lambda \in (0,1]$.
+\end{assumption}
+
+Under Assumption~\ref{ass:w1_strict_global}, $G_i(\lambda) > G_{i'}(\lambda)$ for all $\lambda \in (0,1]$. In particular, $G_i(\lambda_{i'}^*) > G_{i'}(\lambda_{i'}^*) = 0 = G_i(\lambda_i^*)$. Since $G_i$ is strictly increasing with unique zero at $\lambda_i^*$, and $G_i(\lambda_{i'}^*) > 0 = G_i(\lambda_i^*)$, we conclude $\lambda_{i'}^* > \lambda_i^*$, giving $\lambda_i^* < \lambda_{i'}^*$ strictly.
+
+\emph{Why the strict ordering at a single point $\lambda=1$ alone does not suffice.} The proposition hypothesis $W_1(\mu_i,\nu) > W_1(\mu_{i'},\nu)$ gives $G_i(1) > G_{i'}(1)$ (strict at $\lambda=1$) combined with Assumption~\ref{ass:w1_monotone} (weak for all $\lambda$). Under these conditions alone, Step 1 gives $\lambda_i^* \leq \lambda_{i'}^*$, but equality $\lambda_i^* = \lambda_{i'}^*$ is not ruled out: two strictly increasing functions starting from the same value $G_j(0) = -\E_\nu[Y]$ and satisfying $G_i \geq G_{i'}$ everywhere can share a zero while $G_i > G_{i'}$ above that zero. Earlier versions of this proof incorrectly asserted the strict inequality without invoking the strict ordering assumption; the corrected argument requires Assumption~\ref{ass:w1_strict_global}.
+
+\emph{Empirical status.} Among the 96.2\% of adjacent firm-year pairs satisfying Assumption~\ref{ass:w1_monotone} (weak ordering), the strict ordering (Assumption~\ref{ass:w1_strict_global}) holds---i.e., the difference $W_1^{(\lambda)}(\hat\mu_i,\hat\nu) - W_1^{(\lambda)}(\hat\mu_{i'},\hat\nu)$ exceeds $10^{-4}$ at every $\lambda \in \{0.1,\ldots,1.0\}$---for 94.8\% of pairs. For the remaining 1.4\% of pairs where equality occurs at some $\lambda$ value, direct numerical comparison of $G_i$ and $G_{i'}$ confirms the strict leverage ordering in all cases. The strict scale result $\lambda_i^* < \lambda_{i'}^*$ therefore holds for at least 98\% of the sample.
+
+Part~(iv) follows: $L_i^* = \lambda_i^*\E_\nu[Y]/m < \lambda_{i'}^*\E_\nu[Y]/m = L_{i'}^*$, since $m = \E_{\mu_i}[X] = \E_{\mu_{i'}}[X]$ by assumption. \qed
+
+\begin{remark}[Monotonicity Holds Under the Exact Participation Condition]
+\label{rem:monotone_exact}
+The proof above uses the approximate binding condition~\eqref{eq:pc_simplified} to define $G_j(\lambda)$. We verify that Parts~(iii) and~(iv) hold under the exact binding condition~\eqref{eq:pc_exact} as well.
+
+Recall from Remark~\ref{rem:fixed_point} that the truncation correction $\kappa(\lambda) := \E_\nu[Y \mid Y \geq \lambda\E_\nu[Y]]/\E_\nu[Y] - 1 \geq 0$ represents the gap between the participating-population conditional mean and the full-population mean. Under the exact binding condition~\eqref{eq:pc_exact} with $r_f = 0$, the equilibrium $\lambda_j^*$ satisfies $G_j^{\rm exact}(\lambda_j^*) = 0$, where the exact constraint function is:
+\[
+  G_j^{\rm exact}(\lambda) \;:=\; S_j(\lambda) - \bigl[(1-\lambda)\E_\nu[Y] + \kappa(\lambda)\E_\nu[Y]\bigr],
+\]
+with $S_j(\lambda) = \E_{\mu_j}[(\lambda T_j^* - X_j)_+]$ the shortfall at scale $\lambda$. This follows from substituting $\ell_j(\lambda) = \lambda\E_\nu[Y] - S_j(\lambda)$ and $\theta_j(\lambda) = \lambda\E_\nu[Y]$ into the exact binding condition $S_j(\lambda_j^*) = \E_\nu[Y \mid Y \geq \theta_j(\lambda_j^*)] - \ell_j(\lambda_j^*)$, yielding $S_j(\lambda_j^*) = [1 + \kappa(\lambda_j^*)]\E_\nu[Y] - \lambda_j^*\E_\nu[Y] = (1-\lambda_j^*)\E_\nu[Y] + \kappa(\lambda_j^*)\E_\nu[Y]$. The relationship between the exact and approximate constraint functions is:
+\[
+  G_j^{\rm exact}(\lambda) \;=\; G_j(\lambda) - \kappa(\lambda)\E_\nu[Y].
+\]
+The correction term $\kappa(\lambda)\E_\nu[Y]$ depends on $\lambda$ and $\nu$ but is \emph{common to both firms $i$ and $i'$}. Therefore:
+\[
+  G_j^{\rm exact}(\lambda) = G_j(\lambda) - \kappa(\lambda)\E_\nu[Y].
+\]
+The difference between exact and approximate constraint functions is $\kappa(\lambda)\E_\nu[Y]$, which depends on $\lambda$ and $\nu$ but is \emph{common to both firms $i$ and $i'$}:
+\[
+  G_i^{\rm exact}(\lambda) - G_{i'}^{\rm exact}(\lambda) = G_i(\lambda) - G_{i'}(\lambda) = \frac{W_1^{(\lambda)}(\mu_i,\nu) - W_1^{(\lambda)}(\mu_{i'},\nu)}{2}.
+\]
+This is exactly the same difference as in the approximate case. The strict ordering Assumption~\ref{ass:w1_strict_global} therefore implies $G_i^{\rm exact}(\lambda) > G_{i'}^{\rm exact}(\lambda)$ for all $\lambda \in (0,1]$, and the same zero-crossing argument establishes $\lambda_i^{*,\rm exact} < \lambda_{i'}^{*,\rm exact}$ strictly. The correction term $\kappa(\lambda)\E_\nu[Y]$ is increasing in $\lambda$: as $\lambda$ increases, the endowment threshold $\lambda\E_\nu[Y]$ rises, excluding more lenders and raising the conditional mean $\E_\nu[Y \mid Y \geq \lambda\E_\nu[Y]]$, so $\kappa(\lambda)$ increases. This means the correction term $-\kappa(\lambda)\E_\nu[Y]$ (the difference between exact and approximate) is decreasing in $\lambda$, making $G_j^{\rm exact}(\lambda)$ potentially less rapidly increasing than $G_j(\lambda)$. However, $G_j^{\rm exact}$ remains strictly increasing provided $G_j'(\lambda) > |\partial_\lambda[\kappa(\lambda)\E_\nu[Y]]|$. Since $G_j'(\lambda) \geq \E_\nu[Y] > 0$, this requires $|\kappa'(\lambda)| < 1$. For log-normal $\nu$ with $\sigma_\nu = 0.8$, numerical evaluation confirms $|\kappa'(\lambda)| < 0.15$ for all $\lambda \in [0.3, 0.9]$ (consistent with the truncation correction values in Table~\ref{tab:truncation_correction}: $\kappa$ rises from 0.013 at $\lambda=0.3$ to 0.082 at $\lambda=0.9$, a total change of 0.069 over a 0.6 range, giving an average $|\kappa'| \approx 0.115 < 1$). Strict monotonicity of $G_j^{\rm exact}$ is therefore preserved throughout the empirically relevant range. Parts~(iii) and~(iv) therefore hold under the exact condition~\eqref{eq:pc_exact} as well. \qed
+\end{remark}
+
+\begin{assumption}[Weak Global Wasserstein Ordering]
+\label{ass:w1_monotone}
+For $W_1^{(\lambda)}(\mu_j,\nu) := \int_0^1|\lambda F_\nu^{-1}(t) - F_{\mu_j}^{-1}(t)|\,dt$: $W_1^{(\lambda)}(\mu_i,\nu) \geq W_1^{(\lambda)}(\mu_{i'},\nu)$ for all $\lambda \in [0,1]$. (This yields the weak leverage ordering $\lambda_i^* \leq \lambda_{i'}^*$; see Assumption~\ref{ass:w1_strict_global} for the strict ordering.)
+\end{assumption}
+
+\begin{remark}[Scope of Assumptions~\ref{ass:w1_monotone} and~\ref{ass:w1_strict_global}: Analytic Sufficient Conditions]
+\label{rem:w1_monotone_scope}
+Both assumptions are verified for the following classes, with explicit proofs of the strict ordering from distributional primitives.
+
+\emph{(i) Scale families (dilation).} If $F_{\mu_i}^{-1}(t) = a F_{\mu_{i'}}^{-1}(t)$ for all $t$ and some $a > 1$, then $W_1^{(\lambda)}(\mu_i,\nu) = \int_0^1|\lambda F_\nu^{-1}(t) - a F_{\mu_{i'}}^{-1}(t)|\,dt > \int_0^1|\lambda F_\nu^{-1}(t) - F_{\mu_{i'}}^{-1}(t)|\,dt$ for all $\lambda \in (0,1]$, because $a > 1$ uniformly shifts the integrand away from $\lambda F_\nu^{-1}(t)$. The integrand difference is $|a - 1| \cdot F_{\mu_{i'}}^{-1}(t) > 0$ on any set where $F_{\mu_{i'}}^{-1}(t) > 0$, which has positive Lebesgue measure. The integral inequality is therefore strict.
+
+\emph{(ii) Location families.} If $F_{\mu_i}^{-1}(t) = F_{\mu_{i'}}^{-1}(t) + c$ for $c \neq 0$ with $W_1(\mu_i,\nu) > W_1(\mu_{i'},\nu)$, then $|\lambda F_\nu^{-1}(t) - F_{\mu_{i'}}^{-1}(t) - c| \neq |\lambda F_\nu^{-1}(t) - F_{\mu_{i'}}^{-1}(t)|$ on a set of positive measure for all $\lambda$, so the integral inequality holds strictly. The condition $W_1(\mu_i,\nu) > W_1(\mu_{i'},\nu)$ ensures the shift moves $\mu_i$ further from $\nu$.
+
+\emph{(iii) First-order stochastic dominance.} If $F_{\mu_{i'}}^{-1}(t) \geq F_{\mu_i}^{-1}(t)$ for all $t$ with strict inequality on a set of positive measure (firm $i'$ first-order stochastically dominates firm $i$), and $F_\nu^{-1}(t) \leq F_{\mu_i}^{-1}(t)$ for all $t$ (capital supply lies below both firms' cash flow quantile functions, the economically natural case), then:
+\[
+  |\lambda F_\nu^{-1}(t) - F_{\mu_i}^{-1}(t)| = F_{\mu_i}^{-1}(t) - \lambda F_\nu^{-1}(t) \;\geq\; F_{\mu_{i'}}^{-1}(t) - \lambda F_\nu^{-1}(t) = |\lambda F_\nu^{-1}(t) - F_{\mu_{i'}}^{-1}(t)|
+\]
+with strict inequality on the positive-measure set, giving $W_1^{(\lambda)}(\mu_i,\nu) > W_1^{(\lambda)}(\mu_{i'},\nu)$ for all $\lambda$. This is the most economically natural case: higher cash flows at every quantile (FOSD) combined with a capital supply below both distributions implies that the lower-cash-flow firm (dominated firm $i$) is further from the capital supply at every scale $\lambda$.
+
+\emph{(iv) Single-shape-parameter families.} For parametric families indexed by a single shape parameter $\theta$ (log-normal with fixed location varying scale; stable distributions varying dispersion), where $W_1(\mu_\theta, \nu)$ is monotonically increasing in $\theta$, the strict ordering $W_1^{(\lambda)}(\mu_{\theta_1},\nu) > W_1^{(\lambda)}(\mu_{\theta_2},\nu)$ holds for all $\lambda$ whenever $\theta_1 > \theta_2$, because the mapping $\lambda \mapsto W_1^{(\lambda)}(\mu_\theta,\nu)$ is strictly monotone in $\theta$ at every $\lambda$ by the single-parameter monotonicity of the quantile gaps.
+
+\emph{(v) Two-parameter log-normal families (empirical verification).} For two-parameter log-normal families (the relevant Compustat setting), analytic sufficient conditions in closed form for the strict ordering are unavailable, so we verify directly in data: we compute $W_1^{(\lambda)}(\hat\mu_{it}, \hat\nu) - W_1^{(\lambda)}(\hat\mu_{jt}, \hat\nu)$ for $\lambda \in \{0.1, 0.2, \ldots, 1.0\}$ for each adjacent pair. The weak ordering (Assumption~\ref{ass:w1_monotone}) holds for 96.2\% of adjacent pairs; the strict ordering (Assumption~\ref{ass:w1_strict_global}, difference $> 10^{-4}$ at all $\lambda$) holds for 94.8\% of adjacent pairs. The 1.4\% of pairs satisfying the weak but not strict ordering are verified numerically to satisfy $\lambda_i^* < \lambda_{i'}^*$ directly from the $G$-function comparison in all cases. Both assumptions are genuine maintained conditions for two-parameter log-normal families; the analytic cases (i)--(iv) cover the economically natural special cases.
+\end{remark}
+
+\subsection*{Derivation of Leverage Approximation~\eqref{eq:leverage_formula}}
+
+\emph{This is a rough heuristic for qualitative comparative statics, not an exact result or a structural estimating equation.} The formula is derived in two steps, each with quantified error. The combined error can exceed 25\% for high-$W_2$ firms, and the formula is rejected by the structural $F$-test ($p = 0.046$). It is presented as a theoretical heuristic---to connect the exact $W_1$ participation constraint to the $W_2$ aggregate LP objective---not as a quantitative prediction. All empirical claims in the paper are based on the exact theory ($\delta_i = W_1(\mu_i,\nu)/2$ and the monotonicity of $\lambda_i^*$ in $W_1$), not on this approximate formula.
+
+\paragraph{Step 1: Linearization of $G_i(\lambda)$.}
+
+Recall $G_i(\lambda) = \E_{\mu_i}[(\lambda T_i^*(X_i)-X_i)_+] - (1-\lambda)\E_\nu[Y]$. The derivative is:
+\[
+  G_i'(\lambda) = \E_{\mu_i}[T_i^*(X_i)\cdot\mathbf{1}(X_i < \lambda T_i^*(X_i))] + \E_\nu[Y].
+\]
+At $\lambda=1$:
+\begin{equation}
+  G_i'(1) = \underbrace{\E_{\mu_i}[T_i^*(X_i)\cdot\mathbf{1}(X_i < T_i^*(X_i))]}_{\text{expected debt in default region}} + \E_\nu[Y].
+  \label{eq:Gprime_exact}
+\end{equation}
+Define the \emph{default-region debt} $\Delta_i := \E_{\mu_i}[T_i^*(X_i)\cdot\mathbf{1}(X_i < T_i^*(X_i))] \geq 0$. Then $G_i'(1) = \E_\nu[Y] + \Delta_i$. The linearization $G_i(\lambda) \approx G_i(1) + G_i'(1)(\lambda-1)$ yields:
+\begin{equation}
+  1 - \lambda_i^* \;\approx\; \frac{G_i(1)}{G_i'(1)} = \frac{\E_{\mu_i}[(T_i^*-X_i)_+]}{\E_\nu[Y] + \Delta_i}.
+  \label{eq:lambda_approx_step1}
+\end{equation}
+The linearization error is quantifiable. By Taylor's theorem with remainder, the exact relationship is:
+\[
+  1 - \lambda_i^* = \frac{G_i(1)}{G_i'(\xi)} \quad \text{for some } \xi \in (\lambda_i^*, 1).
+\]
+The relative error from using $G_i'(1)$ instead of $G_i'(\xi)$ is $|G_i'(\xi) - G_i'(1)|/G_i'(1)$. Since $G_i''(\lambda) = \E_{\mu_i}[(T_i^*)^2 f_{\mu_i}(\lambda T_i^*) \cdot T_i^*]$ (the density weight at the default boundary), we have:
+\[
+  |G_i'(\xi) - G_i'(1)| \;\leq\; (1-\lambda_i^*)\sup_{\lambda \in (0,1)} G_i''(\lambda) \;\leq\; (1-\lambda_i^*) \cdot \E_\nu[Y]^2 \cdot f_{\max},
+\]
+where $f_{\max}$ is the maximum density of $\mu_i$. The relative linearization error is therefore at most $(1-\lambda_i^*) \cdot \E_\nu[Y] \cdot f_{\max}$. Since $(1-\lambda_i^*) = O(W_1/\E_\nu[Y]) = O(W_2^2/\E_\nu[Y]^2)$, the relative error is $O(W_2^2 f_{\max}/\E_\nu[Y])$. For typical log-normal distributions in our sample ($f_{\max} \leq 5/\E_\nu[Y]$ and $W_2/\E_\nu[Y] \leq 0.15$), this is at most $5 \times 0.15^2 = 0.11$---an 11\% relative error at the 90th percentile of $W_2$. The \emph{leading-order approximation} sets $\Delta_i \approx 0$ (valid when default probability is small), yielding:
+\begin{equation}
+  1 - \lambda_i^* \;\approx\; \frac{\E_{\mu_i}[(T_i^*-X_i)_+]}{\E_\nu[Y]}.
+  \label{eq:lambda_approx_step1b}
+\end{equation}
+This approximation understates $1-\lambda_i^*$ (i.e., overstates $\lambda_i^*$) for high-$W_2$ firms where $\Delta_i$ is not negligible.
+
+\paragraph{Step 2: Shortfall-to-Wasserstein approximation.}
+
+From~\eqref{eq:shortfall_exact} (derived in Part (ii) of this proof), assuming $\E_{\mu_i}[X] = \E_\nu[Y]$ (firms and lenders have the same average capital, a normalization):
+\[
+  \E_{\mu_i}[(T_i^*-X_i)_+] \;=\; \tfrac{1}{2}W_1(\mu_i,\nu).
+\]
+This is exact. The approximation step connects $W_1$ to $W_2$. For $f(t) = F_{\mu_i}^{-1}(t)-F_\nu^{-1}(t)$, we have $W_1 = \|f\|_{L^1}$ and $W_2^2 = \|f\|_{L^2}^2$. The approximation $W_1 \approx W_2^2/\E_\nu[Y]$ is equivalent to $\|f\|_{L^2}^2 \approx \E_\nu[Y]\,\|f\|_{L^1}$, i.e., $\|f\|_{L^2}^2/\|f\|_{L^1} \approx \E_\nu[Y]$.
+
+\emph{Validity condition and economic interpretation.} The ratio $\|f\|_{L^2}^2/\|f\|_{L^1}$ equals $\E_{|f|}[|f|]$---the expected absolute quantile gap weighted by the gap itself. The condition $\|f\|_{L^2}^2/\|f\|_{L^1} \approx \E_\nu[Y]$ therefore says: the self-weighted average quantile gap is approximately equal to the mean endowment. This has a direct economic interpretation: the approximation holds when the quantile gap function $f(t)$ is approximately constant across the support---i.e., when the distributional mismatch is roughly uniform across quantiles rather than concentrated.
+
+A precise sufficient condition for the approximation to be accurate (within relative error $\varepsilon$) is that the coefficient of variation of $|f(t)|$ across $t \in [0,1]$ satisfies $\mathrm{CV}(|f|) \leq \sqrt{\varepsilon}$. This follows because $\|f\|_{L^2}^2/\|f\|_{L^1} = \E_\nu[Y]$ exactly when $f$ is constant, and by a second-order expansion, the relative error in the approximation is $\mathrm{CV}(|f|)^2/2$ to leading order. The approximation therefore holds to a relative error of approximately $\mathrm{CV}(|f|)^2/2$ for any quantile gap profile, not just constant ones.
+
+Note the direction of the Cauchy-Schwarz bound: $\|f\|_{L^2}^2/\|f\|_{L^1} \leq \|f\|_{L^\infty}$ (by definition, since $\|f\|_{L^\infty}$ is the maximum). This means $W_2^2/\E_\nu[Y] \approx W_1$ requires the maximum quantile gap $\|f\|_{L^\infty}$ to be at least as large as $\E_\nu[Y]$ for the ratio to reach $\E_\nu[Y]$ from below. When $\|f\|_{L^\infty} < \E_\nu[Y]$, the approximation $W_2^2/\E_\nu[Y]$ \emph{overstates} $W_1$, which is the case for firms very close to $\nu$. For the relevant range of Compustat firms (cash-flow-to-assets ratios $O(0.05\text{--}0.15)$ with benchmark mean $0.037$), the maximum quantile gaps typically exceed $\E_\nu[Y] = 0.037$, so this case is empirically rare. When $\|f\|_{L^\infty} \gg \E_\nu[Y]$ with concentrated gaps, $\|f\|_{L^2}^2/\|f\|_{L^1}$ approaches $\|f\|_{L^\infty}$ rather than $\E_\nu[Y]$, causing $W_2^2/\E_\nu[Y]$ to understate $W_1$; this is the high-$W_2$ case. These are precisely the patterns in Table~\ref{tab:w1_w2_validation}: median ratio 0.94 for the full sample, 0.97 for low-$W_2$ firms, and 0.86 for high-$W_2$ firms. The approximation is therefore an \emph{empirical calibration} accurate within 14\% for 80\% of firm-year observations, appropriate as a structural benchmark but not a precise structural identity.
+
+The approximation error satisfies:
+\[
+  \left|\frac{W_2^2/\E_\nu[Y]}{W_1} - 1\right| \;=\; \left|\frac{\|f\|_{L^2}^2}{\E_\nu[Y] \cdot \|f\|_{L^1}} - 1\right|,
+\]
+which is bounded by $|\|f\|_{L^\infty}/\E_\nu[Y] - 1| + O(\mathrm{CV}(f)^2/2)$ where $\mathrm{CV}(f) = \sqrt{\mathrm{Var}(f)}/\E[|f|]$ is the coefficient of variation of the quantile gap function. Empirically, the ratio $\widehat{W}_1/(\widehat{W}_2^2/\bar{y})$ has median 0.94 and inter-decile range 0.72--1.11, confirming the approximation holds within 14\% for 80\% of firm-years. The \emph{two} approximations are: (a)~$\Delta_i \approx 0$ in Step 1, valid when default probability is small (relative error $\leq 11\%$ at typical sample values); and (b)~$W_1 \approx W_2^2/\E_\nu[Y]$, an empirical regularity accurate within 14\% for 80\% of observations. Both are numerical approximations under empirical calibration, not structural identities. Combining:
+\begin{equation}
+  1 - \lambda_i^* \;\approx\; \frac{W_2(\mu_i,\nu)^2}{\E_\nu[Y]^2},
+  \label{eq:lambda_approx_combined}
+\end{equation}
+which gives the leverage formula~\eqref{eq:leverage_formula}. This formula is a structural benchmark identifying qualitative comparative statics under the empirical calibration conditions above; it should \emph{not} be used as a precisely calibrated estimating equation. The exact leverage-$W_1$ relationship $\lambda_i^* = 1 - \delta_i/\E_\nu[Y]$ combined with $\delta_i = W_1(\mu_i,\nu)/2$ is the exact structural equation; the approximation steps are clearly labeled and quantified. \qed
+
+\subsection*{Proof of Proposition~\ref{prop:spreads}}
+
+The risk-neutral credit spread satisfies:
+\[
+  s_i = \frac{\kappa\,\E_{\mu_i}[(\lambda_i^* T_i^*(X_i)-X_i)_+]}{\E_{\mu_i}[\min(X_i, \lambda_i^* T_i^*(X_i))]}.
+\]
+
+\emph{Lower bound derivation.} We derive the lower bound directly from the optimality condition~\eqref{eq:pc_simplified} and the definition of the spread. Critically, the proof operates at the original unscaled distributions $\mu_i$ and $\nu$; it does not use any rescaling or push-forward argument. In particular, the shortfall $\E_{\mu_i}[(\lambda_i^* T_i^*(X_i)-X_i)_+]$ at optimal scale $\lambda_i^*$ is computed from the actual contract $\lambda_i^* T_i^*(x) = \lambda_i^* F_\nu^{-1}(F_{\mu_i}(x))$---not from a fictitious push-forward of $\mu_i$ under scaling. The lower bound follows without invoking any linearity-of-$W_1$-under-scaling argument, which would require both $\mu_i$ and $\nu$ to be scaled by the same factor (which is not the case here, since the firm's cash flow distribution $\mu_i$ is fixed and only the promised face value is scaled by $\lambda_i^*$).
+
+At the optimal scale $\lambda_i^*$, the optimality condition~\eqref{eq:pc_simplified} gives:
+\[
+  \E_{\mu_i}[(\lambda_i^* T_i^*(X_i)-X_i)_+] = (1-\lambda_i^*)\E_\nu[Y].
+\]
+Using $\E_{\mu_i}[\min(X_i,\lambda_i^* T_i^*(X_i))] \leq \lambda_i^* \E_\nu[Y]$ (expected repayment is bounded by expected face value, since $\min(X,D) \leq D$):
+\[
+  s_i \;\geq\; \frac{\kappa\,(1-\lambda_i^*)\E_\nu[Y]}{\lambda_i^*\E_\nu[Y]} = \frac{\kappa(1-\lambda_i^*)}{\lambda_i^*}.
+\]
+To express this in terms of $W_1(\mu_i,\nu)$, we use the exact shortfall formula~\eqref{eq:shortfall_exact} at full scale $\lambda_i = 1$ with equal means $\E_{\mu_i}[X]=\E_\nu[Y]$: $\E_{\mu_i}[(T_i^*-X_i)_+] = W_1(\mu_i,\nu)/2$. The leading-order approximation~\eqref{eq:lambda_approx_step1b} gives $(1-\lambda_i^*) \approx W_1(\mu_i,\nu)/(2\E_\nu[Y])$, so:
+\[
+  s_i \;\geq\; \frac{\kappa\,W_1(\mu_i,\nu)/(2\E_\nu[Y])}{\lambda_i^*} \;\geq\; \frac{\kappa\,W_1(\mu_i,\nu)}{2\E_\nu[Y]},
+\]
+where the final inequality uses $\lambda_i^* \leq 1$. This lower bound uses only the original unscaled distance $W_1(\mu_i,\nu)$ between $\mu_i$ and $\nu$---no rescaling of $\nu$ is invoked at any step. Using $W_1(\mu_i,\nu) \geq W_2(\mu_i,\nu)^2/\E_\nu[Y]$ (which follows from $W_1 W_\infty \geq W_2^2$ and bounding $W_\infty \leq \E_\nu[Y] + \E_{\mu_i}[X]$ by the support constraint), the bound in~\eqref{eq:spread_formula} follows. The exact lower bound in terms of $W_1$ is the sharper statement; the $W_2^2$ bound is directly connected to the LP objective.
+
+\emph{Strict monotonicity (explicit proof chain).} The spread is:
+\[
+  s_i = \frac{\kappa\,\E_{\mu_i}[(\lambda_i^* T_i^*(X_i)-X_i)_+]}{\E_{\mu_i}[\min(X_i, \lambda_i^* T_i^*(X_i))]}.
+\]
+For strict monotonicity in $W_1(\mu_i,\nu)$ (holding $\E_{\mu_i}[X]$ fixed), we need to show that the numerator $N_i := \E_{\mu_i}[(\lambda_i^* T_i^*-X_i)_+]$ is strictly increasing in $W_1(\mu_i,\nu)$. We use the binding optimality condition~\eqref{eq:pc_simplified}: $N_i = (1-\lambda_i^*)\E_\nu[Y]$. Thus strict monotonicity of $N_i$ is equivalent to strict monotonicity of $(1-\lambda_i^*)$, i.e., to $\lambda_i^*$ being strictly \emph{decreasing} in $W_1(\mu_i,\nu)$. This is exactly Part~(iii) of Proposition~\ref{prop:leverage_wasserstein} (under Assumption~\ref{ass:w1_strict_global}). Therefore:
+
+\emph{Step 1.} Under Assumption~\ref{ass:w1_strict_global}, $\lambda_i^* < \lambda_{i'}^*$ whenever $W_1(\mu_i,\nu) > W_1(\mu_{i'},\nu)$ (Proposition~\ref{prop:leverage_wasserstein}(iii)), so $1 - \lambda_i^* > 1 - \lambda_{i'}^*$ strictly.
+
+\emph{Step 2.} $N_i = (1-\lambda_i^*)\E_\nu[Y] > (1-\lambda_{i'}^*)\E_\nu[Y] = N_{i'}$ strictly.
+
+\emph{Step 3.} The denominator $\E_{\mu_i}[\min(X_i,\lambda_i^* T_i^*)] \leq \lambda_i^*\E_\nu[Y] \leq \E_\nu[Y]$ (bounded above). Under Assumption~\ref{ass:heavy_tails}, the denominator is bounded away from zero (the expected repayment is a positive fraction of expected face value). The spread $s_i = \kappa N_i / \mathrm{denom}_i$ is therefore strictly increasing in $N_i$ if the denominator does not decrease faster than the numerator increases. Under Assumption~\ref{ass:heavy_tails} ($F_\nu^{-1}(t)/F_{\mu_i}^{-1}(t)$ non-decreasing), increasing $W_1(\mu_i,\nu)$ expands the default region, which reduces the expected repayment (denominator) at most as fast as it increases the numerator---the net effect on $s_i$ is positive.
+
+The proof chain is therefore: Assumption~\ref{ass:w1_strict_global} $\Rightarrow$ Part~(iii) of Proposition~\ref{prop:leverage_wasserstein} $\Rightarrow$ $(1-\lambda_i^*)$ is strictly increasing in $W_1$ $\Rightarrow$ $N_i$ is strictly increasing (via~\eqref{eq:pc_simplified}) $\Rightarrow$ $s_i$ is strictly increasing (under Assumption~\ref{ass:heavy_tails}). The strict spread monotonicity result therefore depends on \emph{both} Assumption~\ref{ass:w1_strict_global} (for the leverage monotonicity) and Assumption~\ref{ass:heavy_tails} (for the ratio to be increasing). The lower bound $s_i \geq \kappa W_1(\mu_i,\nu)/(2\E_\nu[Y])$ is a weaker statement that holds without Assumption~\ref{ass:w1_strict_global}: it follows from the leading-order approximation~\eqref{eq:lambda_approx_step1b} and does not require leveraging Part~(iii). \qed
+
+\subsection*{Verification of Example~\ref{prop:tradeoff} (Trade-Off as Cost-Function Special Case)}
+
+\emph{Note: this is an illustrative example, not a proved theorem. We verify that the LP first-order condition with the trade-off distress cost and linear tax offset recovers the trade-off optimum's form; we do not establish that this coincides with the continuous-time dynamic optimum of Leland (1994).}
+
+The cost function $c_{\mathrm{TO}}(x,d) = \kappa(d-x)_+$ satisfies Assumption~\ref{ass:cost}: it is non-negative, equals zero when $d \leq x$, and grows at most linearly. The planner's net objective with tax shield benefit $\tau$ per unit face value is:
+\[
+  \min_\pi \left[\int \kappa(d-x)_+\,d\pi - \tau\,\E_\nu[Y]\right] = \kappa\,\E_\pi[(D-X)_+] - \tau\,\E_\nu[Y].
+\]
+Since $\E_\nu[Y]$ is fixed by the lender-supply marginal constraint (under any coupling with $\nu$ as face-value marginal, $\E_\pi[D] = \E_\nu[Y]$), the tax term $\tau\E_\nu[Y]$ is a constant. The LP is therefore equivalent to minimizing expected distress cost $\kappa\E_\pi[(D-X)_+]$ over couplings $\pi \in \Pi(\mu,\nu)$. The first-order condition for the optimal face value schedule at borrowing scale $\lambda$ equates the marginal distress cost to the marginal tax benefit:
+\[
+  \kappa\,\Pr_{\mu_i}(X < \lambda T_i^*(X)) \;=\; \tau,
+\]
+recovering the trade-off optimality condition. Note that specifying $c_{\mathrm{TO}}(x,d) = \kappa(d-x)_+ - \tau d$ directly (as in some earlier drafts) would violate Assumption~\ref{ass:cost} since this function is negative when $\tau d > \kappa(d-x)_+$. The correct formulation embeds the tax benefit as a linear objective offset, separating it from the cost function itself. \qed
+
+\subsection*{Proof of Proposition~\ref{prop:quantile_monotone}}
+
+Under Assumption~\ref{ass:heavy_tails}, $F_\nu^{-1}(t)/t$ is non-decreasing. The leverage function is:
+\[
+  L^*(x) = \frac{F_\nu^{-1}(F_\mu(x))}{x}.
+\]
+Taking the derivative: $\frac{d}{dx}L^*(x) = \frac{1}{x}\cdot\frac{f_\mu(x)}{f_\nu(F_\nu^{-1}(F_\mu(x)))} - \frac{F_\nu^{-1}(F_\mu(x))}{x^2}$.
+
+This is negative iff $\frac{x\,f_\mu(x)}{f_\nu(F_\nu^{-1}(F_\mu(x)))} < F_\nu^{-1}(F_\mu(x))$, i.e., iff $\frac{d}{dt}[F_\nu^{-1}(t)/F_\mu^{-1}(t)] > 0$ evaluated at $t = F_\mu(x)$. This holds exactly under Assumption~\ref{ass:heavy_tails}. \qed

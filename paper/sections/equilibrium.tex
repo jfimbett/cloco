@@ -1,0 +1,56 @@
+\section{Equilibrium Leverage and Credit Spreads}
+\label{sec:equilibrium}
+
+\subsection{Debt Capacity and the Wasserstein Distance}
+
+The central result of the paper connects each firm's equilibrium leverage to the distance between its cash flow distribution and the capital supply distribution. Holding mean cash flows fixed, firms whose distributions are farther from $\nu$ — in the sense of the 1-Wasserstein distance — carry less debt.
+
+\begin{proposition}[Leverage and Wasserstein Distance]
+\label{prop:leverage_wasserstein}
+Let $\mu_i, \mu_{i'} \in \calP_2(\Rp)$ with $\E_{\mu_i}[X] = \E_{\mu_{i'}}[X]$. Then:
+\begin{enumerate}[label=(\roman*)]
+  \item $\E_{\mu_j}[T_j^*(X_j)] = \E_\nu[Y]$ for $j \in \{i, i'\}$.
+  \item The expected default shortfall satisfies
+    \begin{equation}
+      \delta_j \;:=\; \E_{\mu_j}\bigl[(T_j^*(X_j)-X_j)_+\bigr] \;=\; \frac{\E_\nu[Y]-\E_{\mu_j}[X]}{2} + \frac{\wone}{2}.
+      \label{eq:shortfall_exact}
+    \end{equation}
+    Under equal means, this simplifies to $\delta_j = W_1(\mu_j,\nu)/2$.
+  \item If $W_1(\mu_i,\nu) > W_1(\mu_{i'},\nu)$ then $\lambda_i^* < \lambda_{i'}^*$.
+  \item $L_i^* < L_{i'}^*$, where $L_j^* := \lambda_j^* \E_\nu[Y]/\E_{\mu_j}[X]$.
+\end{enumerate}
+\end{proposition}
+
+Part (ii) is the paper's central exact result. A firm's expected default shortfall at the optimal contract is precisely half the Wasserstein distance between its cash flow distribution and the capital supply distribution. Because lenders break even in expectation, a larger shortfall means less credit is extended: the firm must scale down its borrowing until the participation constraint~\eqref{eq:pc_simplified} holds. Parts (iii) and (iv) formalize this: firms with distributions further from $\nu$ have strictly lower equilibrium scale and lower leverage.
+
+In one dimension, $W_1(\mu,\nu) = \int_0^1 |F_\mu^{-1}(t) - F_\nu^{-1}(t)|\,dt$ — the average absolute distance between the quantile functions of cash flows and capital supply. A firm with $\mu_i = \nu$ has zero mismatch and can absorb the capital supply distribution perfectly, incurring no expected bankruptcy cost at any scale. As $\mu_i$ departs from $\nu$ in distribution — differing in skewness, tail behavior, or any higher moment while keeping mean and variance fixed — the mismatch grows and debt capacity shrinks. Variance alone is not the right measure: two firms with identical variance but different shapes have different Wasserstein distances from $\nu$ and therefore different leverage.
+
+\subsection{Credit Spreads}
+
+The same distributional distance that governs leverage also governs credit spreads. Firms with higher Wasserstein distance pay higher spreads at issuance, and the spread lower bound is proportional to the same $W_1(\mu_i,\nu)$ that determines leverage.
+
+\begin{proposition}[Credit Spreads]
+\label{prop:spreads}
+The equilibrium risk-neutral credit spread $s_i$ satisfies
+\[
+  s_i \;\geq\; \frac{\kappa\,W_1(\mu_i,\nu)}{2\,\E_\nu[Y]},
+\]
+with $s_i$ strictly increasing in $W_1(\mu_i,\nu)$ under the tail regularity condition in Appendix~\ref{app:proofs}.
+\end{proposition}
+
+The spread and leverage results come from the same object, $W_1(\mu_i,\nu)$, but through different channels. Low leverage reflects the firm scaling down its borrowing to satisfy the participation constraint. High spreads reflect the lenders pricing the risk of the default shortfall. Both are driven by distributional mismatch. This generates a cross-equation consistency check: the same structural parameters $(\alpha_\nu, \sigma_\nu, \kappa)$ — identified from the leverage cross-section and the spread slope, respectively — imply a spread lower bound that can be compared against the data. The estimation in Section~\ref{sec:estimation} calibrates these parameters in two stages and reports the implied spread lower bounds in Table~\ref{tab:decile_fit} as a consistency check.
+
+\subsection{Aggregate Welfare}
+
+At the social planner level, the aggregate deadweight cost of the debt market depends on the two-Wasserstein distance between the economy's distribution of firm cash flows and the aggregate capital supply distribution.
+
+\begin{proposition}[Welfare]
+\label{prop:welfare}
+The minimized aggregate deadweight bankruptcy cost equals $\kappa\,W_2^2(\mu,\nu)$, where $W_2^2(\mu,\nu) = \int_0^1 (F_\mu^{-1}(t) - F_\nu^{-1}(t))^2\,dt$.
+\end{proposition}
+
+The welfare result has a direct implication for the role of financial intermediaries. Institutions that bring the capital supply distribution $\nu$ closer to the distribution of firm cash flows $\mu$ — by transforming, pooling, or reallocating endowments — reduce aggregate bankruptcy costs, even without changing the risk-free rate. This is a new welfare channel for financial intermediation: distributional transformation, not just maturity or liquidity transformation. The squared two-Wasserstein distance $W_2^2(\mu,\nu)$ is the natural welfare measure for this channel and is directly estimable from the structural model.
+
+\subsection{Testable Predictions}
+
+The three propositions generate three testable cross-sectional predictions. The Wasserstein distance $W_1(\mu_i, \nu)$ negatively predicts leverage, conditional on mean cash flows and volatility — the shape component beyond the first two moments has independent predictive power. The same distance positively predicts credit spreads at issuance, conditional on standard controls. And the same structural parameters estimated from leverage data imply model spread lower bounds that can be compared against TRACE spread data, providing a cross-equation consistency check. The structural estimation in Section~\ref{sec:estimation} reports both predictions.

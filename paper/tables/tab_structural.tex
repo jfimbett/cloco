@@ -1,0 +1,36 @@
+\begin{table}[htbp]
+\centering
+\caption{Structural Parameter Estimates}
+\label{tab:structural}
+\begin{threeparttable}
+\begin{tabular}{lcc}
+\toprule
+Parameter & Estimate & Bootstrap SE \\
+\midrule
+$\hat{\alpha}_\nu$ (log-location of $\hat{\nu}$) & -3.4926 & (0.0132) \\
+$\hat{\sigma}_\nu$ (log-scale of $\hat{\nu}$) & 2.3919 & (0.0025) \\
+$\hat{\kappa}$ (bankruptcy cost scale) & 0.1039 & (0.0049) \\
+\midrule
+\multicolumn{3}{l}{\textit{Implied moments of $\hat{\nu}$}} \\
+$\mathbb{E}_{\hat{\nu}}[Y]$ (mean capital endowment, 10-pt empirical) & 0.0903 & (0.0096) \\
+$\text{Std}(\hat{\nu})$ & 9.2729 & (---) \\
+\midrule
+\multicolumn{3}{l}{\textit{Identification}} \\
+$R^2$ (LogNormal fit to $\hat{\nu}$) & 0.4218 & --- \\
+Binding decile (kappa SMM) & D9 & --- \\
+$R^2$ (leverage decile fit) & -10.9473 & --- \\
+Spearman $\rho$ (lev.\ vs.\ $W_1$ decile) & 0.4545 & ($p=0.187$) \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item Bootstrap standard errors (500 firm-level replications) in parentheses.
+$\hat{\nu} \sim \text{LogNormal}(\hat{\alpha}_\nu, \hat{\sigma}_\nu^2)$ is the
+Fr\'{e}chet mean of firm cash-flow distributions.
+$\hat{\kappa}$ is identified via SMM bound-tightening (Equation~\ref{eq:kappa_smm}),
+binding at decile D9. Bootstrap SE for $\hat{\kappa}$
+is from 500 replications resampling TRACE bond-issuing firms.
+Sample: Compustat quarterly 1989--2024; TRACE 2012--2024 (spreads).
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

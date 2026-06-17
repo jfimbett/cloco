@@ -1,0 +1,46 @@
+\begin{table}[htbp]
+\centering
+\caption{Robustness: $\widehat{W}_{1,\text{shape}}$ vs.\ Financial Distress Proxies}
+\label{tab:robustness_distress}
+\resizebox{\textwidth}{!}{
+\begin{threeparttable}
+\begin{tabular}{lcccc}
+\toprule
+ & (1) & (2) & (3) & (4) \\
+\cmidrule(lr){2-5}
+Outcome: Book leverage & Baseline & +NI/A & +WW & +All distress \\
+\midrule
+$\widehat{W}_{1,\text{shape}}$ & $-0.1619^{***}$ & $-0.1617^{***}$ & $-0.1245^{***}$ & $-0.1235^{***}$ \\
+ & (0.0178) & (0.0178) & (0.0181) & (0.0181) \\[2pt]
+CF mean & $-0.2118^{***}$ & $-0.2135^{***}$ & $-0.1984^{***}$ & $-0.1971^{***}$ \\
+ & (0.0132) & (0.0132) & (0.0135) & (0.0136) \\[2pt]
+CF volatility & $-0.3353^{***}$ & $-0.3331^{***}$ & $-0.3029^{***}$ & $-0.3029^{***}$ \\
+ & (0.0194) & (0.0194) & (0.0195) & (0.0195) \\[2pt]
+Log assets & $0.0185^{***}$ & $0.0191^{***}$ & $0.1828^{***}$ & $0.1828^{***}$ \\
+ & (0.0008) & (0.0008) & (0.0086) & (0.0086) \\[2pt]
+Market-to-book & $0.0034^{***}$ & $0.0033^{***}$ & $0.0035^{***}$ & $0.0035^{***}$ \\
+ & (0.0001) & (0.0001) & (0.0001) & (0.0001) \\[2pt]
+Profitability & $0.0187^{**}$ & $0.2085^{***}$ & $0.1127^{***}$ & $0.2356^{***}$ \\
+ & (0.0065) & (0.0091) & (0.0100) & (0.0639) \\[2pt]
+Tangibility & $0.1649^{***}$ & $0.1606^{***}$ & $0.1460^{***}$ & $0.1461^{***}$ \\
+ & (0.0071) & (0.0071) & (0.0070) & (0.0069) \\[2pt]
+Net income / assets &  & $-0.2006^{***}$ & $0.2497^{***}$ & $0.2499^{***}$ \\
+ &  & (0.0062) & (0.0216) & (0.0216) \\[2pt]
+WW index (partial) &  &  & $3.8883^{***}$ & $3.8874^{***}$ \\
+ &  &  & (0.1978) & (0.1979) \\[2pt]
+Z-score component (EBIT) &  &  &  & $-0.0396^{*}$ \\
+ &  &  &  & (0.0205) \\[2pt]
+\midrule
+Firm FE & Yes & Yes & Yes & Yes \\
+Year FE & Yes & Yes & Yes & Yes \\
+$R^2$ & 0.0797 & 0.0848 & 0.1405 & 0.1405 \\
+$N$ & 626,752 & 626,747 & 626,747 & 626,747 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\small
+\item Dependent variable: book leverage (dlttq + dlcq) / atq. All specifications include firm and year-quarter fixed effects. Standard errors (in parentheses) clustered at firm level. NI/A = net income / total assets. WW index (partial) = $-0.091 \times ((\text{ibq}+\text{dpq})/\text{atq}) - 0.044 \times \log(\text{atq}) + 0.021 \times (\text{dlttq}/\text{atq})$, following \citet{WhitedWu2006financial}. Z-score component = $3.3 \times (\text{oibdpq}/\text{atq})$, the EBIT-to-assets term from \citet{Altman1968}. All variables winsorized at 1st/99th percentile. The baseline $N = 626{,}752$ (col.\ 1) exceeds the main regression sample $N = 625{,}105$ (Table~\ref{tab:panel_regressions}, col.\ 5) by 1,647 observations because the distress-robustness script applies a slightly less strict non-missing filter for the Frank-Goyal controls; within-firm coefficients on $\widehat{W}_{1,\text{shape}}$ are $-0.162$ in both samples (difference $< 0.001$). $^{***}$, $^{**}$, $^{*}$ denote significance at 1\%, 5\%, 10\%.
+\end{tablenotes}
+\end{threeparttable}
+}
+\end{table}

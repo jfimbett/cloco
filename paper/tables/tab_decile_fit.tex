@@ -1,0 +1,27 @@
+\begin{table}[htbp]
+\centering
+\caption{Leverage and Credit Spreads by $\widehat{W}_{1,\text{shape}}$ Decile}
+\label{tab:decile_fit}
+\begin{threeparttable}
+\begin{tabular}{lcccccccc}
+\toprule
+Decile & $\bar{W}_{1,\text{shape}}$ & $\bar{W}_{1,\text{shape}}^{\text{spr}}$ & Lev$^{\text{data}}$ & Lev$^{\text{model}}$ & Spread$^{\text{data}}$ & Spread$^{\text{model}}$ & $N$ & $N_{\text{spr}}$ \\
+\midrule
+1 & 0.0089 & 0.0092 & 0.1626 & 0.4406 & 461.6 & 52.6 & 66,667 & 756 \\
+2 & 0.0137 & 0.0138 & 0.1729 & 0.2563 & 398.5 & 79.2 & 66,666 & 1,010 \\
+3 & 0.0170 & 0.0171 & 0.1875 & 0.1878 & 369.8 & 98.3 & 66,667 & 1,394 \\
+4 & 0.0198 & 0.0199 & 0.2045 & 0.1428 & 309.6 & 114.2 & 66,666 & 1,842 \\
+5 & 0.0221 & 0.0221 & 0.2217 & 0.1240 & 281.5 & 127.0 & 66,667 & 2,169 \\
+6 & 0.0240 & 0.0241 & 0.2372 & 0.1152 & 263.6 & 138.4 & 66,666 & 2,548 \\
+7 & 0.0258 & 0.0258 & 0.2527 & 0.1095 & 251.5 & 148.6 & 66,666 & 3,123 \\
+8 & 0.0275 & 0.0275 & 0.2642 & 0.1103 & 216.4 & 158.3 & 66,667 & 4,456 \\
+9 & 0.0296 & 0.0295 & 0.2742 & 0.1625 & 169.7 & 169.7 & 66,666 & 6,290 \\
+10 & 0.1667 & 0.0710 & 0.1138 & 0.4422 & 550.8 & 408.1 & 66,667 & 230 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item $\bar{W}_{1,\text{shape}}$ = mean $\widehat{W}_{1,\text{shape}}$ of ALL firms in the decile. $\bar{W}_{1,\text{shape}}^{\text{spr}}$ = mean $\widehat{W}_{1,\text{shape}}$ of TRACE-matched (bond-issuing) firms only; used for Spread$^{\text{model}}$. Lev$^{\text{data}}$ = mean book leverage. Spread$^{\text{data}}$ = mean TRACE spread (2012--2024) in basis points. Spread$^{\text{model}} = \hat{\kappa}\bar{W}_{1,\text{shape},d}^{\text{spr}}/(2\hat{\mathbb{E}}_\nu[Y])\times 10{,}000$~bps is the model lower bound from Proposition~\ref{prop:spreads}. $\hat{\kappa} = 0.104$ is identified as the maximum value satisfying the bound for all 10 deciles (SMM inequality constraints; binding at decile D9). $\hat{\mathbb{E}}_\nu[Y] = 0.090$. All bounds satisfied: Spread$^{\text{model}} \leq$ Spread$^{\text{data}}$ for all deciles.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

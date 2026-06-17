@@ -1,0 +1,44 @@
+\begin{table}[htbp]
+\centering
+\caption{Leverage and Distributional Mismatch: Panel Regressions}
+\label{tab:panel_regressions}
+\resizebox{\textwidth}{!}{
+\begin{threeparttable}
+\begin{tabular}{lccccccc}
+\toprule
+ & (1) & (2) & (3) & (4) & (5) & (6) & (7) \\
+\cmidrule(lr){2-8}
+Outcome & Book lev & Book lev & Book lev & Book lev & Book lev & Mkt lev & Book lev \\
+\midrule
+$\widehat{W}_{1,\text{shape}}$ & $-0.3515^{***}$ & $0.0802^{***}$ & $-0.0569^{***}$ & $-0.1007^{***}$ & $-0.1625^{***}$ & $-0.1584^{***}$ & $-0.1625^{***}$ \\
+ & (0.0042) & (0.0052) & (0.0050) & (0.0178) & (0.0179) & (0.0172) & (0.0179) \\[2pt]
+CF mean &  & $-0.0370^{***}$ & $-0.2492^{***}$ & $-0.3347^{***}$ & $-0.2128^{***}$ & $-0.2372^{***}$ & $-0.1950^{***}$ \\
+ &  & (0.0027) & (0.0031) & (0.0146) & (0.0131) & (0.0136) & (0.0130) \\[2pt]
+CF volatility &  & $-0.6948^{***}$ & $-0.4705^{***}$ & $-0.3076^{***}$ & $-0.3361^{***}$ & $-0.5234^{***}$ & $-0.3638^{***}$ \\
+ &  & (0.0053) & (0.0053) & (0.0196) & (0.0194) & (0.0219) & (0.0194) \\[2pt]
+Log assets &  &  & $0.0216^{***}$ & $0.0355^{***}$ & $0.0185^{***}$ & $0.0126^{***}$ & $0.0185^{***}$ \\
+ &  &  & (0.0001) & (0.0011) & (0.0007) & (0.0008) & (0.0007) \\[2pt]
+Market-to-book &  &  & $0.0041^{***}$ & $0.0036^{***}$ & $0.0034^{***}$ & $-0.0014^{***}$ & $0.0034^{***}$ \\
+ &  &  & (0.0000) & (0.0001) & (0.0001) & (0.0001) & (0.0001) \\[2pt]
+Profitability &  &  & $0.2042^{***}$ & $-0.0503^{***}$ & $0.0177^{**}$ & $-0.0963^{***}$ & $0.0177^{**}$ \\
+ &  &  & (0.0038) & (0.0069) & (0.0065) & (0.0072) & (0.0065) \\[2pt]
+Tangibility &  &  & $0.1404^{***}$ & $0.1863^{***}$ & $0.1650^{***}$ & $0.1886^{***}$ & $0.1650^{***}$ \\
+ &  &  & (0.0009) & (0.0071) & (0.0071) & (0.0081) & (0.0071) \\[2pt]
+\midrule
+Firm FE & No & No & No & Yes & Yes & Yes & Yes \\
+Year FE & No & No & No & No & Yes & Yes & Yes \\
+$R^2$ & 0.0090 & 0.0553 & 0.1738 & 0.1196 & 0.0798 & 0.0542 & 0.0798 \\
+$N$ & 625,105 & 625,105 & 625,105 & 625,105 & 625,105 & 625,105 & 625,105 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item $^{***}$, $^{**}$, $^{*}$ denote significance at 1\%, 5\%, 10\%.
+Cols (1)--(3): OLS, HC3 SEs.
+Cols (4)--(7): within-firm; SEs clustered by firm.
+Col (7): $\widehat{W}_{1,\text{shape}}$ residualized on CF mean and volatility.
+Sample: Compustat quarterly 1989--2024.
+\end{tablenotes}
+\end{threeparttable}
+}
+\end{table}

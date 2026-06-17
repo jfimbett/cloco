@@ -1,0 +1,28 @@
+\begin{table}[htbp]
+\centering
+\caption{Robustness: Sensitivity to $\widehat{W}_{1,\text{shape}}$ Outliers}
+\label{tab:robustness_decile}
+\resizebox{\textwidth}{!}{
+\begin{threeparttable}
+\begin{tabular}{lcccc}
+\toprule
+ & (1) & (2) & (3) & (4) \\
+\cmidrule(lr){2-5}
+Outcome: Book leverage & Baseline & Excl.\ decile 10 & Winsor.\ $\widehat{W}_{1,\text{shape}}$ (p95) & Winsor.\ $\widehat{W}_{1,\text{shape}}$ (p90) \\
+\midrule
+$\widehat{W}_{1,\text{shape}}$ & $-0.1625^{***}$ & $-0.3815^{**}$ & $-0.4992^{***}$ & $-0.6070^{***}$ \\
+ & (0.0179) & (0.1351) & (0.0573) & (0.1125) \\[2pt]
+\midrule
+Firm FE & Yes & Yes & Yes & Yes \\
+Year FE & Yes & Yes & Yes & Yes \\
+$R^2$ & 0.0798 & 0.0883 & 0.0796 & 0.0788 \\
+$N$ & 625,105 & 566,773 & 625,105 & 625,105 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\small
+\item Dependent variable: book leverage. All specifications include firm and year-quarter fixed effects; standard errors clustered at firm level. Column (2) excludes firm-quarters in the top decile of $\widehat{W}_{1,\text{shape}}$. Columns (3)--(4) replace $\widehat{W}_{1,\text{shape}}$ with versions winsorized at the 95th and 90th percentile, respectively. $^{***}$, $^{**}$, $^{*}$ denote significance at 1\%, 5\%, 10\%.
+\end{tablenotes}
+\end{threeparttable}
+}
+\end{table}

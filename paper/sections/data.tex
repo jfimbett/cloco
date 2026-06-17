@@ -1,0 +1,65 @@
+\section{Data}
+\label{sec:data}
+
+\subsection{Firm Cash Flows and Leverage}
+
+I obtain quarterly financial data from the Compustat North America Fundamentals Quarterly database (\texttt{comp.fundq}) via WRDS. The sample covers 1989--2024 for US public firms, after excluding financial firms (SIC 6000--6999) and utilities (SIC 4900--4999) following standard practice. I exclude observations with negative book equity (\texttt{ceqq}~$<$~0) and require positive total assets (\texttt{atq}~$>$~0).
+
+\paragraph{Cash flow variable.} The baseline measure of pledgeable income is quarterly operating income before depreciation (EBITDA) scaled by total assets:
+\[
+  \text{CF}_{it} = \texttt{oibdpq}_{it}\;/\;\texttt{atq}_{it},
+\]
+where \texttt{oibdpq} is quarter-specific operating income before depreciation and \texttt{atq} is total assets. Unlike \texttt{oancfy} (year-to-date operating cash flow), \texttt{oibdpq} reports the value for the quarter alone and requires no de-cumulation. I winsorize at the 1st and 99th percentile. \texttt{oibdpq/atq} is the standard measure of pledgeable income in structural capital-structure models \citep{HennessyWhited2005debt,Strebulaev2007tests}. Robustness checks in Appendix~\ref{app:distribution_robustness} use de-cumulated \texttt{oancfy/atq} (operating cash flow from the statement of cash flows) and confirm the main results are unchanged.
+
+\paragraph{Leverage.} Book leverage is $(\texttt{dlttq} + \texttt{dlcq})/\texttt{atq}$. Market leverage replaces the book equity denominator with market equity: $(\texttt{dlttq} + \texttt{dlcq})/(\texttt{dlttq} + \texttt{dlcq} + \texttt{cshoq} \times \texttt{prccq})$. Both measures are winsorized at the 1st and 99th percentile.
+
+\subsection{Non-Parametric Firm Distribution Estimation}
+
+For each firm-quarter $(i,t)$ with at least eight trailing quarterly observations, I represent $\hat{\mu}_{it}$ non-parametrically by the ten empirical quantile values at levels $u_k = (2k-1)/20$ for $k = 1,\ldots,10$ — the decile midpoints $\{0.05, 0.15, \ldots, 0.95\}$, so that each decile carries equal probability mass. This imposes no parametric assumption on the shape of the cash flow distribution. With at least eight observations in the rolling window, I compute the empirical decile values from the trailing twenty quarters of $\text{CF}_{it}$. This representation treats higher-order distributional shape as data rather than a parametric restriction, allowing the Wasserstein distance to capture features of the distribution beyond mean and variance.
+
+The full main panel contains 666,665 firm-quarter observations; after requiring valid controls (log assets, market-to-book, profitability, tangibility, and rolling cash flow statistics), the regression sample contains 625,105 firm-quarters for 18,727 unique firms, covering 1989--2024. Table~\ref{tab:summary_stats} reports summary statistics for the regression sample.
+
+\subsection{Credit Spreads from TRACE}
+
+For credit spread moments, I use the TRACE bond transaction database accessed through WRDS (\texttt{trace.trade\_summary}), which provides Dick-Nielsen-cleaned daily closing yields on corporate bonds from 2012 through 2024. TRACE bond yields reflect secondary market pricing and therefore provide a continuous, market-driven measure of credit risk at the firm level, as opposed to one-time issuance yields.
+
+I match bonds to Compustat firms via the six-digit issuer CUSIP, obtained from Compustat's \texttt{comp.names} table. The quarterly bond-level credit spread is:
+\[
+  s_{bt} = \text{close\_yld}_{bt} - \text{GS10}_t,
+\]
+where $\text{close\_yld}_{bt}$ is the closing bond yield on day $b$, $t$ and $\text{GS10}_t$ is the FRED constant-maturity 10-year Treasury yield for month $t$. I use the 10-year Treasury as a fixed-maturity benchmark; this introduces a level shift relative to maturity-matched spreads that does not affect cross-sectional ordering within Wasserstein-distance deciles, which is the relevant variation for identifying $\kappa$. I restrict to yields between 0.01\% and 30\% and spreads between $-200$ and 2,850 basis points to exclude data errors. I require at least five daily observations per firm-quarter. After aggregation to firm-quarter means, the TRACE spread sample contains 56,837 firm-quarters for 2,019 unique firms. When matched to the analysis panel (which requires at least eight Compustat quarters to compute $\widehat{W}_{1,\text{shape}}$), the merged TRACE subsample available for the spread regression is 23,814 firm-quarters for 1,035 firms; the remaining 32,923 firm-quarters belong to firms with insufficient Compustat history for distributional estimation.
+
+I note that TRACE bond issuers are not a random draw from the Compustat universe: they are predominantly large, investment-grade or near-investment-grade firms. The reduced-form leverage regressions use the full Compustat panel; the spread sample is used only for calibrating the bankruptcy cost parameter $\kappa$ via Proposition~\ref{prop:spreads}.
+
+\subsection{Capital Supply Distribution}
+\label{sec:nu_identification}
+
+The aggregate capital supply distribution $\nu$ is the key new primitive in the model. To calibrate $\hat{\nu}$, I exploit a result from the welfare analysis: Proposition~\ref{prop:welfare} shows the social planner's problem minimizes aggregate deadweight cost $\kappa W_2^2(\mu, \nu)$ over the joint distribution of cash flows and lender endowments. The optimal $\nu$ given the cross-section of borrower distributions $\{\mu_{it}\}$ is the distribution minimizing total Wasserstein-2 distance to the observed firm distributions — i.e., the Fr\'{e}chet mean (barycenter) of $\{\hat{\mu}_{it}\}$ in the $W_2$ metric. In one dimension, the Fr\'{e}chet mean has quantile function equal to the pointwise average of the individual quantile functions:
+\[
+  \hat{Q}_\nu(u_k) = \frac{1}{N} \sum_{i,t} \hat{q}_{it,k}, \quad k = 1,\ldots,10.
+\]
+
+This calibration has two distinct justifications. First, it is the social planner's solution: $\hat{\nu}$ is the capital supply distribution that would arise in the constrained efficient allocation, given the observed cross-section of firm pledgeable-income distributions. Second, it has a competitive equilibrium interpretation: in a model where a continuum of competitive intermediaries can choose their portfolio composition, free entry and zero-profit conditions imply that at the margin, lenders hold diversified portfolios whose distributional properties converge to the population average of borrower distributions. The Fréchet mean formalizes this limiting condition.
+
+Crucially, $\hat{\nu}$ is identified from firm cash-flow data alone, without using any leverage or bond spread moments. This means $\widehat{W}_1(\hat{\mu}_{it}, \hat{\nu})$ is not mechanically related to the leverage and spread outcomes it is used to predict. The primary external validation of $\hat{\nu}$ is against the FRED Flow-of-Funds series for credit market instruments held by the US financial sector: the Fr\'{e}chet-mean quantile function correlates $0.87$ with this Federal Reserve aggregate over 1989--2024, confirming that the cross-sectional barycenter tracks an independently observable capital supply object. Full details and additional robustness checks are in Appendix~\ref{app:distribution_robustness}; Section~\ref{sec:estimation} provides the identification argument.
+
+I fit a $\text{LogNormal}(\hat{\alpha}_\nu, \hat{\sigma}_\nu^2)$ approximation to the ten Fr\'{e}chet-mean quantile values via ordinary least squares on $\log\hat{Q}_\nu(u_k) = \hat{\alpha}_\nu + \hat{\sigma}_\nu\Phi^{-1}(u_k)$, where $\Phi^{-1}$ denotes the standard normal quantile function. The LogNormal is an approximation; the non-parametric $\hat{Q}_\nu$ itself is used in all Wasserstein distance computations. The LogNormal fit $R^2 = 0.42$ reflects the asymmetry of firm cash-flow distributions (firms with negative mean cash flows pull the Fr\'{e}chet-mean toward negative values while the LogNormal has positive support). Table~\ref{tab:structural} reports the estimates.
+
+\subsection{Controls}
+
+Standard leverage controls follow \citet{FrankGoyal2009capital}: log total assets, market-to-book, profitability, tangibility (constructed as $\log(\texttt{atq})$, $\texttt{cshoq}\times\texttt{prccq}/\texttt{ceqq}$, $\texttt{oibdpq}/\texttt{atq}$, $\texttt{ppentq}/\texttt{atq}$ respectively), and rolling cash flow volatility (20-quarter rolling standard deviation of CF$_{it}$). Macro controls are from FRED: the 10-year Treasury yield (\texttt{GS10}) and the Baa--Aaa credit spread.
+
+\subsection{Summary Statistics}
+
+\input{tables/tab_summary_stats}
+
+Figure~\ref{fig:w1_dist} plots the cross-sectional distribution of $\widehat{W}_{1,\text{shape}}$ — the shape component of the Wasserstein distance from the capital supply distribution, controlling for mean cash flows. The distribution is right-skewed, with most firms clustered near zero (small distributional mismatch) and a long right tail of firms with substantially different distribution shapes. This variation is what drives the leverage predictions in Proposition~\ref{prop:leverage_wasserstein}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.65\textwidth]{figures/fig_w1_dist.pdf}
+\caption{Distribution of $\widehat{W}_{1,\text{shape}}$ across Firm-Quarters.}
+\label{fig:w1_dist}
+\footnotesize
+\textit{Notes:} $\widehat{W}_{1,\text{shape}}$ is the shape component of the estimated Wasserstein-1 distance between the firm's non-parametric cash-flow distribution and the calibrated capital supply distribution $\hat{\nu}$, residualized on mean cash flows. Sample: 666,665 firm-quarters, 1989--2024.
+\end{figure}

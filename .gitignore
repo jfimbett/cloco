@@ -6,6 +6,27 @@
 .claude/plans/
 .claude/specs/
 
+# Data files — never commit raw or processed data
+# Folder structure (.gitkeep files) is tracked; data files are not
+data/raw/**
+!data/raw/**/.gitkeep
+data/processed/**
+!data/processed/.gitkeep
+
+# Common data file formats
+*.parquet
+*.csv
+*.dta
+*.sas7bdat
+*.feather
+*.arrow
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.rds
+*.RData
+
 # LaTeX build artifacts
 *.aux
 *.log

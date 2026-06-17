@@ -1,0 +1,57 @@
+\section{Optimal Contracting Results}
+\label{sec:theoretical_results}
+
+\subsection{Existence and Duality}
+
+The Kantorovich problem~\eqref{eq:kantorovich} is well-posed: an optimal coupling exists whenever firm and lender distributions have finite second moments, and it can be found by solving a dual program whose variables have natural economic interpretations.
+
+\begin{theorem}[Existence]
+\label{thm:kantorovich_existence}
+Under Assumption~\ref{ass:cost} and $\mu, \nu \in \calP_2(\Rp)$:
+\begin{enumerate}[label=(\roman*)]
+  \item The infimum in~\eqref{eq:kantorovich} is attained by some $\pi^* \in \Pi(\mu,\nu)$.
+  \item Any optimal $\pi^*$ is $c$-cyclically monotone.
+\end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Kantorovich Duality]
+\label{thm:duality}
+Under Assumption~\ref{ass:cost}:
+\[
+  \mathcal{T}_c(\mu,\nu) \;=\; \sup_{(\phi,\psi)} \left\{\int \phi\,d\mu + \int \psi\,d\nu \;:\; \phi(x)+\psi(d) \leq c(x,d)\right\}.
+\]
+The supremum is attained, and strong duality holds. The dual variables $(\phi^*, \psi^*)$ are firm-specific contingent shadow prices.
+\end{theorem}
+
+The dual variables have a direct economic meaning. The function $\phi^*(x)$ is the shadow price of cash flow state $x$ for the firm, and $\psi^*(d)$ is the shadow price of the obligation to pay $d$ for the lender. Together they decentralize the social optimum as a competitive equilibrium: each firm-lender pair agrees on a contract that maximizes the surplus $\psi^*(d) - \phi^*(x)$ subject to the cost bound, and market clearing ensures the dual variables clear simultaneously across all pairs. Proofs are in Appendix~\ref{app:proofs}.
+
+\subsection{The Optimal Contract}
+
+The most tractable and economically natural specification of bankruptcy costs is quadratic in the default shortfall. Under this assumption, the comonotone optimality property of optimal transport --- derived via submodularity of the cost and the Hardy--Littlewood--P\'{o}lya rearrangement inequality --- delivers a closed-form optimal contract.
+
+\begin{assumption}[Quadratic Bankruptcy Cost]
+\label{ass:quadratic}
+$c(x,d) = \kappa(d-x)_+^2$ for $\kappa > 0$.
+\end{assumption}
+
+\begin{theorem}[Optimal Contract]
+\label{thm:optimal_contract}
+Under Assumption~\ref{ass:quadratic}, if $\mu$ is absolutely continuous, the unique optimal coupling is
+\[
+  \pi^* = (\mathrm{Id}, T^*)_\#\mu, \quad T^*(x) = F_\nu^{-1}(F_\mu(x)),
+\]
+where $F_\nu^{-1}$ is the quantile function of $\nu$. The optimal debt contract is:
+\begin{equation}
+  D^*(X) \;=\; F_\nu^{-1}(F_\mu(X)).
+  \label{eq:optimal_contract}
+\end{equation}
+\end{theorem}
+
+The contract~\eqref{eq:optimal_contract} is positively assortative: firms with higher cash flow realizations (higher rank $F_\mu(x)$) are promised the payment corresponding to a higher quantile of the lender endowment distribution. The highest-cashflow firm states receive the most debt. This is the efficient matching of borrowers to lenders — any departure from this quantile-to-quantile alignment incurs unnecessary expected bankruptcy costs. The promised payment $D^*(X)$ is a non-decreasing function of $X$, consistent with standard debt theory, but its level at each rank depends on $\nu$. A compression of lender endowments — as when credit availability contracts during a financial crisis — shifts the entire promised payment schedule downward even with no change in any firm's cash flows.
+
+\begin{lemma}[Market Clearing]
+\label{lem:market_clearing}
+For any firm distribution $\mu_i$, the optimal transport map $T_i^*(x) = F_\nu^{-1}(F_{\mu_i}(x))$ satisfies $\E_{\mu_i}[T_i^*(X_i)] = \E_\nu[Y]$.
+\end{lemma}
+
+Lemma~\ref{lem:market_clearing} says that every firm borrows the same expected face value — equal to the mean lender endowment — regardless of its cash flow distribution shape. Differences in equilibrium leverage therefore come entirely from differences in the borrowing scale $\lambda_i^*$, not from differences in the structure of the contract itself. This separation is what allows the Wasserstein distance to emerge as the sole determinant of leverage heterogeneity in the next section.

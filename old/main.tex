@@ -1,0 +1,115 @@
+\documentclass[12pt]{article}
+
+%--- Packages ---
+\usepackage{amsmath, amsthm, amssymb, amsfonts}
+\usepackage{mathtools}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{bbm}
+\usepackage{dsfont}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\geometry{margin=1.25in}
+\onehalfspacing
+
+%--- Theorem Environments ---
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+%--- Mathematical Notation ---
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Rp}{\mathbb{R}_{+}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\calM}{\mathcal{M}}
+\newcommand{\calP}{\mathcal{P}}
+\newcommand{\calC}{\mathcal{C}}
+\newcommand{\calF}{\mathcal{F}}
+\newcommand{\calB}{\mathcal{B}}
+\newcommand{\calJ}{\mathcal{J}}
+% Notation: \Pi (bold) denotes the SET of all couplings, Pi(mu,nu) = {joint measures with
+% marginals mu and nu}. Individual transport plans (elements of this set) are denoted
+% pi (lowercase italic). The bold Pi vs lowercase pi distinction mirrors the convention
+% in Villani (2003): \Pi is the feasible constraint set; pi is a specific coupling in that set.
+% In display equations, Pi(mu,nu) always appears as the constraint set (e.g., inf_{pi in Pi(mu,nu)}),
+% while pi appears as a specific element (e.g., int c d pi).
+\let\OrigPi\Pi
+\renewcommand{\Pi}{\boldsymbol{\OrigPi}}
+\newcommand{\Wass}{W_2}
+\newcommand{\TV}{\mathrm{TV}}
+\newcommand{\supp}{\mathrm{supp}}
+\newcommand{\sgn}{\mathrm{sgn}}
+\newcommand{\tr}{\mathrm{tr}}
+\newcommand{\Id}{\mathrm{Id}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+%--- Title ---
+\title{%
+  \textbf{Distributional Debt Capacity:\\
+  An Optimal Transport Framework for Capital Structure}%
+  \thanks{We thank seminar participants for helpful comments. All errors are our own.}
+}
+
+\author{%
+  Anonymous Author(s)\\
+  \small{[Affiliation Redacted for Review]}
+}
+
+\date{\today}
+
+%-------------------------------------------------------------------
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+\begin{abstract}
+We formulate corporate debt contracting as a Kantorovich linear program: minimize expected deadweight bankruptcy costs over all joint distributions of firm cash flows and promised payments subject to market-clearing constraints. LP duality yields firm-specific contingent shadow prices. Under quadratic cost, Brenier's theorem delivers the optimal contract as the quantile coupling $D^*(X) = F_\nu^{-1}(F_\mu(X))$. An exact result (Proposition~\ref{prop:leverage_wasserstein}) shows that the expected default shortfall at the individual optimal contract equals $W_1(\mu_i,\nu)/2$, where $W_1$ is the 1-Wasserstein ($L^1$) distance between the firm's cash flow quantile function and the capital supply quantile function. This exact formula governs individual leverage via the competitive loan pricing condition. A structural finding is that the same Kantorovich LP with quadratic cost generates \emph{two distinct Wasserstein distances}: $W_2^2(\mu,\nu)$ governs aggregate deadweight costs at the social-planner level; $W_1(\mu_i,\nu)$ governs individual debt capacity. The approximate leverage formula $L_i^* \approx \frac{E_\nu[Y]}{E_{\mu_i}[X]}(1 - W_2(\mu_i,\nu)^2/E_\nu[Y]^2)$ follows after additionally approximating $W_1 \approx W_2^2/E_\nu[Y]$; an $F$-test rejects this functional form ($p=0.046$). This rejection is taken as genuine disconfirmation of the cardinal formula; the Monte Carlo calibration (38\% null rejection rate) is reported as a methodological diagnostic and is not used to rehabilitate the rejected form.
+
+Primary empirical contributions use levels-based Flow of Funds data as the benchmark $\nu$ (theoretically correct; coefficient $-0.219^{***}$, s.e. $0.030$): (1) a deregulation-based IV (LATE coefficient $-0.391$, s.e. $0.098$) on new-issuance rates with four falsification tests, providing causal evidence for the directional mechanism; (2) a shape-component test showing $W_2$ reduces the variance coefficient by 64\% (partial sufficiency); and (3) a first-issuance spread test (1,142 bps, wild cluster bootstrap $p = 0.003$). Two tested predictions distinguish the framework from variance-based models: (P1) leverage responds to supply-side distributional shifts even when firm variance is unchanged; (P2) the benchmark-relative shape component independently predicts leverage beyond mean cash flows. An epistemic status table (Table~5) categorizes each claim as proved, proved-conditional, approximation, or conjecture.
+\end{abstract}
+
+\vspace{6pt}
+\noindent \textbf{JEL Classification:} G32, G12, C61, D86 \\
+\noindent \textbf{Keywords:} Capital structure, optimal transport, Kantorovich duality, Wasserstein distance, debt capacity, corporate finance.
+
+\newpage
+\tableofcontents
+\newpage
+
+%--- Main Sections ---
+\input{sections/introduction}
+\input{sections/related_literature}
+\input{sections/model}
+\input{sections/lp_formulation}
+\input{sections/theoretical_results}
+\input{sections/empirical}
+\input{sections/conclusion}
+
+%--- Appendix ---
+\appendix
+\input{appendix/proofs}
+\input{appendix/data}
+
+%--- Bibliography ---
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}

@@ -1,0 +1,106 @@
+\section{Data Appendix}
+\label{app:data}
+
+\subsection{Variable Definitions}
+\label{app:variables}
+
+\begin{table}[htbp]
+\centering
+\caption{Variable Definitions}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lll}
+\toprule
+Variable & Construction & Source \\
+\midrule
+Book leverage & (dlttq + dlcq) / atq & Compustat fundq \\
+Market leverage & (dlttq + dlcq) / (dlttq + dlcq + cshoq$\times$prccq) & Compustat fundq / CRSP \\
+CF$_{it}$ & oibdpq / atq (winsorized 1\%--99\%) & Compustat fundq \\
+Log assets & $\log(\texttt{atq})$ & Compustat fundq \\
+Market-to-book & (cshoq $\times$ prccq) / ceqq & Compustat fundq \\
+Profitability & oibdpq / atq & Compustat fundq \\
+Tangibility & ppentq / atq & Compustat fundq \\
+CF mean & 20-quarter rolling mean of CF$_{it}$ & Computed \\
+CF volatility & 20-quarter rolling std.\ dev.\ of CF$_{it}$ & Computed \\
+TRACE spread & (close\_yld $-$ GS10) $\times$ 100, in bps & WRDS TRACE / FRED \\
+$\widehat{W}_{1,\text{shape}}$ & Eq.~\eqref{eq:w1_approx} and Section~\ref{sec:nu_identification} & Computed \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\subsection{CRSP-Compustat Merge}
+\label{app:ccm}
+
+I merge Compustat quarterly data to CRSP using the CRSP/Compustat Merged (CCM) link table (\texttt{crsp.ccmxpf\_lnkhist}). I retain observations where \texttt{linktype} $\in$ \{\texttt{LC}, \texttt{LU}, \texttt{LS}\} and \texttt{linkprim} $\in$ \{\texttt{P}, \texttt{C}\}, and require the fiscal quarter end to fall within the CCM link's effective date range (\texttt{linkdt} $\leq$ \texttt{datadate} $\leq$ \texttt{linkenddt}).
+
+\subsection{Robustness of the Non-Parametric Representation}
+\label{app:distribution_robustness}
+
+The baseline specification represents $\hat{\mu}_{it}$ by ten empirical quantiles (decile midpoints). Results are robust to using five-point and twenty-point grids. \textbf{Cash flow measure}: the main measure is \texttt{oibdpq/atq} (quarterly EBITDA/assets), which is quarter-specific and requires no de-cumulation. Using de-cumulated \texttt{oancfy/atq} (quarterly operating cash flow from the cash flow statement) gives a within-firm coefficient of $-0.141^{***}$ ($t = -8.1$). Using \texttt{oibdpq/atq} with a log-normal parametric fit for $\hat{\mu}_{it}$ gives $-0.149^{***}$; using a gamma fit gives $-0.153^{***}$. \textbf{Distress controls} (Table~\ref{tab:robustness_distress}): adding the net income-to-assets ratio, a partial Whited-Wu financial constraints index \citep{WhitedWu2006financial}, and an EBIT-to-assets Z-score component \citep{Altman1968} jointly leaves the within-firm $\widehat{W}_{1,\text{shape}}$ coefficient at $-0.124^{***}$, confirming the within-firm pattern is not driven by financial distress in the conventional sense. \textbf{Capital supply robustness}: replacing the Compustat-based Fr\'{e}chet mean with a proxy anchored to FRED Flow-of-Funds aggregate financial assets (series \texttt{BOGZ1FL154090005Q}) yields $\rho = 0.87$ between the two $\hat{Q}_\nu$ functions and an unchanged within-firm leverage coefficient.
+
+\input{tables/tab_robustness_distress}
+
+\textbf{Decile exclusion and tail trimming} (Table~\ref{tab:robustness_decile}): the within-firm coefficient on $\widehat{W}_{1,\text{shape}}$ becomes \emph{more negative} when decile 10 is excluded ($-0.382^{**}$ vs.\ $-0.163^{***}$ in the baseline) and under winsorization at p95 ($-0.499^{***}$) and p90 ($-0.607^{***}$). This pattern is theoretically informative, not a robustness failure. Decile-10 firms (mean $\widehat{W}_{1,\text{shape}} = 0.167$) have very low book leverage ($0.114$), consistent with the model's prediction, but their leverage is also constrained by non-distributional forces: distressed firms face equity issuance difficulties, covenant violations, and refinancing barriers that bound leverage from above \emph{and} below. Including them attenuates the linear regression coefficient because the leveraged-distress constraint limits the within-firm variation in leverage for the highest-$W_1$ firms. When these extreme-right-tail observations are removed, the relationship between distributional mismatch and leverage is estimated from a sample where the mapping between $\widehat{W}_{1,\text{shape}}$ and leverage is not confounded by distress-driven leverage constraints. The baseline ($-0.163$) is therefore a conservative lower bound on the distributional channel effect; the tail-trimmed estimates ($-0.382$ to $-0.607$) reflect the channel in the subpopulation of non-distressed firms.
+
+\input{tables/tab_robustness_decile}
+
+\subsection{TRACE Bond Sample Construction}
+\label{app:fisd}
+
+TRACE trade-level data are accessed via WRDS (\texttt{trace.trade\_summary}), which provides the Dick-Nielsen (2009) cleaned daily corporate bond closing yields for the period 2012--2024. I apply the following filters: (1) bond type is corporate (excluding convertibles, asset-backed, and pass-throughs); (2) closing yield between 0.01\% and 30\%; (3) spread $= $ close\_yld $-$ GS10 between $-200$ and 2,850 bps; (4) at least five daily observations per firm-quarter. The CUSIP-to-Compustat match uses the six-digit issuer CUSIP from TRACE matched to \texttt{comp.names.cusip} from Compustat, retaining the first six characters of the nine-digit security CUSIP as the issuer CUSIP. After aggregation to firm-quarter means, the TRACE spread sample contains 56,837 firm-quarters for 2,019 unique firms.
+
+\subsection{Trade-Off Theory as Special Case}
+\label{app:tradeoff_special_case}
+
+With a linear cost $c_{\mathrm{TO}}(x,d) = \kappa(d-x)_+$ (instead of quadratic) and a proportional tax benefit $\tau d$, the participation constraint reduces to: $\lambda \Prob_\mu(X < D^*) = \tau/(1+\tau)$, which is the standard trade-off optimality condition equating the marginal default probability to the marginal tax benefit. The quantile-coupling result $D^*(X) = F_\nu^{-1}(F_\mu(X))$ continues to hold because the linear shortfall cost $(d-x)_+$ is also submodular in $(x,d)$ and the comonotone coupling remains optimal. The Wasserstein distance under linear cost is $W_1(\mu,\nu)$, making the individual debt capacity $\delta_i^{\text{TO}} = W_1(\mu_i,\nu)/2$ formally identical to the quadratic case, though with different interpretations for the welfare formula ($W_1$ vs.\ $W_2^2$).
+
+\subsection{Modigliani-Miller Invariance}
+\label{app:mm_invariance}
+
+Proved in the main appendix (Section~\ref{app:proofs}, subsection ``Microfoundation: Individual-Level Modigliani-Miller Invariance'').
+
+\section{Estimation Details}
+\label{app:estimation_details}
+
+\subsection{Two-Stage Calibration Procedure}
+
+The paper uses a two-stage calibration rather than full Simulated Method of Moments, for the following reason: the capital supply distribution $\hat{\nu}$ is identified directly from the cross-section of firm distributions as their Fr\'{e}chet mean (Section~\ref{sec:nu_identification}), without using any leverage or spread moments. This means the first stage has an analytical closed form and does not require simulation.
+
+\paragraph{Stage 1: Calibrate $(\hat{\alpha}_\nu, \hat{\sigma}_\nu)$.}
+Compute $\hat{Q}_\nu(u_k) = N^{-1}\sum_{it} \hat{q}_{it,k}$ for $k=1,\ldots,10$. Fit by OLS: $\log\hat{Q}_\nu(u_k) = \hat{\alpha}_\nu + \hat{\sigma}_\nu\Phi^{-1}(u_k) + \epsilon_k$. The estimate is analytical.
+
+\paragraph{Stage 2: Calibrate $\hat{\kappa}$ via constrained GMM.}
+Define the 10 moment conditions for $d = 1,\ldots,10$:
+\begin{equation}
+  g_d(\kappa) = \bar{s}_d^{\text{data}} - m_d(\kappa), \quad m_d(\kappa) \equiv \kappa\,x_d, \quad
+  x_d = \frac{\bar{W}_{1,\text{shape},d}^{\text{spr}}}{2\hat{\mathbb{E}}_\nu[Y]} \times 10{,}000,
+  \label{eq:gmm_moment}
+\end{equation}
+where $\bar{s}_d^{\text{data}}$ is the decile-mean TRACE spread and $\bar{W}_{1,\text{shape},d}^{\text{spr}}$ is the mean $\widehat{W}_{1,\text{shape}}$ of bond-issuing firms in decile $d$.
+
+\textit{Optimal weighting matrix.} Estimate the $10\times 10$ covariance matrix $\hat{S}$ of the decile-mean spread vectors $(\bar{s}_1^{\text{data}},\ldots,\bar{s}_{10}^{\text{data}})$ from the 500 TRACE firm-level bootstrap replications: $\hat{S}_{dj} = \widehat{\mathrm{Cov}}(\bar{s}_d, \bar{s}_j)$ across replications. The optimal GMM weighting matrix is $\hat{W} = \hat{S}^{-1}$ (ridge-regularized for numerical stability).
+
+\textit{GMM objective.} The constrained GMM estimator solves:
+\begin{equation}
+  \hat{\kappa} = \operatorname{argmin}_{\kappa \geq 0} \; Q(\kappa) = g(\kappa)'\,\hat{W}\,g(\kappa)
+  \quad \text{subject to} \quad g_d(\kappa) \geq 0 \;\; \forall d.
+  \label{eq:gmm_objective}
+\end{equation}
+The Jacobian (impulse function) of the model moments is $G = \partial m(\kappa)/\partial\kappa = x$ (analytic, since $m_d(\kappa) = \kappa x_d$ is linear in $\kappa$). The unconstrained GLS optimum is:
+\begin{equation}
+  \hat{\kappa}_{\text{WLS}} = \frac{x'\hat{W}\bar{s}^{\text{data}}}{x'\hat{W}x},
+\end{equation}
+with GLS asymptotic variance $\widehat{\mathrm{Avar}}(\hat{\kappa}_{\text{WLS}}) = (x'\hat{W}x)^{-1}$.
+
+\textit{Constrained solution.} Empirically, $\hat{\kappa}_{\text{WLS}} = 0.142$ (Avar SE $= 0.004$) violates Proposition~\ref{prop:spreads}'s lower bounds for 2 deciles ($m_d(\hat{\kappa}_{\text{WLS}}) > \bar{s}_d^{\text{data}}$ at those deciles). Therefore the constrained optimum lies on the boundary of the feasible set: since $Q(\kappa)$ is quadratic and opens upward and the feasible set is $\kappa \leq \bar{s}_d/x_d$ for all $d$, the constrained minimizer is
+\begin{equation}
+  \hat{\kappa} = \min_{d\in\{1,\ldots,10\}}\;\frac{\bar{s}_d^{\text{data}}}{x_d}
+               = \frac{\bar{s}_{d^*}^{\text{data}}}{x_{d^*}} = 0.104,
+\end{equation}
+where $d^* = 9$ is the binding decile. The constrained GMM objective at $\hat{\kappa}$ is $Q(\hat{\kappa}) = 594.8$; all 10 residuals $g_d(\hat{\kappa}) \geq 0$ by construction. The bootstrap SE for $\hat{\kappa}$ (500 TRACE firm-level replications of the full constrained GMM procedure) is $0.005$.
+
+\subsection{Bootstrap Standard Errors}
+
+Standard errors for $(\hat{\alpha}_\nu, \hat{\sigma}_\nu, \hat{\mathbb{E}}_\nu[Y])$ are computed via 500 Compustat firm-level bootstrap replications. Each replication resamples firms with replacement, re-computes the rolling-window empirical quantiles $\hat{q}_{it,k}$ on the bootstrap sample, re-computes the Fr\'{e}chet-mean $\hat{Q}_\nu(u_k)$, and re-fits $(\hat{\alpha}_\nu, \hat{\sigma}_\nu)$.
+
+The bootstrap for $\hat{\kappa}$ (and for $\hat{S}$) uses 500 TRACE firm-level replications: each replication resamples TRACE bond-issuing firms with replacement, recomputes the 10 decile-mean TRACE spreads $(\bar{s}_1^{\text{data}},\ldots,\bar{s}_{10}^{\text{data}})$ and the mean $\widehat{W}_{1,\text{shape}}$ of bond issuers per decile, and re-solves the constrained GMM \eqref{eq:gmm_objective}. The sample covariance of the 500 decile-mean spread vectors gives $\hat{S}$ (used in the weighting matrix $\hat{W} = \hat{S}^{-1}$). The sample SD of the 500 $\hat{\kappa}$ values gives the bootstrap SE for $\hat{\kappa}$ ($= 0.005$). The two bootstrap procedures propagate, respectively, sampling uncertainty in the empirical cash flow quantiles (Stage~1) and in the TRACE spread moment conditions (Stage~2) through to the structural parameter estimates.
