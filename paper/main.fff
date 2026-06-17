@@ -1,0 +1,16 @@
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{figures/fig_spline_comparison.pdf}
+  \caption{Price-age profiles estimated by natural cubic spline (knots at
+    $a^* \in \{0.4, 0.8, 1.2, 1.6, 2.2\}$) with 95\,\% confidence bands (shaded).
+    \textit{Panel A}: Bordeaux subgroups (All, Grand Cru, Premier Cru).
+    \textit{Panel B}: Burgundy subgroups (All, Grand Cru, Premier Cru).
+    \textit{Panel C}: Bordeaux All vs.\ Burgundy All.
+    Dots are binned medians (bin width: 0.30 normalised-age units).
+    The dashed vertical line marks the maturity threshold (20 years);
+    the shaded yellow band indicates the trough zone (approximately 32--40 years,
+    $a^* \in [1.6, 2.0)$).
+    $x$-axis is calendar age in years (normalised age $\times$ 20-year cap).
+    Sample: 1996--2015 auction lots.}
+  \label{fig:spline}
+\end{figure}

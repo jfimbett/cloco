@@ -63,3 +63,14 @@ desktop.ini
 *.swp
 *.swo
 *~
+
+# Old data
+old/
+
+# Large data files — never commit raw or processed auction data
+data/raw/
+data/intermediate/
+data/processed/
+
+# Exposed API key file (Lucie's old settings)
+old/RALucie/wine/f00_settings.py

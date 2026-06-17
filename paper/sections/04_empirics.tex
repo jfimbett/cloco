@@ -1,0 +1,101 @@
+% ============================================================
+%  Section 4 — Empirical Strategy
+% ============================================================
+
+\section{Empirical Strategy}
+\label{sec:empirics}
+
+\subsection{Price-age profile}
+
+We characterise the price-age profile non-parametrically using a natural cubic spline
+regression. Let $p_{it}$ denote the log price per bottle (USD) for lot $i$ sold at time $t$.
+We estimate:
+\begin{equation}
+  p_{it} = f(a_{it}^*) + \varepsilon_{it},
+  \label{eq:spline}
+\end{equation}
+where $f(\cdot)$ is a natural cubic spline with five interior knots at $a^* \in
+\{0.4, 0.8, 1.2, 1.6, 2.2\}$, fitted separately for each group. We report predicted
+log prices and 95\,\% confidence bands on a fine grid over $a^* \in [0.05, 2.9]$.
+Standard errors are heteroskedasticity-robust (HC1).
+
+\subsection{Testing the post-maturity dip}
+
+To formally test whether prices dip below the peak-maturity level in the post-maturity period,
+we define five age-norm segments and estimate:
+\begin{equation}
+  p_{it} = \alpha + \sum_{s \neq \text{young}} \beta_s \mathbf{1}[a_{it}^* \in S_s] + \varepsilon_{it},
+  \label{eq:segments}
+\end{equation}
+where the segments are: \textit{young} $[0, 0.6)$, \textit{approach} $[0.6, 1.0)$,
+\textit{peak} $[1.0, 1.6)$, \textit{trough} $[1.6, 2.0)$, and \textit{antique} $[2.0, 3.0]$.
+The coefficient of interest is the direct contrast $\beta_{\text{trough}} - \beta_{\text{peak}}$,
+tested one-sided (trough $<$ peak). We compute this contrast and its standard error from the
+estimated covariance matrix of~\eqref{eq:segments}.
+
+\subsection{Wine-specific maturity normalisation: identification from cross-wine variation}
+\label{sec:empirics:normalisation}
+
+A key feature of our design is that $\tau_i$ varies across château--vintage pairs,
+creating within-region cross-sectional variation in maturity dates. A 1990 Pétrus (with
+$\tau_i \approx 30$ years) and a 1990 Pomerol village wine (with $\tau_i \approx 12$ years)
+are both sold in 2005 at calendar age 15, but their normalised ages differ markedly:
+$a^* = 0.50$ versus $a^* = 1.25$. Using raw calendar age would conflate pre-maturity
+speculation in the Pétrus with post-maturity discounting in the village wine.
+
+The normalisation in equation~\eqref{eq:age_norm} maps both bottles onto the same
+life-cycle grid. The identifying assumption is that the per-unit-of-normalised-age
+price path is the same across wines within a category, conditional on $a^*$. This is
+testable: we verify that the spline fit is stable across terciles of $\tau_i$ within
+each wine group. \textit{[Add robustness: estimate equation~\eqref{eq:spline} separately for
+wines with low, medium, and high maturity dates; show that the normalised profiles overlap.]}
+
+\subsection{Piecewise linear robustness}
+\label{sec:empirics:piecewise}
+
+As a complement to the non-parametric spline, we estimate a piecewise linear specification
+with breakpoints at maturity ($a^* = 1.0$) and at the antique threshold ($a^* = 2.0$):
+\begin{equation}
+  p_{it} = \alpha + \beta_1 a_{it}^* + \beta_2 (a_{it}^* - 1)_+ + \beta_3 (a_{it}^* - 2)_+
+           + \varepsilon_{it},
+  \label{eq:piecewise}
+\end{equation}
+where $(x)_+ \equiv \max(0,x)$. The slope in each zone is:
+pre-maturity $\beta_1$; trough zone $\beta_1 + \beta_2$; antique $\beta_1 + \beta_2 + \beta_3$.
+A negative trough slope ($\beta_1 + \beta_2 < 0$) directly implies that prices \emph{decline}
+with age in the post-maturity period, consistent with the non-monotone profile.
+Standard errors are heteroskedasticity-robust (HC1); the trough slope is computed by the
+delta method.
+
+\subsection{Fixed effects specifications}
+\label{sec:empirics:fe}
+
+The baseline specifications~\eqref{eq:segments} and~\eqref{eq:piecewise} do not include
+producer or vintage fixed effects. The market-level price-age profile is the target estimand:
+how auction prices for these wine categories move over the life-cycle on average. Producer
+demeaning would absorb between-producer variation that is part of the mechanism — as wines age
+into the trough zone, the cross-sectional mix of producers shifts toward lower-prestige bottles,
+because top producers' wines are withheld from the market longer. That compositional shift is
+the mechanism we want to document, not a nuisance to partial out.
+
+Nevertheless, as a robustness check we report specifications that absorb vintage year fixed
+effects (to control for cohort quality differences) and producer fixed effects. The segment
+coefficients in those specifications identify within-vintage and within-producer price-age
+patterns. If the trough is a genuine life-cycle phenomenon rather than a selection artifact,
+it should survive both sets of fixed effects.
+
+\subsection{Robustness and identification}
+\label{sec:empirics:robust}
+
+\noindent\textit{[To be completed. Planned robustness checks:]}
+\begin{itemize}
+  \item \textit{Alternative knot placements for the spline (3, 7, and 9 interior knots).}
+  \item \textit{Polynomial alternatives (cubic and quartic in $a^*$).}
+  \item \textit{Vintage-year fixed effects to absorb cohort quality differences.}
+  \item \textit{Auction-house fixed effects.}
+  \item \textit{Separate estimates for bottle vs.\ magnum formats.}
+  \item \textit{Robustness of segment boundaries in equation~\eqref{eq:segments}
+        (shift trough window to $[1.5, 2.0)$ and $[1.6, 2.2)$).}
+  \item \textit{Results stratified by low/medium/high maturity tercile to validate
+        the normalisation assumption.}
+\end{itemize}

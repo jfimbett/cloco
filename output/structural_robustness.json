@@ -1,0 +1,535 @@
+{
+  "specification": "unrestricted",
+  "sensitivity_n": {
+    "Bordeaux Grand Cru (red)": {
+      "3": {
+        "category": "Bordeaux Grand Cru (red)",
+        "specification": "unrestricted",
+        "n_bidders": 3,
+        "n_free_params": 6,
+        "n_moments": 4,
+        "theta": {
+          "alpha_c": 0.5681656195552055,
+          "v_bar_k": 0.01,
+          "alpha_k": 15.0,
+          "gamma": 0.5257384159849373,
+          "delta": 0.05211750545105768,
+          "lam_bar": 0.99
+        },
+        "se": {
+          "alpha_c": 2.1589279086620174,
+          "v_bar_k": 0.25200526123886463,
+          "alpha_k": 0.0819432710186227,
+          "gamma": 0.013416756716621141,
+          "delta": 0.11087247473641812,
+          "lam_bar": 0.015741348809534667
+        },
+        "objective": 2940.817589194615,
+        "weighted_rmse": 27.114652815381092,
+        "unweighted_rmse": 0.18660832305212038,
+        "moments_data": {
+          "approach": 0.178666,
+          "peak": 0.46738,
+          "trough": 0.162963,
+          "antique": 1.076496
+        },
+        "moments_model": {
+          "approach": 0.25606908043969,
+          "peak": 0.30492318755154557,
+          "trough": 0.475932927675183,
+          "antique": 0.981854378459457
+        },
+        "jacobian_rank": 4,
+        "jacobian_cond": 1.59303552708092e+17,
+        "converged_starts": 27,
+        "total_starts": 31
+      },
+      "5": {
+        "category": "Bordeaux Grand Cru (red)",
+        "specification": "unrestricted",
+        "n_bidders": 5,
+        "n_free_params": 6,
+        "n_moments": 4,
+        "theta": {
+          "alpha_c": 1.1426192008667593,
+          "v_bar_k": 0.01,
+          "alpha_k": 14.999997030646831,
+          "gamma": 0.5123234126240548,
+          "delta": 0.04074184097901057,
+          "lam_bar": 0.99
+        },
+        "se": {
+          "alpha_c": 3.1737972893336863,
+          "v_bar_k": 0.5012410134481411,
+          "alpha_k": 0.2420969245392116,
+          "gamma": 0.014332132183920395,
+          "delta": 0.06705191830012133,
+          "lam_bar": 0.011825971357419949
+        },
+        "objective": 2985.867844153695,
+        "weighted_rmse": 27.321547559360976,
+        "unweighted_rmse": 0.19059406247690755,
+        "moments_data": {
+          "approach": 0.178666,
+          "peak": 0.46738,
+          "trough": 0.162963,
+          "antique": 1.076496
+        },
+        "moments_model": {
+          "approach": 0.2517205999155852,
+          "peak": 0.3082892341008714,
+          "trough": 0.48629027950321846,
+          "antique": 0.9759126486357933
+        },
+        "jacobian_rank": 4,
+        "jacobian_cond": 5.151757728978574e+17,
+        "converged_starts": 27,
+        "total_starts": 31
+      },
+      "10": {
+        "category": "Bordeaux Grand Cru (red)",
+        "specification": "unrestricted",
+        "n_bidders": 10,
+        "n_free_params": 6,
+        "n_moments": 4,
+        "theta": {
+          "alpha_c": 0.23058541116051323,
+          "v_bar_k": 28.433536934191338,
+          "alpha_k": 1.5631940186722204e-13,
+          "gamma": 16.12789659160995,
+          "delta": 0.010000000000001563,
+          "lam_bar": 0.9768592346947473
+        },
+        "se": {
+          "alpha_c": 0.6270584521316981,
+          "v_bar_k": 0.0050852095729944135,
+          "alpha_k": 1.2938247617030134,
+          "gamma": 5.412833518862539,
+          "delta": 0.01638498738666927,
+          "lam_bar": 0.030693201150605164
+        },
+        "objective": 3189.7296956034425,
+        "weighted_rmse": 28.238846008660847,
+        "unweighted_rmse": 0.21773290724799546,
+        "moments_data": {
+          "approach": 0.178666,
+          "peak": 0.46738,
+          "trough": 0.162963,
+          "antique": 1.076496
+        },
+        "moments_model": {
+          "approach": 0.22828346778605713,
+          "peak": 0.37229242355687653,
+          "trough": 0.5451808415793095,
+          "antique": 0.8975086907577428
+        },
+        "jacobian_rank": 4,
+        "jacobian_cond": 3.018969236530438e+16,
+        "converged_starts": 26,
+        "total_starts": 31
+      }
+    },
+    "Burgundy Grand Cru": {
+      "3": {
+        "category": "Burgundy Grand Cru",
+        "specification": "unrestricted",
+        "n_bidders": 3,
+        "n_free_params": 6,
+        "n_moments": 4,
+        "theta": {
+          "alpha_c": 12.536198156040706,
+          "v_bar_k": 24.62996344865877,
+          "alpha_k": 13.499238966190198,
+          "gamma": 10.20801699154051,
+          "delta": 3.281274134661606,
+          "lam_bar": 0.5163481022408928
+        },
+        "se": {
+          "alpha_c": 0.6464298473408838,
+          "v_bar_k": 2.082962211887049,
+          "alpha_k": 3.2853680152146363,
+          "gamma": 0.17610978153523824,
+          "delta": 0.7720152414169021,
+          "lam_bar": 0.04350345211418002
+        },
+        "objective": 9.479600044501009e-28,
+        "weighted_rmse": 1.539447956614725e-14,
+        "unweighted_rmse": 1.3877787807814457e-16,
+        "moments_data": {
+          "approach": 0.477187,
+          "peak": 1.045543,
+          "trough": 1.2708,
+          "antique": 1.451316
+        },
+        "moments_model": {
+          "approach": 0.4771869999999998,
+          "peak": 1.045543,
+          "trough": 1.2708,
+          "antique": 1.4513159999999998
+        },
+        "jacobian_rank": 4,
+        "jacobian_cond": 1.4468158843977872e+20,
+        "converged_starts": 29,
+        "total_starts": 31
+      },
+      "5": {
+        "category": "Burgundy Grand Cru",
+        "specification": "unrestricted",
+        "n_bidders": 5,
+        "n_free_params": 6,
+        "n_moments": 4,
+        "theta": {
+          "alpha_c": 14.000979301983978,
+          "v_bar_k": 20.503305414888448,
+          "alpha_k": 11.343399660426648,
+          "gamma": 23.011899463633092,
+          "delta": 1.8020343451826957,
+          "lam_bar": 0.6965878003935984
+        },
+        "se": {
+          "alpha_c": 0.5916052594872541,
+          "v_bar_k": 1.7815529416850044,
+          "alpha_k": 2.6036149748786577,
+          "gamma": 0.20329630332193355,
+          "delta": 0.3949986455669738,
+          "lam_bar": 0.030779057258753618
+        },
+        "objective": 9.479600044501009e-28,
+        "weighted_rmse": 1.539447956614725e-14,
+        "unweighted_rmse": 1.3877787807814457e-16,
+        "moments_data": {
+          "approach": 0.477187,
+          "peak": 1.045543,
+          "trough": 1.2708,
+          "antique": 1.451316
+        },
+        "moments_model": {
+          "approach": 0.4771869999999998,
+          "peak": 1.045543,
+          "trough": 1.2708,
+          "antique": 1.4513160000000003
+        },
+        "jacobian_rank": 4,
+        "jacobian_cond": 8.78696056679958e+20,
+        "converged_starts": 25,
+        "total_starts": 31
+      },
+      "10": {
+        "category": "Burgundy Grand Cru",
+        "specification": "unrestricted",
+        "n_bidders": 10,
+        "n_free_params": 6,
+        "n_moments": 4,
+        "theta": {
+          "alpha_c": 10.8294757864089,
+          "v_bar_k": 18.653087156358758,
+          "alpha_k": 10.308115176812535,
+          "gamma": 16.00442185345679,
+          "delta": 0.8316369897624707,
+          "lam_bar": 0.8437533968479524
+        },
+        "se": {
+          "alpha_c": 0.5117551421713163,
+          "v_bar_k": 1.5824851137651441,
+          "alpha_k": 2.4094519636985896,
+          "gamma": 0.13627479686216853,
+          "delta": 0.18484361353993473,
+          "lam_bar": 0.017602010803133526
+        },
+        "objective": 9.479600044501009e-28,
+        "weighted_rmse": 1.539447956614725e-14,
+        "unweighted_rmse": 1.3877787807814457e-16,
+        "moments_data": {
+          "approach": 0.477187,
+          "peak": 1.045543,
+          "trough": 1.2708,
+          "antique": 1.451316
+        },
+        "moments_model": {
+          "approach": 0.4771869999999998,
+          "peak": 1.045543,
+          "trough": 1.2708,
+          "antique": 1.4513160000000003
+        },
+        "jacobian_rank": 4,
+        "jacobian_cond": 3.4853791645735974e+17,
+        "converged_starts": 25,
+        "total_starts": 31
+      }
+    },
+    "Burgundy Premier Cru": {
+      "3": {
+        "category": "Burgundy Premier Cru",
+        "specification": "unrestricted",
+        "n_bidders": 3,
+        "n_free_params": 6,
+        "n_moments": 4,
+        "theta": {
+          "alpha_c": 10.084373863263316,
+          "v_bar_k": 25.63751720746306,
+          "alpha_k": 0.0,
+          "gamma": 9.914056756324497,
+          "delta": 29.999981717737782,
+          "lam_bar": 0.663460780026055
+        },
+        "se": {
+          "alpha_c": 0.4585299266474749,
+          "v_bar_k": 0.18036017959109155,
+          "alpha_k": 0.7494635773130822,
+          "gamma": 0.09391108845444751,
+          "delta": 2.287068197853631e-07,
+          "lam_bar": 0.008321981339671514
+        },
+        "objective": 50.92839861637323,
+        "weighted_rmse": 3.5682067840994454,
+        "unweighted_rmse": 0.11395817151375076,
+        "moments_data": {
+          "approach": 0.620571,
+          "peak": 1.4068,
+          "trough": 1.153524,
+          "antique": 1.201048
+        },
+        "moments_model": {
+          "approach": 0.6205709942361004,
+          "peak": 1.326129686266162,
+          "trough": 1.3261297009300592,
+          "antique": 1.3261297009300592
+        },
+        "jacobian_rank": 3,
+        "jacobian_cond": 1.8881985683583398e+19,
+        "converged_starts": 31,
+        "total_starts": 31
+      },
+      "5": {
+        "category": "Burgundy Premier Cru",
+        "specification": "unrestricted",
+        "n_bidders": 5,
+        "n_free_params": 6,
+        "n_moments": 4,
+        "theta": {
+          "alpha_c": 15.4721424149328,
+          "v_bar_k": 27.30002119510024,
+          "alpha_k": 8.881784196886311e-16,
+          "gamma": 25.948756430746823,
+          "delta": 29.530812849726022,
+          "lam_bar": 0.7986427551032731
+        },
+        "se": {
+          "alpha_c": 0.5810413921637211,
+          "v_bar_k": 0.32930213305450107,
+          "alpha_k": 0.798063650748416,
+          "gamma": 0.2080481295941385,
+          "delta": 0.0,
+          "lam_bar": 0.005500101665371167
+        },
+        "objective": 50.92839194380893,
+        "weighted_rmse": 3.568206550348821,
+        "unweighted_rmse": 0.1139581842004949,
+        "moments_data": {
+          "approach": 0.620571,
+          "peak": 1.4068,
+          "trough": 1.153524,
+          "antique": 1.201048
+        },
+        "moments_model": {
+          "approach": 0.6205709996449631,
+          "peak": 1.3261297330287847,
+          "trough": 1.3261297330287851,
+          "antique": 1.3261297330287851
+        },
+        "jacobian_rank": 3,
+        "jacobian_cond": 9932611829406292.0,
+        "converged_starts": 26,
+        "total_starts": 31
+      },
+      "10": {
+        "category": "Burgundy Premier Cru",
+        "specification": "unrestricted",
+        "n_bidders": 10,
+        "n_free_params": 6,
+        "n_moments": 4,
+        "theta": {
+          "alpha_c": 11.473432558185113,
+          "v_bar_k": 22.15004258781144,
+          "alpha_k": 1.7763568394002505e-15,
+          "gamma": 22.06113594017019,
+          "delta": 14.781297629321344,
+          "lam_bar": 0.8995881051373988
+        },
+        "se": {
+          "alpha_c": 0.466481067951315,
+          "v_bar_k": 0.2416310953197028,
+          "alpha_k": 0.6475139229797987,
+          "gamma": 0.12382365464262458,
+          "delta": 0.0,
+          "lam_bar": 0.002910949160854689
+        },
+        "objective": 50.92839194380874,
+        "weighted_rmse": 3.568206550348814,
+        "unweighted_rmse": 0.11395818437896288,
+        "moments_data": {
+          "approach": 0.620571,
+          "peak": 1.4068,
+          "trough": 1.153524,
+          "antique": 1.201048
+        },
+        "moments_model": {
+          "approach": 0.6205709993669464,
+          "peak": 1.3261297334036475,
+          "trough": 1.3261297334036475,
+          "antique": 1.3261297334036475
+        },
+        "jacobian_rank": 3,
+        "jacobian_cond": 1.0418236755671714e+16,
+        "converged_starts": 30,
+        "total_starts": 31
+      }
+    }
+  },
+  "bootstrap": {
+    "Bordeaux Grand Cru (red)": {
+      "category": "Bordeaux Grand Cru (red)",
+      "specification": "unrestricted",
+      "n_bidders": 5,
+      "B_requested": 200,
+      "B_effective": 200,
+      "n_failed": 0,
+      "baseline_theta": {
+        "alpha_c": 1.1426192008667593,
+        "v_bar_k": 0.01,
+        "alpha_k": 14.999997030646831,
+        "gamma": 0.5123234126240548,
+        "delta": 0.04074184097901057,
+        "lam_bar": 0.99
+      },
+      "bootstrap_mean": {
+        "alpha_c": 1.141242574352772,
+        "v_bar_k": 0.010000000000000007,
+        "alpha_k": 14.992770220732073,
+        "gamma": 0.5120447997492495,
+        "delta": 0.04067192787716301,
+        "lam_bar": 0.9900000000000017
+      },
+      "bootstrap_se": {
+        "alpha_c": 0.09044286698565292,
+        "v_bar_k": 6.956306463039096e-18,
+        "alpha_k": 0.017940922508706176,
+        "gamma": 0.007610760035971993,
+        "delta": 0.0020449742793232483,
+        "lam_bar": 1.669513551129383e-15
+      },
+      "bootstrap_ci_025": {
+        "alpha_c": 0.9822114384912662,
+        "v_bar_k": 0.01,
+        "alpha_k": 14.93867982062983,
+        "gamma": 0.4966951914228191,
+        "delta": 0.03688170059217786,
+        "lam_bar": 0.99
+      },
+      "bootstrap_ci_975": {
+        "alpha_c": 1.3243321309143878,
+        "v_bar_k": 0.01,
+        "alpha_k": 15.0,
+        "gamma": 0.5259686560441934,
+        "delta": 0.04467153274558025,
+        "lam_bar": 0.99
+      }
+    },
+    "Burgundy Grand Cru": {
+      "category": "Burgundy Grand Cru",
+      "specification": "unrestricted",
+      "n_bidders": 5,
+      "B_requested": 200,
+      "B_effective": 200,
+      "n_failed": 0,
+      "baseline_theta": {
+        "alpha_c": 14.000979301983978,
+        "v_bar_k": 20.503305414888448,
+        "alpha_k": 11.343399660426648,
+        "gamma": 23.011899463633092,
+        "delta": 1.8020343451826957,
+        "lam_bar": 0.6965878003935984
+      },
+      "bootstrap_mean": {
+        "alpha_c": 11.86165675632072,
+        "v_bar_k": 17.342760398947537,
+        "alpha_k": 9.436776670394963,
+        "gamma": 17.924233922969226,
+        "delta": 2.928919866086716,
+        "lam_bar": 0.7313894192878556
+      },
+      "bootstrap_se": {
+        "alpha_c": 5.61334320693141,
+        "v_bar_k": 7.899882570209938,
+        "alpha_k": 4.304554669134187,
+        "gamma": 10.614378995956415,
+        "delta": 4.873793312344093,
+        "lam_bar": 0.09075652407429405
+      },
+      "bootstrap_ci_025": {
+        "alpha_c": 0.4064132928120775,
+        "v_bar_k": 0.5723620360608149,
+        "alpha_k": 0.3098075361988661,
+        "gamma": 0.9982439009257235,
+        "delta": 1.3420152023488583,
+        "lam_bar": 0.63622264224989
+      },
+      "bootstrap_ci_975": {
+        "alpha_c": 23.241499597489575,
+        "v_bar_k": 29.999999947399026,
+        "alpha_k": 14.999999790324024,
+        "gamma": 29.999999999935238,
+        "delta": 23.643723303792733,
+        "lam_bar": 0.9899987243271364
+      }
+    },
+    "Burgundy Premier Cru": {
+      "category": "Burgundy Premier Cru",
+      "specification": "unrestricted",
+      "n_bidders": 5,
+      "B_requested": 200,
+      "B_effective": 200,
+      "n_failed": 0,
+      "baseline_theta": {
+        "alpha_c": 15.4721424149328,
+        "v_bar_k": 27.30002119510024,
+        "alpha_k": 8.881784196886311e-16,
+        "gamma": 25.948756430746823,
+        "delta": 29.530812849726022,
+        "lam_bar": 0.7986427551032731
+      },
+      "bootstrap_mean": {
+        "alpha_c": 13.2744595670055,
+        "v_bar_k": 25.338013129333373,
+        "alpha_k": 0.0,
+        "gamma": 17.700196811154555,
+        "delta": 29.09047496232502,
+        "lam_bar": 0.8328011792825404
+      },
+      "bootstrap_se": {
+        "alpha_c": 3.9235212761218374,
+        "v_bar_k": 6.456816450668588,
+        "alpha_k": 0.0,
+        "gamma": 11.17608253919244,
+        "delta": 1.0854145276996294,
+        "lam_bar": 0.06372502335755548
+      },
+      "bootstrap_ci_025": {
+        "alpha_c": 2.2969331385361462,
+        "v_bar_k": 5.97798116436361,
+        "alpha_k": 0.0,
+        "gamma": 1.2913612527325782,
+        "delta": 26.337386728294298,
+        "lam_bar": 0.7955476574209567
+      },
+      "bootstrap_ci_975": {
+        "alpha_c": 19.062304127919955,
+        "v_bar_k": 30.0,
+        "alpha_k": 0.0,
+        "gamma": 30.0,
+        "delta": 30.0,
+        "lam_bar": 0.9899999612568307
+      }
+    }
+  }
+}

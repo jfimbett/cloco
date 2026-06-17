@@ -1,0 +1,36 @@
+\begin{table}[htbp]
+\centering
+\caption{Piecewise linear price-age slopes by wine group}
+\label{tab:piecewise_slopes}
+\small
+\begin{threeparttable}
+\begin{tabular}{lcccccc}
+\toprule
+ & \multicolumn{1}{c}{Bx All} & \multicolumn{1}{c}{Bx GC} & \multicolumn{1}{c}{Bx PC} & \multicolumn{1}{c}{Bu All} & \multicolumn{1}{c}{Bu GC} & \multicolumn{1}{c}{Bu PC} \\
+\midrule
+$\beta_1$ (pre-maturity slope) & $0.6286^{***}$ & $0.4226^{***}$ & $0.4321^{***}$ & $1.6722^{***}$ & $1.3449^{***}$ & $1.5511^{***}$ \\
+  & (0.0077) & (0.0101) & (0.0084) & (0.0099) & (0.0111) & (0.0172) \\
+$\beta_2$ (change at maturity) & $-0.6487^{***}$ & $-0.6831^{***}$ & $-0.3265^{***}$ & $-1.0577^{***}$ & $-0.7757^{***}$ & $-1.1479^{***}$ \\
+  & (0.0141) & (0.0175) & (0.0174) & (0.0226) & (0.0238) & (0.0498) \\
+$\beta_3$ (change at antique) & $1.7404^{***}$ & $1.7145^{***}$ & $1.5738^{***}$ & $-0.5092^{***}$ & $-0.5041^{***}$ & $-0.5567^{***}$ \\
+  & (0.0238) & (0.0266) & (0.0392) & (0.0449) & (0.0452) & (0.1257) \\
+\midrule
+\textbf{Trough slope} $\beta_1+\beta_2$ & $-0.0201^{**}$ & $-0.2606^{***}$ & $0.1056^{***}$ & $0.6145^{***}$ & $0.5692^{***}$ & $0.4032^{***}$ \\
+  & (0.0086) & (0.0101) & (0.0116) & (0.0160) & (0.0163) & (0.0405) \\
+\midrule
+$R^2$ & 0.063 & 0.042 & 0.064 & 0.156 & 0.128 & 0.150 \\
+$N$ & 436,413 & 215,036 & 221,377 & 308,648 & 221,512 & 87,136 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item Notes: OLS piecewise linear regression. Dependent variable: log price per bottle (USD).
+  Model: $\log p = \alpha + \beta_1 a^* + \beta_2 (a^*-1)_+ + \beta_3 (a^*-2)_+ + \varepsilon$
+  where $(x)_+ = \max(0,x)$.
+  The slope in the trough zone ($a^* \in [1,2)$) is $\beta_1+\beta_2$; negative values indicate
+  a declining price-age profile in the post-maturity period.
+  Robust (HC1) standard errors in parentheses.
+  $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

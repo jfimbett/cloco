@@ -1,0 +1,32 @@
+\begin{table}[htbp]
+\centering
+\caption{Sample summary statistics by wine group}
+\label{tab:summary_stats}
+\small
+\begin{threeparttable}
+\begin{tabular}{lrrrrrrr}
+\toprule
+ & & \multicolumn{2}{c}{Share} & \multicolumn{3}{c}{Median price (\$/bottle)} & \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-7}
+Group & $N$ & Post-mat. & Coll.$^{a}$ & Young & At peak & Antique & Med. age \\
+ & & (\%) & (\%) & & & & (yrs) \\
+\midrule
+Bordeaux All & 436,413 & 35.2 & 39.0 & \$140 & \$237 & \$532 & 16 \\
+Bordeaux Grand Cru & 215,036 & 39.8 & 68.5 & \$336 & \$431 & \$748 & 17 \\
+Bordeaux Premier Cru & 221,377 & 30.6 & 19.1 & \$85 & \$118 & \$220 & 14 \\
+\midrule
+Burgundy All & 308,648 & 18.5 & 36.8 & \$133 & \$504 & \$1,074 & 11 \\
+Burgundy Grand Cru & 221,512 & 21.5 & 51.5 & \$213 & \$635 & \$1,278 & 11 \\
+Burgundy Premier Cru & 87,136 & 10.9 & 11.2 & \$65 & \$170 & \$231 & 9 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item Notes: ``Young'' = age\textsubscript{norm} $<$ 0.4 ($<$ 8 years).
+  ``At peak'' = age\textsubscript{norm} $\in$ [0.9, 1.1] (18--22 years).
+  ``Antique'' = age\textsubscript{norm} $>$ 2.0 ($>$ 40 years).
+  $^{a}$ Share of young lots priced $>$ \$200/bottle.
+  Maturity cap: 20 years. Sample period: 1996--2015.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

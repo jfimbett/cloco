@@ -1,0 +1,69 @@
+% ============================================================
+%  Online Appendix
+% ============================================================
+
+\appendix
+
+\section{Full Sample Statistics}
+\label{app:full_sample}
+
+Table~\ref{tab:full_sample} reports lot counts and median prices for the full auction
+sample broken down by region and wine type.
+
+\input{appendix/tab_full_sample_stats}
+
+\section{Tastingbook Match Rates}
+\label{app:tb_match}
+
+Table~\ref{tab:tb_match_rates} reports Tastingbook match rates by region and wine type.
+
+\input{appendix/tab_tastingbook_match_rates}
+
+\section{Maturity Imputation Model}
+\label{app:imputation}
+
+For the 24.1\,\% of auction lots without a Tastingbook record, we impute years-to-maturity
+using a gradient-boosting regressor trained on the matched observations. Features include
+target-encoded producer and wine identifiers, vintage year, region, and wine type.
+Table~\ref{tab:maturity_imputation} summarises model performance.
+
+\input{appendix/tab_maturity_imputation}
+
+\section{Binned Medians}
+\label{app:medians}
+
+Table~\ref{tab:price_age_medians} reports log price medians by normalised age bin (width 0.2)
+for all six wine groups (three Bordeaux tiers, three Burgundy tiers).
+
+\input{tables/tab_price_age_medians}
+
+\section{Proofs of Theoretical Results}
+\label{app:proofs}
+
+\noindent\textit{[Full proofs of Propositions~\ref{prop:nonmono},
+\ref{prop:notrough}, and~\ref{prop:compstat} to be completed.]}
+
+\section{Structural Estimation}
+\label{app:structural}
+
+\noindent\textit{[To be completed. Planned content:]}
+
+\noindent\textit{\textbf{Moment conditions.} The six model parameters
+$(\alpha_{c}, \bar{v}_{k}, \alpha_{k}, \gamma, \delta, \bar{\lambda})$ are estimated by
+minimum distance, matching predicted equilibrium prices $P(a^*)$ to the observed price-age
+moments across eight normalised-age bins ($a^* \in \{[0,0.4), [0.4,0.6), [0.6,0.8),
+[0.8,1.0), [1.0,1.2), [1.2,1.6), [1.6,2.0), [2.0,3.0]\}$). The weight matrix is the
+HC1-robust covariance matrix of the binned log-price means. Seven overidentifying
+restrictions allow a $J$-test.}
+
+\noindent\textit{\textbf{Implementation.} Estimation uses differential evolution (global
+optimiser) followed by a Nelder--Mead local refinement. Parametric bootstrap confidence
+sets use $B = 500$ replications.}
+
+\noindent\textit{\textbf{Results table.} Report parameter estimates and 95\% bootstrap
+confidence intervals for each of the three grand cru groups. Report estimated $\rho =
+\bar{v}_{k} / \alpha_{c}$ and confirm $\rho > 1$ for Burgundy Grand Cru.
+Report $J$-test statistic and $p$-value.}
+
+\noindent\textit{\textbf{Model fit figure.} Plot predicted $P(a^*)$ against observed binned
+medians for each group.}

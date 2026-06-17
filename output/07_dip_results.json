@@ -1,0 +1,41 @@
+{
+  "group": "Bordeaux GCC red",
+  "N": 436413,
+  "no_fe": {
+    "r2": 0.0536,
+    "segments": {
+      "approach": {
+        "coef": 0.178666,
+        "se": 0.004606,
+        "pv": 0.0
+      },
+      "peak": {
+        "coef": 0.46738,
+        "se": 0.005057,
+        "pv": 0.0
+      },
+      "trough": {
+        "coef": 0.162963,
+        "se": 0.008121,
+        "pv": 0.0
+      },
+      "antique": {
+        "coef": 1.076496,
+        "se": 0.007965,
+        "pv": 0.0
+      }
+    },
+    "trough_vs_peak": {
+      "diff": -0.304416,
+      "t": -36.2894,
+      "p_onesided": 0.0,
+      "pct_effect": -26.24
+    },
+    "antique_vs_trough": {
+      "diff": 0.913533,
+      "t": 87.8074,
+      "p_onesided": 0.0,
+      "pct_effect": 149.31
+    }
+  }
+}

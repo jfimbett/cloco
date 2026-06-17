@@ -1,0 +1,377 @@
+% ============================================================
+%  Section 3 — A Model of Collector and Consumer Demand
+% ============================================================
+
+\section{A Model of Collector and Consumer Demand}
+\label{sec:model}
+
+We develop a parsimonious auction model with heterogeneous buyers to
+rationalize the non-monotone price-age profile documented in
+Section~\ref{sec:results}.  The model builds on the two-type framework
+of \citet{lovo2018}, adapted to the distinctive feature of wine:
+a biological maturity date after which consumption value declines.
+
+%% ── 3.1  Environment ────────────────────────────────────────────
+
+\subsection{Environment}
+\label{sec:model:env}
+
+Consider a single bottle of wine with vintage-specific maturity date
+$\tau > 0$ (years since vintage).  The bottle reaches auction at age
+$a \geq 0$; we work throughout with \emph{normalised age}
+$a^{*} \equiv a / \tau$, so that $a^{*} = 1$ corresponds to peak
+maturity.
+
+In each auction, $n \geq 2$ risk-neutral potential bidders compete in a
+second-price sealed-bid (Vickrey) mechanism.  Each bidder is
+independently drawn as one of two types:
+\begin{itemize}
+  \item \textbf{Consumption buyers} (type~$c$), with probability
+        $\lambda(a^{*})$, value wine for drinking.
+  \item \textbf{Collector buyers} (type~$k$), with probability
+        $1 - \lambda(a^{*})$, value wine for holding, prestige, or
+        future resale.
+\end{itemize}
+Valuations are independent private values: each bidder knows her own
+type and valuation but not those of others.  Truthful bidding is
+weakly dominant, so the auction price equals the second-highest
+valuation among the~$n$ bidders.
+
+%% ── 3.2  Primitives ─────────────────────────────────────────────
+
+\subsection{Primitives}
+\label{sec:model:primitives}
+
+\begin{assumption}[Consumption Valuation]
+\label{as:vc}
+The consumption-buyer valuation is
+\begin{equation}
+  v_{c}(a^{*})
+  = \alpha_{c}\, h(a^{*}),
+  \qquad
+  h(a^{*})
+  = (a^{*})^{\gamma}\, e^{\,\gamma(1 - a^{*})},
+  \quad \gamma > 0,
+  \label{eq:vc}
+\end{equation}
+where $\alpha_{c} > 0$ is the maximum consumption value (attained at
+$a^{*} = 1$).  The quality function~$h$ satisfies $h(0) = 0$,
+$h(1) = 1$, is strictly increasing on $[0,1]$, strictly decreasing
+on $(1,\infty)$, and $h(a^{*}) \to 0$ as $a^{*} \to \infty$.  The
+parameter~$\gamma$ controls peakedness: higher~$\gamma$ implies a
+sharper peak at maturity and faster post-maturity decay.
+\end{assumption}
+
+\begin{assumption}[Collector Valuation]
+\label{as:vk}
+The collector-buyer valuation is
+\begin{equation}
+  v_{k}(a^{*})
+  = \bar{v}_{k} + \alpha_{k}\, a^{*},
+  \qquad
+  \bar{v}_{k} > 0,
+  \quad \alpha_{k} \geq 0.
+  \label{eq:vk}
+\end{equation}
+The parameter~$\bar{v}_{k}$ is the baseline collector value---the
+``price floor'' reflecting scarcity, prestige, and storage of fine
+wine---and $\alpha_{k}$ captures the incremental age premium.
+\end{assumption}
+
+\begin{assumption}[Buyer Composition]
+\label{as:lambda}
+The probability that a given bidder is type~$c$ is
+\begin{equation}
+  \lambda(a^{*})
+  = \begin{cases}
+      \bar{\lambda}
+        & \text{if } a^{*} \leq 1, \\[4pt]
+      \bar{\lambda}\, e^{-\delta(a^{*} - 1)}
+        & \text{if } a^{*} > 1,
+    \end{cases}
+  \qquad
+  \bar{\lambda} \in (0,1),
+  \quad \delta > 0.
+  \label{eq:lambda}
+\end{equation}
+Consumption buyers participate at a constant rate~$\bar{\lambda}$
+before maturity and exit at rate~$\delta$ afterward, reflecting
+declining interest in a wine that is past its drinking peak.
+\end{assumption}
+
+\noindent
+The model has six parameters:
+$(\alpha_{c},\, \bar{v}_{k},\, \alpha_{k},\, \gamma,\, \delta,\,
+\bar{\lambda})$.  We suppress dependence on~$n$ (number of bidders)
+in the notation; all results hold for any fixed $n \geq 2$.
+
+%% ── 3.3  Equilibrium Price ──────────────────────────────────────
+
+\subsection{Equilibrium Price}
+\label{sec:model:equil}
+
+Under truthful bidding, the auction price equals the second-highest
+valuation.  Because each bidder's valuation is deterministic
+conditional on type, the $n$ bids are i.i.d.\ draws from the
+two-point distribution
+$\{v_{c}(a^{*}),\, v_{k}(a^{*})\}$ with probabilities
+$\{\lambda(a^{*}),\, 1 - \lambda(a^{*})\}$.
+
+\medskip
+
+\noindent\textbf{Definition (Equilibrium price).}
+The expected auction price at normalised age~$a^{*}$ is
+\begin{equation}
+  P(a^{*})
+  = \mathbb{E}\!\left[\,V_{(n-1:n)} \,\big|\, a^{*}\,\right],
+  \label{eq:price}
+\end{equation}
+where $V_{(n-1:n)}$ denotes the second-order statistic of the~$n$
+valuations.
+
+\medskip
+
+Write $\lambda = \lambda(a^{*})$, $v_{c} = v_{c}(a^{*})$,
+$v_{k} = v_{k}(a^{*})$.  When $v_{c} \geq v_{k}$ (which holds near
+maturity under Assumption~\ref{as:vc}--\ref{as:vk}), the
+second-highest bid equals~$v_{c}$ if and only if at least two of the
+$n$~bidders are type~$c$.  Letting
+$q_{0} = (1-\lambda)^{n}$ and
+$q_{1} = n\,\lambda\,(1-\lambda)^{n-1}$:
+\begin{equation}
+  P(a^{*})
+  = v_{c}\!\left(1 - q_{0} - q_{1}\right)
+  + v_{k}\!\left(q_{0} + q_{1}\right)
+  \qquad \text{when } v_{c} \geq v_{k}.
+  \label{eq:price_vc_dom}
+\end{equation}
+When $v_{k} > v_{c}$ (deep post-maturity), the symmetric expression
+holds with $r_{0} = \lambda^{n}$ and
+$r_{1} = n\,(1-\lambda)\,\lambda^{n-1}$:
+\begin{equation}
+  P(a^{*})
+  = v_{k}\!\left(1 - r_{0} - r_{1}\right)
+  + v_{c}\!\left(r_{0} + r_{1}\right)
+  \qquad \text{when } v_{k} > v_{c}.
+  \label{eq:price_vk_dom}
+\end{equation}
+In either case, $P(a^{*})$ is a weighted average of the two
+valuations, with the weight on the higher valuation equal to the
+probability that the second-order statistic equals that value.
+
+%% ── 3.4  Main Results ───────────────────────────────────────────
+
+\subsection{Main Results}
+\label{sec:model:results}
+
+\begin{proposition}[Non-Monotone Price-Age Profile]
+\label{prop:nonmono}
+Suppose\, $\alpha_{c} > \bar{v}_{k} + \alpha_{k}$
+(consumption value at maturity exceeds collector value at maturity),
+$\gamma > 0$, $\delta > 0$, and $n \geq 2$.  Then there exist
+$a^{*}_{\mathrm{peak}}$ and $a^{*}_{\mathrm{trough}}$ with
+$1 \leq a^{*}_{\mathrm{peak}} < a^{*}_{\mathrm{trough}}$ such that:
+\begin{enumerate}
+  \item[\emph{(i)}]
+    $P(a^{*})$ is strictly increasing on
+    $[0,\, a^{*}_{\mathrm{peak}}]$.
+  \item[\emph{(ii)}]
+    $P(a^{*})$ is strictly decreasing on
+    $[a^{*}_{\mathrm{peak}},\, a^{*}_{\mathrm{trough}}]$.
+  \item[\emph{(iii)}]
+    $P(a^{*})$ is eventually strictly increasing for~$a^{*}$
+    sufficiently large.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+Three forces shape the price path.
+\emph{Pre-maturity} ($a^{*} \leq 1$): both $v_{c}$ and~$v_{k}$ are
+increasing and $\lambda$ is constant, so $P$ is increasing.
+\emph{Post-maturity transition} ($a^{*}$ slightly above~$1$):
+$v_{c}$ decays at rate~$\gamma$ (Assumption~\ref{as:vc}) and
+$\lambda$ decays at rate~$\delta$ (Assumption~\ref{as:lambda}).
+Both effects reduce the probability that the second-highest bidder
+is type~$c$, and since $v_{c} > v_{k}$ in a neighbourhood of
+$a^{*} = 1$, the price falls---the \emph{composition effect}
+dominates.
+\emph{Recovery} ($a^{*} \to \infty$): $\lambda \to 0$ and
+$v_{c} \to 0$, so the auction is populated entirely by collectors.
+The price converges to~$v_{k}(a^{*})$, which is increasing.
+The trough is the age at which the declining composition effect is
+exactly offset by the rising collector premium.
+A formal proof is in Appendix~\ref{app:proofs}.
+\end{proof}
+
+\medskip
+
+The next result explains why the trough is absent for Burgundy Grand
+Cru.
+
+\begin{proposition}[Trough Disappearance]
+\label{prop:notrough}
+Define the collector-dominance ratio
+$\rho \equiv \bar{v}_{k} / \alpha_{c}$.
+There exists a threshold~$\rho^{*} \in (0,1)$ such that if
+$\rho > \rho^{*}$, then $P(a^{*})$ is weakly increasing for all
+$a^{*} \geq 0$.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+When $\rho \geq 1$, we have $\bar{v}_{k} \geq \alpha_{c}$, so
+$v_{k}(a^{*}) \geq \bar{v}_{k} \geq \alpha_{c} \geq v_{c}(a^{*})$
+for all~$a^{*}$.  Collectors dominate every auction, and the price
+tracks the increasing function~$v_{k}$.
+For $\rho < 1$ but $\rho > \rho^{*}$, there exists a narrow interval
+near $a^{*} = 1$ where $v_{c}$ exceeds~$v_{k}$, but the interval is
+too short and the consumption share~$\bar{\lambda}$ too small for
+the composition effect to generate a net price decline.
+The threshold~$\rho^{*}$ depends on $(\gamma, \delta, \bar{\lambda},
+\alpha_{k}, n)$; a formal characterisation is in
+Appendix~\ref{app:proofs}.
+\end{proof}
+
+\noindent
+The ratio~$\rho$ has a direct empirical counterpart: the share of
+young auction lots (normalised age below~0.4) whose per-bottle price
+exceeds~\$200.  This share proxies for the intensity of collector
+demand at early ages.  Table~\ref{tab:rho_mapping} summarises the
+cross-sectional mapping.
+
+\begin{table}[htbp]
+\centering
+\caption{Collector-Dominance Ratio and Trough Presence}
+\label{tab:rho_mapping}
+\begin{tabular}{lccc}
+\toprule
+Category & Young lots $>$ \$200 & Implied $\rho$ & Trough \\
+\midrule
+Burgundy Grand Cru     & 51.5\% & High ($> \rho^{*}$) & Absent \\
+Bordeaux Crus Class\'es & 39.0\% & Moderate ($< \rho^{*}$) & $-26.2\%$ \\
+Burgundy Premier Cru   & 11.2\% & Low ($\ll \rho^{*}$) & $-22.4\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{proposition}[Comparative Statics on Trough Depth]
+\label{prop:compstat}
+For a wine category with $\rho < \rho^{*}$, define the trough depth
+$\Delta \equiv P(a^{*}_{\mathrm{peak}}) -
+P(a^{*}_{\mathrm{trough}})$.  Then:
+\begin{enumerate}
+  \item[\emph{(i)}]
+    $\partial \Delta / \partial \bar{\lambda} > 0$: a higher
+    consumption-buyer share deepens the trough.
+  \item[\emph{(ii)}]
+    $\partial \Delta / \partial \bar{v}_{k} < 0$: a higher collector
+    floor compresses the trough.
+  \item[\emph{(iii)}]
+    $\partial \Delta / \partial \gamma > 0$: a sharper consumption
+    peak deepens the trough.
+  \item[\emph{(iv)}]
+    $\partial \Delta / \partial \delta > 0$: faster consumption-buyer
+    exit deepens the trough.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+Part~\emph{(i)}: higher~$\bar{\lambda}$ increases competition among
+consumption buyers near maturity, raising
+$P(a^{*}_{\mathrm{peak}})$.  After maturity, the same buyers exit,
+so $P(a^{*}_{\mathrm{trough}})$ falls---the gap widens.
+Part~\emph{(ii)}: higher~$\bar{v}_{k}$ raises the price floor set
+by collectors, truncating the price decline at the trough.
+Parts~\emph{(iii)}--\emph{(iv)} accelerate the post-maturity
+collapse of consumption demand, steepening the transition from peak
+to trough.
+Formal proofs are in Appendix~\ref{app:proofs}.
+\end{proof}
+
+%% ── 3.5  Empirical Predictions ──────────────────────────────────
+
+\subsection{Empirical Predictions}
+\label{sec:model:predictions}
+
+The model yields four testable implications that we take to the data
+in Sections~\ref{sec:empirics}--\ref{sec:results}.
+
+\medskip
+
+\noindent\textbf{Prediction~1} (Non-monotone profile).
+For wine categories in which consumption buyers constitute a
+substantial share of bidders ($\rho < \rho^{*}$), the log price-age
+profile should rise pre-maturity, fall post-maturity, and recover at
+antique ages.
+
+\medskip
+
+\noindent\textbf{Prediction~2} (Trough disappearance).
+Wine categories where the collector-dominance ratio is sufficiently
+high---observable as a high share of young lots priced above \$200
+per bottle---should exhibit a monotonically increasing price-age
+profile with no post-maturity trough.
+
+\medskip
+
+\noindent\textbf{Prediction~3} (Monotone pre-maturity rise).
+All categories should show rising prices pre-maturity, because both
+consumption and collector valuations are increasing before $a^{*}=1$.
+
+\medskip
+
+\noindent\textbf{Prediction~4} (Cross-sectional trough depth).
+Across categories that exhibit a trough, its depth should be
+increasing in the consumption-buyer share and decreasing in the
+collector-value floor.
+
+%% ── 3.6  Discussion ─────────────────────────────────────────────
+
+\subsection{Discussion}
+\label{sec:model:discussion}
+
+\paragraph{Relationship to \citet{lovo2018}.}
+Our model shares the two-type buyer structure with the art-market
+model of \citet{lovo2018}, but differs in three key respects.
+First, wine has a finite consumption life governed by the maturity
+date~$\tau$, which generates the single-peaked consumption valuation
+$v_{c}(a^{*})$ central to the non-monotone price profile.
+Art has no biological expiry, so the consumption-type valuation in
+\citet{lovo2018} is constant.
+Second, the maturity date varies across wines and is (imperfectly)
+observable via expert tasting notes, providing cross-sectional
+variation in~$a^{*}$ that identifies the model.
+Third, we adopt a static auction mechanism appropriate for the
+institutional setting, rather than the dynamic search-and-matching
+framework of \citet{lovo2018}.
+
+\paragraph{Why arbitrageurs do not eliminate the trough.}
+If collectors could costlessly buy at the trough and resell at
+antique ages, forward-looking bidding would compress the price dip.
+The persistence of the trough in the data points to significant
+frictions: storage costs (approximately 1--2\,\% of value per year
+for temperature-controlled storage), authentication risk (provenance
+uncertainty rises with the number of transactions), and thin markets
+(low trading frequency for post-maturity wines reduces liquidity).
+
+\paragraph{Endogenous supply.}
+The baseline model takes supply as given.  If sellers anticipate
+lower prices in the trough zone, they may delay consignment,
+reducing supply and partially offsetting the price decline.  The fact
+that the trough persists suggests that seller delay, while plausible,
+does not fully eliminate the composition-driven dip.
+
+\paragraph{Structural estimation.}
+The six model parameters
+$(\alpha_{c}, \bar{v}_{k}, \alpha_{k}, \gamma, \delta,
+\bar{\lambda})$ can be estimated by matching the observed price-age
+profiles across wine categories using minimum distance, with 7
+moment conditions (8 age bins, young as baseline) and the full
+HC1-robust covariance matrix as optimal weight.
+Appendix~\ref{app:structural} describes the estimation procedure and
+will report these estimates for all three grand cru categories, together
+with a $J$-test of overidentification and parametric bootstrap
+confidence sets.
+\textit{[Placeholder: structural estimation results to be completed.
+The estimated $\rho = \bar{v}_{k}/\alpha_{c}$ is expected to exceed
+unity for Burgundy Grand Cru, confirming Proposition~\ref{prop:notrough}.
+]}

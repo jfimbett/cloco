@@ -1,0 +1,36 @@
+\begin{table}[htbp]
+\centering
+\caption{Tastingbook match rates by region and match type}
+\label{tab:tb_match_rates}
+\small
+\begin{threeparttable}
+\begin{tabular}{llrr}
+\toprule
+Region & Match type & $N$ & Share (\%) \\
+\midrule
+Bordeaux & fuzzy & 299,132 & 47.5 \\
+Bordeaux & producer\_vintage & 231,899 & 36.9 \\
+Bordeaux & unmatched & 48,101 & 7.6 \\
+Bordeaux & producer\_avg & 46,916 & 7.5 \\
+Bordeaux & exact & 3,138 & 0.5 \\
+Burgundy & unmatched & 172,229 & 51.6 \\
+Burgundy & fuzzy & 99,312 & 29.8 \\
+Burgundy & producer\_vintage & 43,454 & 13.0 \\
+Burgundy & producer\_avg & 18,677 & 5.6 \\
+Rhone & fuzzy & 49,554 & 46.9 \\
+Rhone & unmatched & 35,958 & 34.1 \\
+Rhone & producer\_avg & 15,853 & 15.0 \\
+Rhone & producer\_vintage & 4,060 & 3.8 \\
+Rhone & exact & 168 & 0.2 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item Notes: match types: \textit{exact} = matched on (producer, wine, vintage);
+  \textit{producer\_vintage} = matched on (producer, vintage);
+  \textit{fuzzy} = fuzzy producer name match;
+  \textit{producer\_avg} = producer-level average maturity;
+  \textit{unmatched} = no Tastingbook coverage (maturity imputed).
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

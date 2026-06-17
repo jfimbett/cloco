@@ -1,0 +1,1 @@
+- [Structural estimation patterns](project_structural_estimation.md) -- under-identification, boundary estimates, delta-method vs bootstrap SE divergence in wine auction model

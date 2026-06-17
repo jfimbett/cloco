@@ -1,0 +1,35 @@
+\begin{table}[htbp]
+\centering
+\caption{Price-age segment regression: test for post-maturity dip}
+\label{tab:segment_dip}
+\small
+\begin{tabular}{lcccccc}
+\toprule
+ & \multicolumn{2}{c}{Bordeaux GCC} & \multicolumn{2}{c}{Burg. Grand Cru} & \multicolumn{2}{c}{Burg. Prem. Cru} \\
+Segment (base: young) & Coef. & $N$ & Coef. & $N$ & Coef. & $N$ \\
+\midrule
+\textit{Approach} & $0.179^{***}$ & 121,722 & $0.477^{***}$ & 58,482 & $0.621^{***}$ & 20,074 \\
+  & \small (0.005) &  & \small (0.007) &  & \small (0.010) \\
+\textit{Peak} & $0.467^{***}$ & 106,905 & $1.046^{***}$ & 33,051 & $1.407^{***}$ & 7,813 \\
+  & \small (0.005) &  & \small (0.009) &  & \small (0.019) \\
+\textit{Trough} & $0.163^{***}$ & 25,037 & $1.271^{***}$ & 7,489 & $1.154^{***}$ & 1,350 \\
+  & \small (0.008) &  & \small (0.018) &  & \small (0.045) \\
+\textit{Antique} & $1.076^{***}$ & 32,195 & $1.451^{***}$ & 11,340 & $1.201^{***}$ & 1,476 \\
+  & \small (0.008) &  & \small (0.013) &  & \small (0.030) \\
+\midrule
+\textbf{Trough $-$ Peak} & $-0.304^{***}$ & (-26.2\%) & $0.225$ & (+25.3\%) & $-0.253^{***}$ & (-22.4\%) \\
+\midrule
+$R^2$ & 0.054 &  & 0.118 &  & 0.150 & \\
+$N$ & 436,413 &  & 221,512 &  & 87,136 & \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item Notes: OLS, dependent variable log price per bottle (USD). Robust (HC1) standard errors
+  in parentheses. Segments: \textit{young} = age\textsubscript{norm} $\in [0, 0.6)$;
+  \textit{approach} $\in [0.6, 1.0)$; \textit{peak} $\in [1.0, 1.6)$;
+  \textit{trough} $\in [1.6, 2.0)$; \textit{antique} $\in [2.0, 3.0]$.
+  ``Trough $-$ Peak'' reports the direct contrast with one-sided $p$-value (testing trough $<$ peak).
+  $^{***}p<0.001$, $^{**}p<0.01$, $^{*}p<0.05$.
+\end{tablenotes}
+\end{table}

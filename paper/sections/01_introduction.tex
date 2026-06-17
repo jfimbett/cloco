@@ -1,0 +1,92 @@
+% ============================================================
+%  Section 1 — Introduction
+% ============================================================
+
+\section{Introduction}
+\label{sec:intro}
+
+Fine wine is unusual among investment assets because it ages out. A bottle has a biological
+maturity date past which its consumption value declines, yet its market price need not follow
+suit: collectors bid for old wine precisely because it can no longer be drunk in the ordinary
+sense. This paper uses a large panel of French fine-wine auction transactions to study how
+prices evolve over the wine life-cycle, and to show that the shape of the price-age profile
+reveals the composition of demand.
+
+\noindent\textit{[Opening paragraph: motivate the puzzle more sharply — most assets appreciate
+or depreciate monotonically; wine does neither. Frame the maturity date as the key object:
+it creates a natural experiment in which the same bottle transitions from a consumption good
+to a collectible in real time.]}
+
+Using 1,068,703 lot-level hammer prices from French fine-wine auctions (1996--2015), we
+document a striking non-monotonicity in the price-age profile of premier-quality wines.
+Prices rise through the pre-maturity period, peak near the biological maturity window, then
+\textit{dip} by approximately 26 percent in a ``trough zone'' spanning the decade after
+peak maturity, before recovering to a collector premium at antique ages. This three-phase
+pattern is pervasive for Bordeaux Crus Class\'es and Burgundy Premier Crus but is
+\textit{absent} for Burgundy Grand Crus, whose auction prices rise monotonically through
+the entire life-cycle.
+
+The divergence between Bordeaux and Burgundy Grand Cru identifies the mechanism.
+Among young lots (below eight years old), 51.5 percent of Burgundy Grand Cru transactions
+exceed \$200 per bottle, compared with 39.0 percent for Bordeaux Crus Class\'es and only
+11.2 percent for Burgundy Premier Cru. The high entry price of Burgundy Grand Cru screens
+out consumption buyers from the outset: a bidder who intends to drink the wine must be
+willing to pay collector-level prices even when the wine is young. There is no consumption
+demand segment to exit at peak maturity, and therefore no downward price pressure in the
+trough zone.
+
+To formalise this logic, we develop a parsimonious two-type auction model following
+\citet{lovo2018}. Buyers are either consumption buyers, who value the wine for drinking
+(and whose valuation peaks at maturity and declines thereafter), or collector buyers, who
+place an increasing value on rarity and age. The model predicts a non-monotone price-age
+profile whenever the consumption-buyer valuation at maturity exceeds the collector-buyer
+floor, and a monotone profile when the collector floor is sufficiently high. Three
+propositions characterise (i) existence of the non-monotone profile, (ii) the conditions
+for trough disappearance, and (iii) comparative statics on trough depth.
+
+Our paper relates to two strands of literature. The first is the empirical literature on
+alternative assets as investments \citep{baumol1986, goetzmann1993, mei2002,
+korteweg2016, goetzmann2021}. Within this strand, the closest paper is
+\citet{dimson2015}, who use a repeat-sales index constructed from Bordeaux Premiers Crus
+hammer prices over 1900--2012 to estimate a net real return to wine of 4.1\,\% per annum
+and document that young maturing wines generate the highest returns while past-maturity
+ch\^{a}teaux provide growing non-pecuniary (collector) benefits. Our paper departs from
+\citet{dimson2015} in three important ways. First, they use raw calendar age and therefore
+conflate wines at very different stages of their biological life-cycle: a twenty-year
+Bordeaux Premier Cru may be at peak maturity while a twenty-year village wine is already in
+the trough zone. We normalise age by each wine's individual maturity date, obtained from
+Tastingbook for 75.9\,\% of lots and imputed otherwise, which maps heterogeneous calendar
+ages onto a common life-cycle grid and isolates the maturity transition as the key event.
+Second, the repeat-sales method used in \citet{dimson2015} requires a bottle to be resold
+at least twice and therefore systematically excludes the most illiquid segments of the
+market; our lot-level panel is ten times larger and covers three wine regions. Third, and
+most importantly, \citet{dimson2015} characterise the maturity kink descriptively but do not
+model the mechanism. The decomposition of the price dip into a buyer composition effect ---
+the exit of consumption buyers at peak maturity --- and the ensuing recovery as collectors
+dominate antique-age auctions requires a structural model with heterogeneous buyer types,
+which we provide. \citet{breeden2017} use age-period-cohort decomposition on 1.5 million
+auction records and confirm the three-phase price profile, but likewise stop short of
+modelling why the dip is present for some wine categories and absent for others.
+
+The second strand is the theory of heterogeneous-buyer markets for durable goods. The
+structural model of \citet{lovo2018} is our closest theoretical antecedent. They develop
+a two-type framework for the art market in which an asset is held by either a ``pleasure
+buyer'' (who derives a flow utility from ownership) or a ``speculative buyer'' (who holds
+it purely for resale). Their key result is that speculation generates price cycles and
+excess volatility relative to fundamental value. Our model shares the two-type architecture
+but differs in a central respect: \textit{wine has a finite consumption life}. We model the
+consumption-buyer valuation as single-peaked at the maturity date and declining thereafter
+--- a restriction that has no counterpart in \citet{lovo2018}, where the pleasure buyer's
+flow utility is constant and the asset never expires. It is precisely this biological
+maturity structure that generates the non-monotone price-age profile and the composition
+effect at the heart of our analysis. A second difference is institutional: wine is sold in
+one-shot Vickrey auctions rather than in a search-and-matching market, which allows us to
+derive the equilibrium price in closed form and take it directly to data. The maturity
+date also provides a natural source of cross-sectional variation to identify the model: the
+same wine category at the same calendar age can be pre-maturity or post-maturity depending
+on the wine's individual $\tau_i$, and this variation is observable.
+
+\noindent\textit{[Roadmap paragraph: Section~\ref{sec:data} describes the data.
+Section~\ref{sec:empirics} presents the empirical strategy. Section~\ref{sec:results} reports
+results. Section~\ref{sec:model} develops the structural model that rationalises these
+findings. Section~\ref{sec:conclusion} concludes.]}

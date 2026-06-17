@@ -1,0 +1,2 @@
+- [User Profile](user_profile.md) — Finance professor at Paris Dauphine, wine auction paper with coauthors
+- [Theory Model](theory_model.md) — Two-type auction model for wine price-age profiles, notation and parameter conventions

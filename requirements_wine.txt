@@ -1,0 +1,33 @@
+# Requirements for the Liquid Assets wine auction project
+# Install with: pip install -r requirements_wine.txt
+#
+# The Anaconda distribution (Python 3.13+) already includes most of these.
+# Uncommon packages are noted.
+
+# Core data processing
+pandas>=2.0
+numpy>=1.24
+pyarrow>=12.0          # parquet I/O
+openpyxl>=3.1          # Excel reading (xlsx)
+xlrd>=2.0              # Excel reading (xls, if needed)
+
+# Visualisation
+matplotlib>=3.7
+seaborn>=0.12          # optional; nicer plots
+
+# Econometrics / statistics
+statsmodels>=0.14      # HP filter, OLS
+
+# NLP (used by mixed_lots_finding.py and optional BERT pipeline)
+nltk>=3.8
+
+# Machine learning (used by f2_some_ml.py; optional for basic pipeline)
+scikit-learn>=1.3
+
+# Web scraping (used by scrape_wine_data.py and Xin Ning's scraper)
+requests>=2.31
+beautifulsoup4>=4.12
+feapder>=1.8           # Xin Ning's concurrent scraper framework (pip only)
+
+# Geographic plots (used in f2_some_ml.py exploration; optional)
+geopandas>=0.14        # optional; needed for map plots only

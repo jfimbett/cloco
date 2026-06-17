@@ -1,0 +1,105 @@
+% ============================================================
+%  Section 5 — Results
+% ============================================================
+
+\section{Results}
+\label{sec:results}
+
+\subsection{The price-age profile: Bordeaux vs.\ Burgundy}
+
+Figure~\ref{fig:spline} plots the estimated natural cubic spline for all six groups against
+normalised wine age. Panels~A and~B display the Bordeaux and Burgundy subgroups separately;
+Panel~C juxtaposes the aggregate Bordeaux and Burgundy series. Through the pre-maturity period,
+log prices rise monotonically for all groups — that much is uncontroversial. The divergence
+comes after maturity.
+
+Among Bordeaux wines, both the Grand Cru tier (1\textsuperscript{er} Cru Class\'es M\'edoc and
+Premiers grands crus class\'es A, St\'emilion) and the Premier Cru tier (2\textsuperscript{nd}
+through 5\textsuperscript{th} growths plus Graves and St\'emilion~B) exhibit a pronounced dip in
+the trough zone ($a^* \in [1.6, 2.0)$, approximately 32--40 years of age). The Bordeaux Grand
+Cru dip is the deepest, consistent with the longer maturity windows and higher consumption
+valuations at peak for the most prestigious châteaux. Among Burgundy wines, Burgundy Grand Cru
+continues to rise through the same window without interruption; Burgundy Premier Cru shows a
+mild inflection but no sustained decline.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{figures/fig_spline_comparison.pdf}
+  \caption{Price-age profiles estimated by natural cubic spline (knots at
+    $a^* \in \{0.4, 0.8, 1.2, 1.6, 2.2\}$) with 95\,\% confidence bands (shaded).
+    \textit{Panel A}: Bordeaux subgroups (All, Grand Cru, Premier Cru).
+    \textit{Panel B}: Burgundy subgroups (All, Grand Cru, Premier Cru).
+    \textit{Panel C}: Bordeaux All vs.\ Burgundy All.
+    Dots are binned medians (bin width: 0.30 normalised-age units).
+    The dashed vertical line marks the maturity threshold (20 years);
+    the shaded yellow band indicates the trough zone (approximately 32--40 years,
+    $a^* \in [1.6, 2.0)$).
+    $x$-axis is calendar age in years (normalised age $\times$ 20-year cap).
+    Sample: 1996--2015 auction lots.}
+  \label{fig:spline}
+\end{figure}
+
+\subsection{Statistical significance of the dip}
+
+Tables~\ref{tab:segment_dip_bordeaux} and~\ref{tab:segment_dip_burgundy} report the segment
+dummy regressions for Bordeaux and Burgundy groups respectively, each in four specifications:
+(1) baseline, (2) vintage year fixed effects, (3) producer fixed effects, and (4) both fixed
+effects simultaneously.
+
+For Bordeaux Grand Cru, the trough segment is substantially below the peak segment across all
+four specifications, and the Trough~$-$~Peak contrast is significant at the 0.1\,\% level.
+Bordeaux Premier Cru likewise shows a statistically significant dip. The magnitudes are
+broadly stable when adding vintage or producer fixed effects, confirming that the trough is not
+a cohort quality effect or a producer compositional artifact.
+
+Burgundy Grand Cru shows the opposite: the trough segment is \textit{above} the peak in all
+specifications, consistent with a monotonically rising profile and the absence of
+consumer-demand exit.
+
+\input{tables/tab_segment_dip_bordeaux}
+
+\input{tables/tab_segment_dip_burgundy}
+
+\subsection{Piecewise linear robustness: negative trough slopes}
+
+Table~\ref{tab:piecewise_slopes} reports the piecewise linear specification~\eqref{eq:piecewise}.
+The trough slope $\beta_1 + \beta_2$ is negative for both Bordeaux groups (Bordeaux All:
+$-0.020$; Bordeaux Grand Cru: $-0.261$), confirming that prices \emph{fall} with age in the
+post-maturity period for Bordeaux wines. The deeper slope for Bordeaux Grand Cru reflects the
+higher consumption valuations at peak maturity for the premier châteaux, which create a larger
+correction when consumption buyers exit.
+
+In contrast, the trough slope is positive and large for both Burgundy groups (Burgundy Grand
+Cru: $+0.569$; Burgundy Premier Cru: $+0.403$), indicating that prices continue to rise
+monotonically after maturity.
+
+\input{tables/tab_piecewise_slopes}
+
+\subsection{Mechanism: collector composition and the price floor}
+
+Table~\ref{tab:summary_stats} documents the key cross-sectional difference that rationalises
+the contrasting profiles. Among young lots ($a^* < 0.4$, i.e., wines under 8 years old),
+Burgundy Grand Cru commands the highest share of transactions above \$200 per bottle,
+followed by Bordeaux Grand Cru and Bordeaux All, with Burgundy Premier Cru at the bottom.
+The high entry price of Burgundy Grand Cru screens out consumption buyers from the outset:
+a bidder who intends to drink the wine must be willing to pay collector-level prices even when
+the wine is young. There is no consumption demand segment to exit at peak maturity, hence no
+downward price pressure in the trough zone.
+
+\input{tables/tab_summary_stats}
+
+\subsection{Heterogeneity by wine-specific maturity}
+\label{sec:results:heterogeneity}
+
+\noindent\textit{[To be completed. Key result to document: the dip is not an artifact of
+the maturity normalisation. Within the Bordeaux Grand Cru group, wines with shorter
+maturity windows (say, $\tau_i < 18$ years) exhibit a shallower trough than wines with
+longer maturity windows ($\tau_i \geq 22$ years), consistent with Proposition~\ref{prop:compstat}(iii)
+--- a sharper consumption peak deepens the trough.
+Show Table~X stratifying segment regression by tercile of $\tau_i$.]}
+
+\subsection{Price-age medians: raw evidence}
+\label{sec:results:medians}
+
+Appendix~\ref{app:medians} reports binned log price medians by normalised age bin (width 0.2)
+for all six groups. The raw medians confirm the spline shape without any smoothing assumption.

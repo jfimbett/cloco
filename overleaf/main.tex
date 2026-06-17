@@ -1,0 +1,100 @@
+% ============================================================
+%  main.tex  —  Collector Premiums and the Wine Life-Cycle
+%  Author : Juan F. Imbet
+%  Date   : 2026-03-29
+%  NOTE   : This is the Overleaf-ready copy. Do NOT edit here.
+%           Edit paper/main.tex and run /migrate-overleaf to sync.
+%           Coauthors: edit model.tex (top-level) for the model section.
+% ============================================================
+
+\documentclass[12pt]{article}
+
+% ── Packages ─────────────────────────────────────────────────────────────────
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{hyperref}
+\usepackage{setspace}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[nolists,tablesfirst]{endfloat}
+
+\hypersetup{
+  colorlinks = true,
+  linkcolor  = blue,
+  citecolor  = blue,
+  urlcolor   = blue
+}
+
+\doublespacing
+
+% ── Theorem environments ──────────────────────────────────────────────────────
+\usepackage{amsthm}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{assumption}{Assumption}
+
+% ── Title ─────────────────────────────────────────────────────────────────────
+\title{\textbf{Liquid Assets}\thanks{%
+         We thank Lucie Bourdychova and Xin Ning for excellent research assistance.
+         All errors are our own.}}
+
+\author{Juan F.\ Imbet\thanks{Paris Dauphine University -- PSL.
+         \texttt{juan.imbet@dauphine.psl.eu}.} \and
+        Roman Kr\"{a}ussl\thanks{Bayes Business School, City St George's University of London.} \and
+        Ilaria Piatti\thanks{Queen Mary University of London.} \and
+        Roberto Steri\thanks{University of Luxembourg.}}
+
+\date{March 2026}
+
+% ── Document ─────────────────────────────────────────────────────────────────
+\begin{document}
+
+\maketitle
+
+{\singlespacing
+\begin{abstract}
+  Using a panel of 1,068,703 French fine-wine auction transactions (1996--2015), we document
+  that the price-age profile of top wines is non-monotone: prices rise through the pre-maturity
+  period, peak near the maturity threshold, dip by 26\,\% in the post-maturity trough zone
+  (approximately 32--40 years of age), and recover to a collector premium at antique ages.
+  The dip is present for Bordeaux Crus Class\'es and Burgundy Premier Cru but absent for
+  Burgundy Grand Cru, whose median young-wine price (\$213 per bottle) screens out consumption
+  buyers from the outset. We develop a two-type structural demand model in which collectors
+  and consumption buyers have heterogeneous valuations for aged wines; the exit of consumption
+  buyers at peak maturity creates a temporary oversupply that depresses prices, and only wines
+  with a sufficiently high collector-segment share avoid the trough. We estimate the model
+  structurally, recovering buyer-type shares and valuation parameters, and find that the
+  collector share rises sharply post-maturity, rationalizing both the price dip and the
+  antique-age recovery.
+\end{abstract}
+}
+
+\bigskip
+
+\noindent\textbf{JEL Codes:} G12, D44, L66\\
+\noindent\textbf{Keywords:} wine, auction prices, collector premium, maturity, alternative investments
+
+\newpage
+
+% ── Sections ─────────────────────────────────────────────────────────────────
+\input{sections/01_introduction}
+\input{sections/02_data}
+\input{sections/04_empirics}
+\input{sections/05_results}
+\input{model}          % ← Model section: edit model.tex directly
+\input{sections/06_conclusion}
+
+% ── Bibliography ─────────────────────────────────────────────────────────────
+\newpage
+\bibliographystyle{aer}
+\bibliography{references}
+
+% ── Appendix ─────────────────────────────────────────────────────────────────
+\newpage
+\input{appendix/appendix_main}
+
+\end{document}

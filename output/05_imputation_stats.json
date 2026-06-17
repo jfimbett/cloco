@@ -1,0 +1,15 @@
+{
+  "n_training": 16148,
+  "cv_r2_mean": 0.9914,
+  "cv_r2_std": 0.0013,
+  "cv_rmse_mean": 1.99,
+  "cv_rmse_std": 0.133,
+  "train_r2": 0.9923,
+  "feature_importances": {
+    "prod_ytm_enc": 0.0018,
+    "wine_ytm_enc": 0.0006,
+    "vintage": 0.9975,
+    "region_enc": 0.0001,
+    "wine_type_enc": 0.0
+  }
+}

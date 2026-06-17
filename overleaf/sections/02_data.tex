@@ -1,0 +1,98 @@
+% ============================================================
+%  Section 2 — Data
+% ============================================================
+
+\section{Data}
+\label{sec:data}
+
+\subsection{Auction transactions}
+
+Our primary dataset consists of lot-level hammer prices from French fine-wine auctions covering
+the period 1996--2015. Each observation records the château or domaine, vintage year, bottle
+format, auction house, sale date, and realised price per bottle in USD. After applying the
+sample selection criteria described below, the working sample comprises 1,068,703 lots.
+We restrict attention to three regions: Bordeaux (615,078 lots), Burgundy (328,371 lots), and
+the Rhône Valley (105,450 lots).
+
+\subsection{Sample selection}
+\label{sec:data:selection}
+
+We apply the following sequential exclusions to arrive at the analysis sample:
+
+\begin{enumerate}
+  \item \textbf{Non-positive prices.} We drop lots with a hammer price at or below zero
+        (data-entry errors and passed lots recorded as zero). \textit{[Report count dropped.]}
+  \item \textbf{Non-standard bottle formats.} We retain only standard (750\,ml) and
+        magnum (1.5\,L) formats; jeroboams and larger are excluded because their price-per-bottle
+        series is thin and driven by different demand. \textit{[Report count dropped.]}
+  \item \textbf{Mixed lots.} Lots containing more than one châteu or vintage within the same
+        hammer price are flagged and excluded, as the per-bottle price cannot be attributed to a
+        single wine. \textit{[Report count dropped.]}
+  \item \textbf{Extreme price outliers.} \textit{[Describe outlier trimming rule, if any —
+        e.g., top/bottom 0.1\% of log prices within region-vintage cells.]}
+  \item \textbf{Vintage range.} We restrict to vintages 1950--2014 to ensure at least one
+        year of auction history and exclude pre-Phylloxera vintages for which maturity data
+        are unavailable. \textit{[Confirm exact vintage cutoffs.]}
+\end{enumerate}
+
+\noindent Table~\ref{tab:full_sample} in Appendix~\ref{app:full_sample} reports lot counts
+and median prices for the full pre-exclusion sample broken down by region and wine type.
+\textit{[Add an attrition table showing the count at each exclusion step.]}
+
+\subsection{Maturity windows from Tastingbook}
+\label{sec:data:tastingbook}
+
+A central feature of our approach is that maturity dates vary across wines: a top Bordeaux
+Cru Classé may peak at 25--30 years after vintage, while a lighter Burgundy village wine may
+peak at 8--12 years. Treating all wines as maturing on the same calendar would conflate wines
+at very different points in their life-cycles. We therefore match each auction lot to a
+wine-specific maturity window.
+
+We match auction lots to drink windows from Tastingbook, a comprehensive online
+cellar-management database maintained by professional sommeliers and oenologists.
+For each château--vintage pair, Tastingbook records a ``drink-from'' year and a
+``drink-until'' year; we define the maturity peak $\tau_i$ as the midpoint of this window,
+measured in years since the vintage.
+\textit{[Add a sentence or two about the scraping procedure and coverage — how many
+châteaux-vintages are in Tastingbook, how we matched to auction records (on château name
+and vintage year), and any name-standardisation steps.]}
+
+We match 75.9\,\% of auction lots to a Tastingbook record. For the remaining 24.1\,\%, we
+impute $\tau_i$ using a gradient-boosting model trained on the matched observations
+(cross-validated $R^2 = 0.991$; see Appendix~\ref{app:imputation}). Features for
+imputation include the producer, appellation, region, grape variety, and vintage year.
+
+All maturity values are capped at 20 years. Tastingbook recommendations for old vintages
+sometimes anchor to the current date (``drink now''), inflating years-to-maturity to
+implausible values; 20 years is a conservative and defensible upper bound given the
+sample period and the distribution of grand cru maturities.
+\textit{[Consider adding a figure showing the distribution of $\tau_i$ across wine types,
+illustrating the cross-sectional variation that powers our identification.]}
+
+\subsection{Normalised age}
+
+We normalise wine age by the wine-specific maturity calendar. Define
+\begin{equation}
+  a_{it}^* = \frac{t - v_i}{\tau_i},
+  \label{eq:age_norm}
+\end{equation}
+where $t$ is the sale year, $v_i$ is the vintage year, and $\tau_i$ is the maturity-peak
+year. By construction $a_{it}^* = 1$ when the wine is sold exactly at its maturity peak;
+$a_{it}^* < 1$ indicates pre-maturity and $a_{it}^* > 1$ indicates post-maturity. Across
+all lots, 72.3\,\% are sold pre-maturity, consistent with speculative and investment demand
+dominating auction supply.
+
+\subsection{Grand cru subsamples}
+
+Our main analysis focuses on the highest-quality wines, where the consumer/collector distinction
+is sharpest. We define three groups:
+
+\begin{enumerate}
+  \item \textbf{Bordeaux Crus Classés (red):} all classified growths from the Médoc, Graves,
+        and Saint-Émilion (436,413 lots).
+  \item \textbf{Burgundy Grand Cru:} all Grand Cru appellations from the Côte d'Or (221,512 lots).
+  \item \textbf{Burgundy Premier Cru:} all Premier Cru appellations from the Côte d'Or
+        (87,136 lots).
+\end{enumerate}
+
+Summary statistics for these groups are reported in Table~\ref{tab:summary_stats}.

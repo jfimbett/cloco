@@ -1,0 +1,29 @@
+\begin{table}[htbp]
+\centering
+\caption{Maturity imputation model: summary}
+\label{tab:maturity_imputation}
+\small
+\begin{threeparttable}
+\begin{tabular}{lc}
+\toprule
+Model & Gradient Boosting Regressor \\
+\midrule
+Training observations & 16,148 \\
+Features & Producer (target-enc.), wine slug (target-enc.), \\
+         & vintage, region, wine type \\
+Cross-validation & 5-fold, $R^2 = 0.991 \pm 0.001$ \\
+CV RMSE & 1.99 $\pm$ 0.13 years \\
+Dominant feature & Vintage (99.8\% importance) \\
+YTM cap & 20 years (applied to TB values and predictions) \\
+\midrule
+Auction lots: TB-matched & 796,724 (75.9\%) \\
+Auction lots: imputed & 252,427 (24.1\%) \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item Notes: Target variable: years\_to\_maturity $= (d_{\text{from}} + d_{\text{until}})/2 - \text{vintage}$,
+  capped at 2--100 years for training.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

@@ -1,0 +1,110 @@
+{
+  "Bordeaux Grand Cru (red)": {
+    "N": 436413,
+    "segment_r2": 0.0536,
+    "segments": {
+      "approach": {
+        "coef": 0.178666,
+        "se": 0.004606,
+        "pv": 0.0,
+        "n": 121722
+      },
+      "peak": {
+        "coef": 0.46738,
+        "se": 0.005057,
+        "pv": 0.0,
+        "n": 106905
+      },
+      "trough": {
+        "coef": 0.162963,
+        "se": 0.008121,
+        "pv": 0.0,
+        "n": 25037
+      },
+      "antique": {
+        "coef": 1.076496,
+        "se": 0.007965,
+        "pv": 0.0,
+        "n": 32195
+      }
+    },
+    "trough_vs_peak": {
+      "diff": -0.304416,
+      "t": -36.2894,
+      "p_onesided": 0.0,
+      "pct_effect": -26.24
+    }
+  },
+  "Burgundy Grand Cru": {
+    "N": 221512,
+    "segment_r2": 0.1178,
+    "segments": {
+      "approach": {
+        "coef": 0.477187,
+        "se": 0.006557,
+        "pv": 0.0,
+        "n": 58482
+      },
+      "peak": {
+        "coef": 1.045543,
+        "se": 0.008526,
+        "pv": 0.0,
+        "n": 33051
+      },
+      "trough": {
+        "coef": 1.2708,
+        "se": 0.017509,
+        "pv": 0.0,
+        "n": 7489
+      },
+      "antique": {
+        "coef": 1.451316,
+        "se": 0.012758,
+        "pv": 0.0,
+        "n": 11340
+      }
+    },
+    "trough_vs_peak": {
+      "diff": 0.225257,
+      "t": 12.036,
+      "p_onesided": 1.0,
+      "pct_effect": 25.26
+    }
+  },
+  "Burgundy Premier Cru": {
+    "N": 87136,
+    "segment_r2": 0.1502,
+    "segments": {
+      "approach": {
+        "coef": 0.620571,
+        "se": 0.009678,
+        "pv": 0.0,
+        "n": 20074
+      },
+      "peak": {
+        "coef": 1.4068,
+        "se": 0.01883,
+        "pv": 0.0,
+        "n": 7813
+      },
+      "trough": {
+        "coef": 1.153524,
+        "se": 0.04464,
+        "pv": 0.0,
+        "n": 1350
+      },
+      "antique": {
+        "coef": 1.201048,
+        "se": 0.029795,
+        "pv": 0.0,
+        "n": 1476
+      }
+    },
+    "trough_vs_peak": {
+      "diff": -0.253276,
+      "t": -5.2624,
+      "p_onesided": 0.0,
+      "pct_effect": -22.37
+    }
+  }
+}
