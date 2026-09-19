@@ -1,11 +1,11 @@
 ---
 paths:
-  - "Paper/**/*.tex"
-  - "Talks/**/*.tex"
-  - "scripts/**/*.R"
-  - "scripts/**/*.do"
-  - "scripts/**/*.py"
-  - "scripts/**/*.jl"
+  - "paper/**/*.tex"
+  - "talks/**/*.tex"
+  - "code/**/*.R"
+  - "code/**/*.do"
+  - "code/**/*.py"
+  - "code/**/*.jl"
 ---
 
 # Quality Gates & Scoring Rubrics

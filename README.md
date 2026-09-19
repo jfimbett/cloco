@@ -14,7 +14,7 @@
 > which is itself a fork of [**claude-code-my-workflow**](https://github.com/pedrohcgs/claude-code-my-workflow)
 > by Pedro H.C. Sant'Anna (Emory University).
 >
-> Extended for financial economics research at **Paris Dauphine University – PSL**
+> Extended for financial economics research at **EDHEC Business School**
 > by [Juan F. Imbet](https://github.com/jfimbet).
 
 This project would not exist without the pioneering infrastructure work from both upstream projects. The core orchestration philosophy, agent-critic pairing pattern, and quality-gate system originate there.
@@ -25,19 +25,33 @@ This project would not exist without the pioneering infrastructure work from bot
 
 Economics research pipelines are fragmented: literature review in one tool, data analysis in another, writing in a third, with no systematic quality enforcement across stages. Claude Code makes it possible to build an autonomous contractor that manages the full research lifecycle — dispatching specialized agents, enforcing quality gates, and tracking every decision.
 
-`cloco` extends the upstream infrastructure with four project-type-aware pipelines (`empirical`, `theory`, `structural`, `empirical+theory`), two new specialist agents (`econ-finance-theorist` and `structural-estimation-expert`), type-specific scoring weights so a pure theory paper isn't penalized for lacking data, two new skills (`/theory-model`, `/structural-estimation`), and a lessons protocol that captures project-specific corrections and prevents recurring mistakes.
+`cloco` extends the upstream infrastructure with:
+
+- **Four project-type-aware pipelines** (`empirical`, `theory`, `structural`, `empirical+theory`) with type-specific scoring weights, so a pure theory paper isn't penalized for lacking data.
+- **Specialist creators and critics**: `econ-finance-theorist` / `theory-critic`, `structural-estimation-expert` / `structural-critic`, `causal-strategist` / `identification-critic`.
+- **Automated early stages**: `/scout` (10-minute go/no-go triage with an `idea-critic`), `/discovery` (the whole Phase 1 — literature ∥ data, critic loops, bibliography merge — in one command), `/data-profile` (automated dataset profiling: panel key, pre-period, staggered treatment, codebook), and a rewritten `explorer` that actually discovers data.
+- **Data that lives outside git, with its location inside git**: `data/registry.json` maps every dataset to a `${DROPBOX_ROOT}/…` path template with provenance; `code/utils/data_paths.{py,R}` resolve it per machine; a `path-guard` hook flags hard-coded Dropbox/home paths in code.
+- **WRDS without the web downloader**: `/wrds` explores libraries, tables, and columns and `fetch`es SQL pulls straight to Dropbox, auto-registered and profiled — when the author has credentials; silent no-op otherwise.
+- **Automated bookkeeping**: a `journal-append` hook that writes the research journal after every agent dispatch, a session-welcome banner with phase, next command, and lesson count, and portable stdlib-only hooks (`python3`, 3.9+).
+- **A lessons protocol** that captures project-specific corrections and prevents recurring mistakes.
 
 ---
 
 ## Architecture at a Glance
 
 ```
+/scout [idea]  →  GO / REFRAME / NO-GO          (optional, ~10 min, idea-critic)
+       │ GO
 /interview-me  →  Research Spec + Domain Profile
        │
-       ├─ [empirical]────────── /find-data ──── /identify ──────────────────────────┐
+/discovery     →  /lit-review ∥ /find-data  (critic loops, bib merge, Discovery Report)
+       │
+/data-profile  →  panel key · pre-period · treatment timing · codebook   (once data is on disk)
+       │
+       ├─ [empirical]────────── /identify ──────────────────────────────────────────┐
        ├─ [theory]───────────── /theory-model ───────────────────────────────────────┤
-       ├─ [structural]────────── /find-data ─── /theory-model ─── /structural-est ──┤
-       └─ [empirical+theory] ── /find-data ─── /theory-model ─── /identify ─────────┘
+       ├─ [structural]────────── /theory-model ─── /structural-estimation ──────────┤
+       └─ [empirical+theory] ── /theory-model ─── /identify ────────────────────────┘
                                                                           │
                                               /data-analysis  (if not pure theory)
                                                                           │
@@ -61,7 +75,7 @@ Research Spec
     ├── academic-librarian  ──[parallel]──  explorer
     │         ↓ academic-editor               ↓ data-quality-surveyor
     └──────── causal-strategist
-                    ↓ econometrics-critic
+                    ↓ identification-critic
               Coder (main Claude)
                     ↓ debugger
               economics-paper-writer
@@ -78,7 +92,7 @@ Research Spec
     ├── academic-librarian  ──[no data needed]
     │         ↓ academic-editor
     └──────── econ-finance-theorist
-                    ↓ econometrics-critic
+                    ↓ theory-critic
               economics-paper-writer
                     ↓ academic-proofreader
               blind-peer-referee ×2
@@ -92,9 +106,9 @@ Research Spec
     ├── academic-librarian  ──[parallel]──  explorer
     │         ↓ academic-editor               ↓ data-quality-surveyor
     ├──────── econ-finance-theorist
-    │               ↓ econometrics-critic
+    │               ↓ theory-critic
     └──────── structural-estimation-expert
-                    ↓ econometrics-critic
+                    ↓ structural-critic
               Coder (main Claude)
                     ↓ debugger
               economics-paper-writer  →  replication-verifier  →  submit
@@ -107,25 +121,30 @@ Research Spec
     ├── academic-librarian  ──[parallel]──  explorer
     │         ↓ academic-editor               ↓ data-quality-surveyor
     ├──────── econ-finance-theorist   ──[parallel]──  causal-strategist
-    │               ↓ econometrics-critic                  ↓ econometrics-critic
+    │               ↓ theory-critic                        ↓ identification-critic
     └─────────────────────────────────────────────────────
               Coder (main Claude)  →  economics-paper-writer  →  submit
 ```
 
 ---
 
-## 31 Skills
+## 37 Skills
 
 | Category | Skill | What It Does |
 |----------|-------|-------------|
 | **Pipeline** | `/new-project [topic]` | Full pipeline: idea → paper (orchestrated) |
 | | `/interview-me [topic]` | Interactive research interview → spec + domain profile |
-| **Literature** | `/lit-review [topic]` | Librarian + Editor: literature search + synthesis |
-| | `/research-ideation [topic]` | Research questions + strategies |
-| **Theory & Structural** | `/theory-model [question]` | Theorist + Econometrician: formal model design |
-| | `/structural-estimation [spec]` | Structural expert + Econometrician: estimation design |
-| **Data & Strategy** | `/find-data [question]` | Explorer + Surveyor: data discovery + assessment |
-| | `/identify [question]` | Strategist + Econometrician: identification strategy |
+| | `/discovery` | **Phase 1 in one command**: lit-review ∥ find-data, critic loops, bib merge, Discovery Report |
+| **Ideation** | `/research-ideation [topic]` | 3–5 research questions + strategies, ranked by `idea-critic` |
+| | `/scout [idea]` | **Go/no-go triage**: capped librarian + explorer quick-scans → `idea-critic` verdict |
+| **Literature** | `/lit-review [topic]` | Librarian + Editor: literature search + synthesis + dedupe-merge into `paper/references.bib` |
+| **Theory & Structural** | `/theory-model [question]` | Theorist + theory-critic: formal model design |
+| | `/structural-estimation [spec]` | Structural expert + structural-critic: estimation design |
+| **Data & Strategy** | `/find-data [question]` | Explorer + Surveyor: data discovery (9 source categories) + assessment |
+| | `/data-profile [name\|file]` | **Automated profiling** of data on disk: panel key, balance, pre-period, staggered cohorts, codebook → Surveyor critique |
+| | `/data-registry [cmd]` | **Where every dataset lives** — Dropbox / local / WRDS, with provenance; `setup` on a new machine, `check` before reading anything |
+| | `/wrds [cmd]` | **WRDS from the session**: `search`, `tables`, `describe`, `sample`, `count`, `query`, `fetch` → Dropbox, registered, profiled |
+| | `/identify [question]` | Strategist + identification-critic: identification strategy |
 | | `/pre-analysis-plan [spec]` | Strategist: draft PAP (AEA/OSF/EGAP) |
 | **Analysis & Writing** | `/data-analysis [dataset]` | Coder + Debugger: end-to-end analysis |
 | | `/draft-paper [section]` | Writer: draft paper sections + humanizer pass |
@@ -148,24 +167,29 @@ Research Spec
 | | `/journal` | Research journal timeline |
 | | `/context-status` | Session health + context usage |
 | | `/learn` | Extract session discoveries into skills |
+| | `/pipeline-status [type]` | Pipeline dashboard + per-type guide |
 | | `/deploy` | Quarto render + GitHub Pages sync |
 
 ---
 
-## 16 Agents
+## 20 Agents
 
 | Agent | Role | Paired Critic |
 |-------|------|--------------|
 | `research-orchestrator` | Master controller — manages the dependency graph, dispatches agents, enforces quality gates | — |
-| `academic-librarian` | Systematic literature search across top journals, NBER, SSRN, RePeC | `academic-editor` |
+| `idea-critic` | Scores research ideas on novelty, contribution, identification credibility, data feasibility, scooping risk → GO / REFRAME / NO-GO | — (critic for `/scout`, `/research-ideation`) |
+| `academic-librarian` | Systematic literature search across top journals, NBER, SSRN, RePeC; quick-scan mode for `/scout` | `academic-editor` |
 | `academic-editor` | Literature critique + peer review dispatcher | — |
 | `blind-peer-referee` | Simulated adversarial referee — two instances per paper | — |
-| `explorer` | Data discovery and feasibility assessment | `data-quality-surveyor` |
-| `data-quality-surveyor` | Data quality critique: validity, sample, identification fit | — |
-| `causal-strategist` | Identification strategy design: DiD, IV, RDD, event study | `econometrics-critic` |
-| `econ-finance-theorist` | Formal economic/finance model builder — equilibrium, proofs, LaTeX | `econometrics-critic` |
-| `structural-estimation-expert` | Structural model design + estimation strategy (MLE, GMM, SMM) | `econometrics-critic` |
-| `econometrics-critic` | Reviews causal design, theory models, and structural estimation | — |
+| `explorer` | Data discovery across 9 source categories; checks the data registry and (with credentials) WRDS first so assessments cite real tables and columns; Inventory mode for local files; quick-scan for `/scout` | `data-quality-surveyor` |
+| `data-quality-surveyor` | Data quality critique: validity, sample, identification fit — on assessments and on `/data-profile` output | — |
+| `causal-strategist` | Identification strategy design: DiD, IV, RDD, event study | `identification-critic` |
+| `identification-critic` | Reduced-form identification review: assumptions, inference, robustness | — |
+| `econ-finance-theorist` | Formal economic/finance model builder — equilibrium, proofs, LaTeX | `theory-critic` |
+| `theory-critic` | Proof rigor, equilibrium validity, economic coherence | — |
+| `structural-estimation-expert` | Structural model design + estimation strategy (MLE, GMM, SMM) | `structural-critic` |
+| `structural-critic` | Microfoundations, parameter identification, solution feasibility | — |
+| `econometrics-critic` | Standalone `/econometrics-check` audits and the Coder+debugger escalation path | — |
 | `Coder` (main Claude) | R / Python / Stata analysis scripts | `debugger` |
 | `debugger` | Code quality: 12-category audit — reproducibility, alignment, polish | — |
 | `economics-paper-writer` | Paper drafting with anti-hedging, effect sizes, econometric notation | `academic-proofreader` |
@@ -176,13 +200,14 @@ Research Spec
 
 ---
 
-## Governance: 22 Rules
+## Governance: 23 Rules
 
 The `.claude/rules/` directory contains the operational rules Claude follows:
 
 | Rule File | What It Governs |
 |-----------|----------------|
 | `adversarial-pairing.md` | Every creator has a paired critic; critics never edit |
+| `data-management.md` | Data outside git, registry inside git; Dropbox roots via `.env`; no hard-coded paths; WRDS pulls via `/wrds` |
 | `dependency-graph.md` | Phases activate by dependency, not sequence |
 | `domain-profile.md` | Field-specific conventions, journals, data sources |
 | `exploration-fast-track.md` | Fast-track protocol for exploratory work |
@@ -211,17 +236,31 @@ The `.claude/rules/` directory contains the operational rules Claude follows:
 
 The `.claude/hooks/` directory contains Python/shell hooks that enforce workflow discipline:
 
-| Hook | Trigger | Purpose |
-|------|---------|---------|
-| `context-monitor.py` | Tool call | Warns when context is approaching compression threshold |
-| `log-reminder.py` | Tool call | Reminds Claude to update session logs proactively |
-| `notify.py` | Tool call | Desktop notification on long-running agent completions |
-| `post-compact-restore.py` | Post-compact | Restores context after auto-compression |
-| `post-merge.sh` | Post-merge | Runs quality report generation after branch merge |
-| `pre-compact.py` | Pre-compact | Saves MEMORY.md + session log before compression |
-| `protect-files.py` | File write | Blocks writes to protected files (e.g., `paper/main.tex`) |
-| `quality-gate.py` | Commit | Blocks commits with aggregate score below 80 |
-| `verify-reminder.py` | Tool call | Reminds Claude to verify outputs after implementation |
+All hooks are stdlib-only Python invoked as `python3` (3.9+), so they run unchanged on macOS, Linux, and Windows.
+
+| Hook | Event | Purpose |
+|------|-------|---------|
+| `session-welcome.py` | SessionStart (startup/resume/clear) | Banner with project, phase, last action, next command, gate status, and lesson count |
+| `post-compact-restore.py` | SessionStart (compact) | Restores plan/task/decisions after auto-compression |
+| `path-guard.py` | PostToolUse (Write/Edit on `code/**`) | Flags hard-coded home/Dropbox/drive-letter paths; points to `data_path()` |
+| `journal-append.py` | PostToolUse (Agent) | **Auto-writes `quality_reports/research_journal.md`** after every research-agent dispatch: agent, phase, target, score, verdict, report path |
+| `protect-files.py` | PreToolUse (Write/Edit) | Blocks edits to protected files (`paper/references.bib`, approved strategy memos, referee reports) |
+| `quality-gate.py` | PreToolUse (Bash `git commit`) | Blocks commits whose latest quality report scores below 80 |
+| `verify-reminder.py` | PostToolUse (Write/Edit) | Reminds Claude to compile/run after editing `.tex`, `.qmd`, `.R`, `.py`, `.do`, `.jl` |
+| `context-monitor.py` | PostToolUse | Progressive context-usage warnings; suggests `/learn` |
+| `log-reminder.py` | Stop | Blocks stopping after 15 responses without a session-log update |
+| `pre-compact.py` | PreCompact | Saves plan state + decisions before compression |
+| `notify.py` | Notification | Desktop notification (macOS / Linux / Windows) |
+| `post-merge.sh` | manual | Prompts for `[LEARN]` entries after a merge |
+
+### Helper scripts (`.claude/scripts/`)
+
+| Script | Used by | What it does |
+|--------|---------|-------------|
+| `profile_data.py` | `/data-profile`, `explorer` (Inventory) | Profiles csv/tsv/parquet/dta/xlsx: types, missingness, distributions, panel key & balance, treated units, staggered cohorts; writes `_profile.md` + `_codebook.csv`. Uses pandas if present, pure-Python fallback otherwise |
+| `data_registry.py` | `/data-registry`, `explorer`, `code/utils/data_paths.*` | `list` / `check` / `where` / `add` / `remove` / `roots` on `data/registry.json`; resolves `${DROPBOX_ROOT}`-style templates through `.env` |
+| `wrds_client.py` | `/wrds`, `explorer` | WRDS catalogue exploration and SQL `fetch` (via `wrds` package or direct psycopg2); registers pulls with the SQL as provenance; exits 3 without credentials |
+| `merge_bib.py` | `/lit-review`, `/discovery` | Appends librarian BibTeX into `paper/references.bib` without duplicates (key, DOI, title/author/year) |
 
 ---
 
@@ -245,9 +284,9 @@ The orchestrator reads `project_type` from the research spec and applies the mat
 |-----------|-------------|:---------:|:------:|:----------:|:----------:|
 | Literature coverage | `academic-editor` | 10% | 15% | 10% | 10% |
 | Data quality | `data-quality-surveyor` | 10% | — | 10% | 10% |
-| Theory model | `econometrics-critic` | — | 40% | 15% | 10% |
-| Identification validity | `econometrics-critic` | 25% | — | — | 20% |
-| Structural estimation | `econometrics-critic` | — | — | 20% | — |
+| Theory model | `theory-critic` | — | 40% | 15% | 10% |
+| Identification validity | `identification-critic` | 25% | — | — | 20% |
+| Structural estimation | `structural-critic` | — | — | 20% | — |
 | Code quality | `debugger` | 15% | — | 15% | 15% |
 | Paper quality | blind-peer-referee avg | 25% | 30% | 20% | 25% |
 | Manuscript polish | `academic-proofreader` | 10% | 15% | 5% | 5% |
@@ -278,11 +317,24 @@ git clone https://github.com/jfimbet/cloco && cd cloco
 # 4. Start Claude Code
 claude
 
-# 5. Begin your research session
+# 5. Not sure the idea is worth a paper? Ten-minute triage:
+/scout "your idea in one sentence"
+
+# 6. On a GO verdict, formalise it and run Phase 1 in one command:
 /interview-me [your research topic]
+/discovery
+
+# 7. Point the project at your data folders (once per machine) and, if you have WRDS, test it:
+cp .env.example .env        # set DROPBOX_ROOT=~/Dropbox (and WRDS_USERNAME, or use ~/.pgpass)
+/data-registry setup
+/wrds test
+
+# 8. Pull and profile — no manual downloads:
+/wrds fetch "SELECT permno, date, ret FROM crsp.msf WHERE date >= '2010-01-01'" --name crsp_msf_2010_on
+/data-profile crsp_msf_2010_on
 ```
 
-That's it. The orchestrator will guide you through the rest.
+That's it. The session-welcome banner tells you the next command every time you open Claude Code; `/pipeline-status` shows the full dashboard.
 
 ---
 
@@ -295,12 +347,14 @@ cloco/
 ├── SESSION_REPORT.md               # Consolidated append-only operations log
 ├── .gitignore
 ├── .claude/
-│   ├── agents/                     # 16 agent definitions
-│   ├── skills/                     # 31 skill definitions
-│   ├── rules/                      # 22 governance rules
-│   ├── hooks/                      # Workflow enforcement hooks
+│   ├── agents/                     # 20 agent definitions
+│   ├── skills/                     # 37 skill definitions
+│   ├── rules/                      # 23 governance rules
+│   ├── hooks/                      # Workflow enforcement hooks (python3, stdlib only)
+│   ├── scripts/                    # profile_data.py, merge_bib.py, data_registry.py, wrds_client.py
 │   ├── lessons/
 │   │   └── LESSONS.md              # Project-specific corrections (append-only)
+│   ├── plans/ · specs/ · state/    # gitignored: plans, requirement specs, local memory
 │   └── agent-memory/               # Per-agent persistent memory
 ├── paper/
 │   ├── main.tex                    # Single source of truth
@@ -310,17 +364,22 @@ cloco/
 │   ├── tables/
 │   └── appendix/
 ├── code/                           # Analysis scripts (R, Python, Stata)
+│   └── utils/data_paths.{py,R}     # data_path("name") / out_path("name") — code never hardcodes a path
 ├── data/
-│   ├── raw/
-│   └── processed/
+│   ├── registry.json               # COMMITTED: name → ${DROPBOX_ROOT}/... template, stage, source, SQL/script
+│   ├── raw/                        # gitignored scratch; canonical raw data lives in Dropbox
+│   └── processed/                  # gitignored intermediates
+├── .env.example                    # DROPBOX_ROOT, DATA_ROOT, WRDS_USERNAME — copy to .env (gitignored)
 ├── talks/                          # Beamer / Quarto presentations
 ├── output/                         # Intermediate results and logs
 ├── replication/                    # Replication package
 ├── quality_reports/
 │   ├── session_logs/               # Per-session logs
-│   ├── plans/                      # Approved implementation plans
-│   ├── specs/                      # Requirements specifications
-│   └── research_journal.md         # Agent-level research history
+│   ├── literature/<slug>/          # annotated_bibliography.md, references.bib, frontier_map.md, positioning.md
+│   ├── data/<slug>/                # data_assessment.md, variable_map.csv (+ profiles/ from /data-profile)
+│   ├── strategy/<slug>/            # strategy_memo.md, pseudo_code.md, robustness_plan.md, falsification_tests.md
+│   ├── scout_*.md · idea_review_*.md · discovery_report_*.md
+│   └── research_journal.md         # Agent-level history — auto-appended by journal-append.py
 ├── templates/                      # Session log, quality report templates
 └── master_supporting_docs/         # Reference papers and data documentation
 ```
@@ -346,7 +405,11 @@ Edit `.claude/rules/quality-gates.md` to raise or lower gate thresholds for your
 
 When you run `/interview-me`, Claude will ask for your project type. This sets the scoring weight column used throughout the pipeline. You can also set it manually in the research spec.
 
-### 4. Local settings
+### 4. Data locations and WRDS
+
+Data is never committed; its location is. Copy `.env.example` to `.env` and set `DROPBOX_ROOT` (and `DATA_ROOT` for an external drive). Register every dataset once — `python3 .claude/scripts/data_registry.py add NAME --path '${DROPBOX_ROOT}/proj/data/x.parquet' --stage raw --source '...'` — and read it in code with `data_path("NAME")`. Keep the git repo *outside* the Dropbox folder. With WRDS credentials in `~/.pgpass` (or `WRDS_USERNAME` in `.env`), `/wrds fetch` pulls data straight to Dropbox and registers it; `pip install wrds` (or `psycopg2-binary pandas pyarrow`).
+
+### 5. Local settings
 
 Machine-specific settings (LaTeX paths, personal tool preferences) go in `.claude/settings.local.json` (gitignored) or `.claude/state/personal-memory.md` (gitignored). These stay local — the repo only commits generic patterns.
 

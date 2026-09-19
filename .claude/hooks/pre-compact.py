@@ -13,6 +13,8 @@ Hook Event: PreCompact
 Returns: Exit code 2 (message visible in transcript)
 """
 
+from __future__ import annotations
+
 import json
 import os
 import sys

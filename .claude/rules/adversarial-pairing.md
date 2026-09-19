@@ -6,6 +6,7 @@
 
 | Worker (Creator) | Critic (Reviewer) | What's Reviewed |
 |-----------------|-------------------|-----------------|
+| `/research-ideation` / `/scout` (main Claude) | idea-critic | Novelty, contribution, identification credibility, data feasibility, scooping risk (advisory, pre-pipeline) |
 | academic-librarian | academic-editor | Literature coverage, gaps, recency |
 | explorer | data-quality-surveyor | Data feasibility, quality, identification fit |
 | causal-strategist | identification-critic | Identification validity, assumptions, robustness |

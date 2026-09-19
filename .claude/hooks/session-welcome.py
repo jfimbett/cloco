@@ -13,6 +13,8 @@ Skip conditions:
   2. pre-compact-state.json exists    → compact is in progress
 """
 
+from __future__ import annotations
+
 import json
 import os
 import re
@@ -154,9 +156,12 @@ def _update_component_scores(scores: dict, agent: str, score_str: str) -> None:
         "explorer": "Data",
         "data-quality-surveyor": "Data",
         "causal-strategist": "Identification",
+        "identification-critic": "Identification",
         "econometrics-critic": "Identification",
         "econ-finance-theorist": "Theory",
+        "theory-critic": "Theory",
         "structural-estimation-expert": "Structural",
+        "structural-critic": "Structural",
         "coder": "Code",
         "debugger": "Code",
         "economics-paper-writer": "Paper",
@@ -244,13 +249,13 @@ def next_command(phase_num: int, project_type: str) -> str:
     """Return the recommended next skill command."""
     table = {
         1: {
-            "empirical": "/lit-review [topic]",
-            "theory": "/lit-review [topic]",
-            "structural": "/lit-review [topic]",
-            "empirical+theory": "/lit-review [topic]",
+            "empirical": "/discovery",
+            "theory": "/discovery",
+            "structural": "/discovery",
+            "empirical+theory": "/discovery",
         },
         2: {
-            "empirical": "/identify_reducedform [research question]",
+            "empirical": "/identify [research question]",
             "theory": "/theory-model [topic]",
             "structural": "/theory-model [topic]",
             "empirical+theory": "/theory-model [topic]",
@@ -318,6 +323,39 @@ def compute_gate_status(component_scores: dict, project_type: str) -> dict:
     }
 
 
+def lessons_line() -> str:
+    """One-line reminder to read .claude/lessons/LESSONS.md, with count + latest category."""
+    project_dir = os.environ.get("CLAUDE_PROJECT_DIR", "")
+    path = Path(project_dir) / ".claude" / "lessons" / "LESSONS.md"
+    if not path.exists():
+        return ""
+    entries = re.findall(r"^### (\d{4}-\d{2}-\d{2}) — (.+)$", path.read_text(encoding="utf-8", errors="replace"), re.M)
+    if not entries:
+        return "  Lessons: none yet (.claude/lessons/LESSONS.md)."
+    date, cat = entries[0]
+    return f"  Lessons: {len(entries)} recorded — latest {date} [{cat.strip()}]. Read .claude/lessons/LESSONS.md before starting."
+
+
+def registry_line() -> str:
+    """One-line data registry status: count + missing on this machine."""
+    project_dir = os.environ.get("CLAUDE_PROJECT_DIR", "")
+    reg = Path(project_dir) / "data" / "registry.json"
+    if not reg.exists():
+        return ""
+    try:
+        sys.path.insert(0, str(Path(project_dir) / ".claude" / "scripts"))
+        from data_registry import load_env, load_registry, resolve  # type: ignore
+        ds = load_registry().get("datasets", {})
+        if not ds:
+            return "  Data: registry empty — /data-registry setup, /wrds search, or /find-data."
+        env = load_env()
+        missing = [n for n, d in ds.items() if (lambda r: r[1] or not r[0].exists())(resolve(d.get("path", ""), env))]
+        tail = f"; {len(missing)} not on this machine ({', '.join(missing[:3])}{'…' if len(missing) > 3 else ''}) → /data-registry check" if missing else "; all present"
+        return f"  Data: {len(ds)} registered{tail}"
+    except Exception:
+        return "  Data: registry unreadable — /data-registry check"
+
+
 def format_welcome_with_project(
     project_name: str,
     project_type: str,
@@ -352,6 +390,8 @@ def format_welcome_with_project(
         row(f"Gates    Commit {gate_commit}  PR {gate_pr}  Submission {gate_sub}{score_str}"),
         f"└{border}┘",
         "  Type /pipeline-status for the full dashboard.",
+        registry_line(),
+        lessons_line(),
     ]
     return "\n".join(lines)
 
@@ -367,9 +407,13 @@ def format_welcome_no_project() -> str:
     lines = [
         f"┌─ CLOCO {border[8:]}┐",
         row("No active research project."),
-        row("Start with /new-project [topic] or /interview-me [topic]"),
+        row("Not sure about the idea?   /scout [idea]"),
+        row("Committed?                 /interview-me [topic], /discovery"),
+        row("Full pipeline:             /new-project [topic]"),
         f"└{border}┘",
         "  Type /pipeline-status for a full list of available commands.",
+        registry_line(),
+        lessons_line(),
     ]
     return "\n".join(lines)
 

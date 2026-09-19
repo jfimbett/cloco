@@ -10,6 +10,8 @@ Exit code 2 = block with message shown to user.
 Exit code 0 = allow.
 """
 
+from __future__ import annotations
+
 import json
 import sys
 import fnmatch

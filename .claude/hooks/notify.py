@@ -9,6 +9,8 @@ Falls back to printing to stderr if no notification system is available.
 Hook Event: Notification
 """
 
+from __future__ import annotations
+
 import json
 import os
 import platform

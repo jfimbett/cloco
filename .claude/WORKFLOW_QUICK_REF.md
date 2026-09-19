@@ -4,6 +4,10 @@
 
 ---
 
+## Step −1: Scout (optional, 10 minutes)
+
+Not sure the idea deserves a project? `/scout [idea]` runs capped literature and data quick-scans and an `idea-critic` verdict: **GO** → `/interview-me`; **REFRAME** → fix the blocking dimension; **NO-GO** → move on. Several ideas? `/research-ideation [topic]` then `/scout` the ideation report.
+
 ## Step 0: Choose Project Type
 
 Run `/interview-me` first. Phase 0 always asks:
@@ -28,11 +32,11 @@ The answer is recorded as `project_type` in your research spec and determines wh
 ```
 /interview-me (type: empirical)
     ↓
-/lit-review ──────────────────── /find-data       ← parallel
-    ↓                                 ↓
-    └─────────────────────────────────┘
+/discovery   = /lit-review ∥ /find-data + critics + bib merge
     ↓
-/identify  (causal-strategist + econometrics-critic)
+/data-profile  (once data is downloaded — panel key, pre-period, treatment timing)
+    ↓
+/identify  (causal-strategist + identification-critic)
     ↓
 /data-analysis  (Coder + Debugger)
     ↓
@@ -52,9 +56,9 @@ Scoring: Literature 10% · Data 10% · Identification 25% · Code 15% · Paper 2
 ```
 /interview-me (type: theory)
     ↓
-/lit-review  (academic-librarian + academic-editor)
+/discovery   = /lit-review only (no data lane)
     ↓
-/theory-model  (econ-finance-theorist + econometrics-critic)
+/theory-model  (econ-finance-theorist + theory-critic)
     ↓
 /draft-paper  (Writer + Proofreader)
     ↓
@@ -73,13 +77,13 @@ Skipped: `/find-data`, `/identify`, `/data-analysis`, `/audit-replication`
 ```
 /interview-me (type: structural)
     ↓
-/lit-review ──────────────────── /find-data       ← parallel
-    ↓                                 ↓
-    └─────────────────────────────────┘
+/discovery   = /lit-review ∥ /find-data + critics + bib merge
     ↓
-/theory-model  (econ-finance-theorist + econometrics-critic)
+/data-profile
     ↓
-/structural-estimation  (structural-expert + econometrics-critic + Debugger)
+/theory-model  (econ-finance-theorist + theory-critic)
+    ↓
+/structural-estimation  (structural-expert + structural-critic + Debugger)
     ↓
 /draft-paper  (Writer + Proofreader)
     ↓
@@ -98,13 +102,13 @@ Skipped: `/identify`
 ```
 /interview-me (type: empirical+theory)
     ↓
-/lit-review ──────────────────── /find-data       ← parallel
-    ↓                                 ↓
-    └─────────────────────────────────┘
+/discovery   = /lit-review ∥ /find-data + critics + bib merge
     ↓
-/theory-model  (econ-finance-theorist + econometrics-critic)
+/data-profile
     ↓
-/identify  (causal-strategist + econometrics-critic)   ← theory predictions tested here
+/theory-model  (econ-finance-theorist + theory-critic)
+    ↓
+/identify  (causal-strategist + identification-critic)   ← theory predictions tested here
     ↓
 /data-analysis  (Coder + Debugger)
     ↓
@@ -126,24 +130,29 @@ Enter at any stage. Use `/new-project` for the full orchestrated pipeline.
 
 ## Key Skills by Research Stage
 
-### Ideation & Literature
+### Ideation & Discovery
 | Command | Agents | What It Does |
 |---------|--------|-------------|
+| `/research-ideation [topic]` | idea-critic | 3–5 research questions + strategies, critic-ranked |
+| `/scout [idea]` | Librarian + Explorer (quick) → idea-critic | 10-minute go/no-go triage |
 | `/interview-me [topic]` | — | Interactive Q&A → research spec + domain profile |
-| `/lit-review [topic]` | Librarian + Editor | Literature search + synthesis |
-| `/research-ideation [topic]` | — | Research questions + strategies |
+| `/discovery` | Librarian + Editor ∥ Explorer + Surveyor | Phase 1 in one command, critic loops, bib merge, Discovery Report |
+| `/lit-review [topic]` | Librarian + Editor | Literature search + synthesis + bib merge |
 
 ### Theory & Structural
 | Command | Agents | What It Does |
 |---------|--------|-------------|
-| `/theory-model [spec]` | Theorist + Econometrician | Formal model + propositions |
-| `/structural-estimation [spec]` | Structural-expert + Econometrician | Model estimation + fit |
+| `/theory-model [spec]` | Theorist + theory-critic | Formal model + propositions |
+| `/structural-estimation [spec]` | Structural-expert + structural-critic | Model estimation + fit |
 
 ### Data & Strategy
 | Command | Agents | What It Does |
 |---------|--------|-------------|
 | `/find-data [question]` | Explorer + Surveyor | Data discovery + quality assessment |
-| `/identify [question]` | Strategist + Econometrician | Design identification strategy |
+| `/data-registry [cmd]` | — | Where every dataset lives (Dropbox/local/WRDS); `setup` per machine, `check` before reading |
+| `/wrds [cmd]` | — | Explore WRDS catalogue; `fetch` SQL → Dropbox, registered, profiled |
+| `/data-profile [name\|file]` | profiler script + Surveyor | Panel key, treatment timing, codebook, critique of data in hand |
+| `/identify [question]` | Strategist + identification-critic | Design identification strategy |
 | `/pre-analysis-plan [spec]` | Strategist | Draft PAP (AEA/OSF/EGAP) |
 
 ### Analysis & Writing
@@ -220,11 +229,12 @@ Enter at any stage. Use `/new-project` for the full orchestrated pipeline.
 
 | Worker | Critic | Used In |
 |--------|--------|---------|
+| main Claude (`/scout`, `/research-ideation`) | idea-critic | Pre-pipeline, all types (advisory) |
 | academic-librarian | academic-editor | All types |
 | explorer | data-quality-surveyor | empirical, structural, empirical+theory |
-| econ-finance-theorist | econometrics-critic | theory, structural, empirical+theory |
-| structural-estimation-expert | econometrics-critic | structural |
-| causal-strategist | econometrics-critic | empirical, empirical+theory |
+| econ-finance-theorist | theory-critic | theory, structural, empirical+theory |
+| structural-estimation-expert | structural-critic | structural |
+| causal-strategist | identification-critic | empirical, empirical+theory |
 | Coder (main Claude) | debugger | empirical, structural, empirical+theory |
 | economics-paper-writer | academic-proofreader | All types |
 
@@ -246,6 +256,10 @@ Enter at any stage. Use `/new-project` for the full orchestrated pipeline.
 - Plotting (per established standards)
 
 ---
+
+## Data Rules (one paragraph)
+
+Canonical data → `${DROPBOX_ROOT}` (repo is never inside Dropbox). Scratch → `data/` (gitignored). Every file → `data/registry.json` (committed). Code → `data_path("name")`, never a literal path (`path-guard` hook will nag). WRDS → `/wrds fetch`, never the web downloader. Details: `.claude/rules/data-management.md`.
 
 ## Exploration Mode
 

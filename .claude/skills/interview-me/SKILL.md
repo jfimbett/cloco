@@ -164,6 +164,12 @@ Produce a **Research Specification Document**:
 
 **Save to:** `quality_reports/research_spec_[sanitized_topic].md`
 
+Include a `project_name:` line and a `project_type:` line near the top (the session-welcome hook and `/pipeline-status` parse them).
+
+### After saving
+
+Tell the user the next command is `/discovery` — it reads this spec and runs the literature and data lanes in parallel with their critics. If the researcher seemed unsure whether the idea is worth a full project, suggest `/scout` first.
+
 ---
 
 ## Interview Style

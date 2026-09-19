@@ -13,9 +13,11 @@ Keep under 150 lines, since Claude loads it every session.
 
 ## Core Principles
 
+- **Scout before you commit** -- `/scout [idea]` is a 10-minute go/no-go; run it before `/interview-me` unless the idea is already settled.
 - **Plan first** -- enter plan mode before non-trivial tasks.
 - **Verify after** -- compile and confirm output at the end of every task
 - **Single source of truth** -- `paper/main.tex` is authoritative; talks and supplements derive from it
+- **Data lives outside git; its location lives in git** -- canonical data in `${DROPBOX_ROOT}` (never a git repo inside Dropbox), scratch in `data/` (gitignored), every file in `data/registry.json`; code reads paths via `code/utils/data_paths.{py,R}`, never literals. WRDS pulls go through `/wrds`. See `.claude/rules/data-management.md`.
 - **Quality gates** -- weighted aggregate score; nothing ships below 80/100; see `scoring-protocol.md`
 - **Worker-critic pairs** -- every creator has a paired critic; critics never edit files
 - **[LEARN] tags** -- when corrected, save `[LEARN:category] wrong → right` to MEMORY.md
@@ -29,7 +31,7 @@ Keep under 150 lines, since Claude loads it every session.
 ```
 [root]/
 ├── CLAUDE.md                   # This file: guidelines for working with Claude
-├── .claude/                    # Internal files for Claude's operation 
+├── .claude/                    # Internal files for Claude's operation (agents, skills, rules, hooks, scripts)
 ├── paper/                      # Main paper source files
 │   ├── main.tex                # Main LaTeX file (single source of truth)
 │   ├── refrences.bib           # Centralized bibliography file
@@ -40,12 +42,14 @@ Keep under 150 lines, since Claude loads it every session.
 │   ├── online-appendix/        # Online appendix materials, if any
 │   └── styles/                 # LaTeX style files, if any
 ├── talks/                      # Presentation materials 
-├── data/                       # Raw and processed data files
-│   ├── raw/                    # Unprocessed data if applicable, data can be stored somewhere else if too large
-│   └── processed/              # Cleaned and analysis-ready data
+├── data/                       # Scratch data only (gitignored) + the committed registry
+│   ├── registry.json           # Logical name → ${DROPBOX_ROOT}/... path, stage, provenance (COMMITTED)
+│   ├── raw/                    # Intermediate extracts (gitignored); canonical raw data lives in Dropbox
+│   └── processed/              # Intermediate cleaned data (gitignored)
 ├── output/                     # Intermediate results, logs and temp files.
 ├── replication/                # Replication package materials
 ├── code/                       # All the code for the project.
+│   └── utils/data_paths.{py,R} # data_path(name) / out_path(name) — the only way code touches data files
 ├── templates/                  # Session log, quality report templates
 ├── quality_reports/            # Paper quality artifacts only: scores, session logs, merge reports, research journal
 ├── master_supporting_docs/     # Reference papers and data docs if needed
@@ -64,7 +68,13 @@ Keep under 150 lines, since Claude loads it every session.
 latexmk -pdf -cd paper/main.tex        # full build (handles bib, cross-refs)
 latexmk -pdf -cd -pvc paper/main.tex   # continuous preview mode (auto-recompile on save)
 latexmk -cd -C paper/main.tex          # clean all auxiliary files
+python3 .claude/scripts/profile_data.py data/raw/file.csv      # dataset profile + codebook
+python3 .claude/scripts/data_registry.py check                         # every dataset present on this machine?
+python3 .claude/scripts/wrds_client.py search crsp                     # WRDS catalogue (needs ~/.pgpass or WRDS_USERNAME in .env)
+python3 .claude/scripts/merge_bib.py quality_reports/literature/<slug>/references.bib   # dedupe-merge into paper/references.bib
 ```
+
+**Hooks** run with `python3` (3.9+, stdlib only). `journal-append.py` writes research-journal entries automatically after every research-agent dispatch — critics must print `**Score:** XX/100` for it to parse.
 
 ---
 
@@ -87,10 +97,15 @@ See `scoring-protocol.md` for weighted aggregation formula.
 | Command | What It Does |
 |---------|-------------|
 | `/new-project [topic]` | Full pipeline: idea → paper (orchestrated) |
+| `/scout [idea]` | Go/no-go triage: librarian + explorer quick-scans → idea-critic verdict |
 | `/interview-me [topic]` | Interactive research interview → spec + domain profile |
-| `/lit-review [topic]` | Librarian + Editor: literature search + synthesis |
+| `/discovery` | Phase 1 in one command: lit-review ∥ find-data with critic loops + bib merge |
+| `/lit-review [topic]` | Librarian + Editor: literature search + synthesis + bib merge |
 | `/find-data [question]` | Explorer + Surveyor: data discovery + assessment |
-| `/identify_reducedform [question]` | causal-strategist + identification-critic: design identification strategy |
+| `/data-profile [name|file]` | Automated dataset profiling (panel key, treatment timing, codebook) + surveyor critique |
+| `/data-registry [cmd]` | Where every dataset lives (Dropbox / local / WRDS) with provenance; `setup` on a new machine |
+| `/wrds [cmd]` | Explore WRDS libraries/tables/columns and `fetch` SQL pulls straight to Dropbox, auto-registered |
+| `/identify [question]` | causal-strategist + identification-critic: design identification strategy |
 | `/data-analysis [dataset]` | Coder + Debugger: end-to-end analysis |
 | `/draft-paper [section]` | Writer: draft paper sections + humanizer pass |
 | `/econometrics-check [file]` | Econometrician: 4-phase causal inference audit |
@@ -110,7 +125,7 @@ See `scoring-protocol.md` for weighted aggregation formula.
 | `/compile-latex [file]` | 3-pass XeLaTeX + bibtex |
 | `/validate-bib` | Cross-reference citations |
 | `/commit [msg]` | Stage, commit, PR, merge |
-| `/research-ideation [topic]` | Research questions + strategies |
+| `/research-ideation [topic]` | Research questions + strategies → idea-critic ranking |
 | `/visual-audit [file]` | Slide layout audit |
 | `/learn` | Extract session discoveries into skills |
 | `/context-status` | Session health + context usage |

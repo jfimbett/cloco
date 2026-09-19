@@ -22,27 +22,22 @@ Discover and assess datasets by dispatching the **Explorer** (data finder) and *
 2. Read strategy memo if it exists (`quality_reports/strategy_memo_*.md`)
 3. Read `.claude/rules/domain-profile.md` for common data sources in the field
 4. Understand what variables are needed: treatment, outcome, controls, time period, geography
+5. Run `python3 .claude/scripts/data_registry.py check` (what we already have) and `python3 .claude/scripts/wrds_client.py test` (do we have WRDS?) — pass both results to the explorer
 
 ### Step 2: Launch Explorer Agent
 
-Delegate to the `explorer` agent via Task tool:
+Check whether `data/raw/` or `data/processed/` already contain files. Then delegate to the `explorer` agent via Task tool:
 
 ```
-Prompt: Find datasets for "[research question/requirements]".
-Search across source categories:
-  1. Public microdata (CPS, ACS, NHIS, MEPS, etc.)
-  2. Administrative data (Medicare claims, tax records, court records)
-  3. Survey data (RAND HRS, PSID, Add Health, NLSY)
-  4. International (World Bank, OECD, Eurostat)
-  5. Novel/alternative (satellite imagery, web scraping, proprietary)
-For each dataset found:
-  - Name, provider, access level (public/restricted)
-  - Key variables available
-  - Coverage (time period, geography, sample size)
-  - Feasibility grade: A (ready to use), B (accessible with effort),
-    C (restricted but obtainable), D (very difficult)
-  - Strengths and limitations
-Save to quality_reports/data_exploration_[topic].md
+Prompt: Produce a data assessment for "[research question/requirements]".
+Mode: Discovery  (or: Inventory first, then Discovery for gaps — local files exist under data/)
+Data requirements: outcome [..], treatment [..], unit [..], period [..], geography [..],
+  design the data must support [pre/post panel | running variable | instrument | ..].
+Follow your full search protocol (all nine source categories; field-standard sources first).
+For each candidate record access level, unit/structure, coverage, key variables BY COLUMN NAME
+where a codebook is reachable, linkage keys, feasibility grade A–D, fit to design, known issues, papers that used it.
+Outputs: quality_reports/data/[slug]/data_assessment.md and variable_map.csv
+  (+ local_inventory.md in Inventory mode).
 ```
 
 ### Step 3: Launch data-quality-surveyor Agent (Data Critic)
@@ -50,7 +45,7 @@ Save to quality_reports/data_exploration_[topic].md
 After Explorer returns, delegate to the `data-quality-surveyor` agent:
 
 ```
-Prompt: Review the data assessment at quality_reports/data_exploration_[topic].md.
+Prompt: Review the data assessment at quality_reports/data/[slug]/data_assessment.md (and variable_map.csv).
 For each proposed dataset, check:
   1. Measurement validity — does the variable actually measure what we need?
   2. Sample selection — who's in the data? Who's missing?
@@ -58,7 +53,7 @@ For each proposed dataset, check:
   4. Identification compatibility — does this data support the proposed design?
   5. Known issues — documented problems with this dataset in the literature
 Score each dataset. Flag deal-breakers.
-Save critique to quality_reports/data_critique_[topic].md
+Save critique to quality_reports/data/[slug]/data_critique.md
 ```
 
 ### Step 4: Synthesize Recommendations
@@ -91,6 +86,13 @@ After both agents return, present:
 ## Next Steps
 [Concrete actions: apply for access, download, contact provider]
 ```
+
+### Step 5: Iterate and hand off
+
+- Surveyor score < 80 → re-dispatch the explorer with the surveyor's Required Actions (max 3 rounds, then escalate to the user with a specific question).
+- For WRDS-hosted picks, run the explorer's Pull Plan through `/wrds fetch` (auto-registers to `${DROPBOX_ROOT}`); for downloads, save to Dropbox and `/data-registry add`.
+- Once a dataset is on disk, run `/data-profile <registered name>` — it verifies the panel key, pre-period, and treatment variation with real numbers before `/identify`.
+- The `journal-append` hook logs both agent runs; add a `Data lane: PASS/FAIL` line to `quality_reports/research_journal.md` by hand.
 
 ---
 

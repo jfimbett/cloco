@@ -13,6 +13,10 @@
 **Report:** [link to full report]
 ```
 
+## Automation
+
+Agent-report entries are written **automatically** by `.claude/hooks/journal-append.py` after every dispatch of a research agent through the Agent tool (score is parsed from `**Score:** XX/100`, `PASS`/`FAIL`, or a `Verdict: … XX/100` line; make sure critics print one). Claude still appends by hand: phase transitions, strike counts, escalations, editorial decisions, user overrides, and `/scout` verdicts.
+
 ## Rules
 
 - **Append only** — never overwrite or edit previous entries

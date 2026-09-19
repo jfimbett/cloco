@@ -14,6 +14,8 @@ Skips:
 - Test files and generated files
 """
 
+from __future__ import annotations
+
 import json
 import os
 import sys

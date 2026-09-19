@@ -10,6 +10,8 @@ Hook Event: SessionStart (matcher: "compact")
 Returns: Exit code 0 (output to stdout)
 """
 
+from __future__ import annotations
+
 import json
 import os
 import sys

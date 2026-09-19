@@ -14,6 +14,8 @@ Note: Since direct context % isn't available, this uses a heuristic based on
 conversation file size and tool call count.
 """
 
+from __future__ import annotations
+
 import json
 import os
 import sys

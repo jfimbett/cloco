@@ -60,7 +60,17 @@ If Editor identifies gaps:
 1. Re-dispatch academic-librarian for targeted searches (max 1 round)
 2. Merge new findings into the report
 
-### Step 5: Present Results
+### Step 5: Merge BibTeX into the paper
+
+`paper/references.bib` is protected from direct edits. Append the librarian's entries without duplicates:
+
+```bash
+python3 .claude/scripts/merge_bib.py quality_reports/literature/[slug]/references.bib --target paper/references.bib
+```
+
+Report entries added vs skipped (duplicates by key, DOI, or title/author/year).
+
+### Step 6: Present Results
 
 ```markdown
 # Literature Review: [Topic]
@@ -111,4 +121,6 @@ If Editor identifies gaps:
 - **Do NOT fabricate citations.** Flag any uncertain details.
 - **Identification strategy is key.** Always note how each paper identifies effects.
 - **Effect sizes matter.** Report magnitudes, not just signs.
-- **Proximity scoring:** 1 = directly competes, 5 = tangentially related.
+- **Proximity scoring:** 5 = directly competes, 1 = background/foundational (matches the librarian's scale).
+- **Need a fast read instead?** `/scout [idea]` runs a capped quick-scan (8 papers) plus a go/no-go verdict; run this full review once the idea is a GO.
+- **Running Phase 1 end-to-end?** `/discovery` runs this skill and `/find-data` in parallel with critic loops and the bib merge.

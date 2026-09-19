@@ -1,13 +1,33 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-welcome.py\""
+          }
+        ]
+      },
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/post-compact-restore.py\""
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
-            "command": "\"C:/Users/jfimb/anaconda3/python.exe\" \"$CLAUDE_PROJECT_DIR/.claude/hooks/protect-files.py\""
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/protect-files.py\""
           }
         ]
       },
@@ -16,7 +36,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"C:/Users/jfimb/anaconda3/python.exe\" \"$CLAUDE_PROJECT_DIR/.claude/hooks/quality-gate.py\""
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/quality-gate.py\""
           }
         ]
       }
@@ -27,7 +47,25 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"C:/Users/jfimb/anaconda3/python.exe\" \"$CLAUDE_PROJECT_DIR/.claude/hooks/verify-reminder.py\""
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/verify-reminder.py\""
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/path-guard.py\""
+          }
+        ]
+      },
+      {
+        "matcher": "Agent|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/journal-append.py\""
           }
         ]
       },
@@ -35,7 +73,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"C:/Users/jfimb/anaconda3/python.exe\" \"$CLAUDE_PROJECT_DIR/.claude/hooks/context-monitor.py\""
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/context-monitor.py\""
           }
         ]
       }
@@ -45,7 +83,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"C:/Users/jfimb/anaconda3/python.exe\" \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-reminder.py\""
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-reminder.py\""
           }
         ]
       }
@@ -55,17 +93,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"C:/Users/jfimb/anaconda3/python.exe\" \"$CLAUDE_PROJECT_DIR/.claude/hooks/pre-compact.py\""
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"C:/Users/jfimb/anaconda3/python.exe\" \"$CLAUDE_PROJECT_DIR/.claude/hooks/post-compact-restore.py\""
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/pre-compact.py\""
           }
         ]
       }
@@ -75,7 +103,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"C:/Users/jfimb/anaconda3/python.exe\" \"$CLAUDE_PROJECT_DIR/.claude/hooks/notify.py\""
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/notify.py\""
           }
         ]
       }

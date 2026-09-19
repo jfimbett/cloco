@@ -15,6 +15,8 @@ Hook Event: PreToolUse (matcher: "Bash")
 Exit code 0 = allow. Output JSON with decision=block to block.
 """
 
+from __future__ import annotations
+
 import json
 import os
 import re

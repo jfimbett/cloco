@@ -6,8 +6,9 @@
 
 | Phase | Requires | Can Re-enter? |
 |-------|----------|---------------|
-| Discovery | Research idea | Always — academic-librarian is persistent |
-| Strategy | At least one of: literature review OR data assessment | Yes — new data or literature can trigger re-strategy |
+| Scouting (optional) | An idea, one sentence | Always — `/scout` is cheap; a NO-GO ends here, a GO feeds `/interview-me` |
+| Discovery | Research spec (`/interview-me`) | Always — academic-librarian is persistent; `/discovery` re-runs only lanes < 80 |
+| Strategy | At least one of: literature review OR data assessment (critic ≥ 80); `/data-profile` recommended once data is downloaded | Yes — new data or literature can trigger re-strategy |
 | Execution (Code) | Approved strategy (econometrics-critic >= 80) | Yes — strategy revision triggers re-coding |
 | Execution (Write) | Approved code (debugger >= 80) | Yes — new results trigger rewriting |
 | Peer Review | Approved paper (academic-proofreader >= 80) + approved code | Yes — major revisions loop back |

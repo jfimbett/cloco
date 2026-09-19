@@ -107,7 +107,7 @@ Renormalize if components are missing (no score yet).
 | Current Phase | Empirical | Theory | Structural | Empirical+Theory |
 |--------------|-----------|--------|------------|-----------------|
 | Discovery | `/lit-review [topic]` | `/lit-review [topic]` | `/lit-review [topic]` | `/lit-review [topic]` |
-| Strategy | `/identify_reducedform [question]` | `/theory-model [topic]` | `/theory-model [topic]` | `/theory-model [topic]` |
+| Strategy | `/identify [question]` | `/theory-model [topic]` | `/theory-model [topic]` | `/theory-model [topic]` |
 | Execution | `/data-analysis [dataset]` | `/draft-paper [section]` | `/data-analysis [dataset]` | `/data-analysis [dataset]` |
 | Peer Review | `/review-paper [file]` | `/review-paper [file]` | `/review-paper [file]` | `/review-paper [file]` |
 | Submission | `/submit [journal]` | `/submit [journal]` | `/submit [journal]` | `/submit [journal]` |
@@ -203,7 +203,7 @@ Print this banner:
 ║    /find-data [question]   → explorer + data-quality-surveyor║
 ║                                                              ║
 ║  Phase 2 · Strategy                                          ║
-║    /identify_reducedform [question]                          ║
+║    /identify [question]                          ║
 ║                            → causal-strategist + critic      ║
 ║    Required: 80/100 to advance  (weight: 25% of score)       ║
 ║                                                              ║
@@ -303,7 +303,7 @@ Print this banner:
 ║                                                              ║
 ║  Phase 2 · Strategy                                          ║
 ║    /theory-model [topic]   → econ-finance-theorist + critic  ║
-║    /identify_reducedform   → causal-strategist + critic      ║
+║    /identify   → causal-strategist + critic      ║
 ║    Required: 80/100 to advance  (weights: 10% + 20%)         ║
 ║                                                              ║
 ║  Phase 3 · Execution                                         ║

@@ -19,9 +19,12 @@ Launch a full research pipeline from idea to paper, orchestrated through the dep
 This skill orchestrates the full v3 dependency graph. Each phase activates when its dependencies are met. The orchestrator manages agent dispatch, three-strikes escalation, and quality gates.
 
 ```
+Phase 0: Scouting (optional, cheap)
+  └── /scout → go/no-go verdict (idea-critic)
+
 Phase 1: Discovery
   ├── /interview-me → Research Spec + Domain Profile
-  └── /lit-review → Literature Synthesis + BibTeX
+  └── /discovery → /lit-review ∥ /find-data with critic loops + bib merge
 
 Phase 2: Strategy (depends on Phase 1)
   ├── /find-data → Data Assessment
@@ -52,12 +55,11 @@ Phase 5: Submission (depends on Phase 4, score >= 95)
    - Research specification (`quality_reports/research_spec_*.md`)
    - Domain profile (`.claude/rules/domain-profile.md`) — if still template
 
-2. **Run `/lit-review`** with the research topic:
-   - academic-librarian collects literature
-   - Editor critiques coverage
-   - Output: literature synthesis + BibTeX entries
+2. **Run `/discovery`** (reads the spec, runs `/lit-review` and — unless `project_type` is `theory` — `/find-data` in parallel, each with its critic loop, merges BibTeX into `paper/references.bib`, writes `quality_reports/discovery_report_*.md`).
 
-**Gate:** Research spec and literature review must exist before proceeding.
+**Gate:** Research spec exists and the Discovery Report says Strategy is unlocked (at least one lane ≥ 80).
+
+*If the user has not committed to the idea yet,* run `/scout [topic]` first; only proceed to the interview on a GO verdict.
 
 ### Step 2: Strategy Phase (project-type branching)
 
@@ -65,32 +67,32 @@ Read `project_type` from the research spec produced in Step 1, then follow the m
 
 | `project_type` | Skills to Run | Skills to Skip |
 |----------------|--------------|----------------|
-| `empirical` | `/find-data` → `/identify` | `/theory-model`, `/structural-estimation` |
+| `empirical` | `/data-profile` → `/identify` | `/theory-model`, `/structural-estimation` |
 | `theory` | `/theory-model` | `/find-data`, `/identify`, `/data-analysis`, `/structural-estimation` |
-| `structural` | `/find-data` → `/theory-model` → `/structural-estimation` | `/identify` |
-| `empirical+theory` | `/find-data` → `/theory-model` → `/identify` | `/structural-estimation` |
+| `structural` | `/data-profile` → `/theory-model` → `/structural-estimation` | `/identify` |
+| `empirical+theory` | `/data-profile` → `/theory-model` → `/identify` | `/structural-estimation` |
 
 **Branching logic:**
 
 - **`empirical`:**
-  3. Run `/find-data` — Explorer + data-quality-surveyor
-  4. Run `/identify` — causal-strategist + econometrics-critic
+  3. (Data lane already done by `/discovery`; once data is downloaded run `/data-profile` to verify panel/treatment structure)
+  4. Run `/identify` — causal-strategist + identification-critic
   **Gate:** Strategy memo score >= 80
 
 - **`theory`:**
-  3. Run `/theory-model` — econ-finance-theorist + econometrics-critic
+  3. Run `/theory-model` — econ-finance-theorist + theory-critic
   **Gate:** Theory model score >= 80. Skip to Step 3b (paper drafting only).
 
 - **`structural`:**
-  3. Run `/find-data` — Explorer + data-quality-surveyor
-  4. Run `/theory-model` — econ-finance-theorist + econometrics-critic
-  5. Run `/structural-estimation` — structural-estimation-expert + econometrics-critic + debugger
+  3. (Data lane already done by `/discovery`; run `/data-profile` once data is in hand)
+  4. Run `/theory-model` — econ-finance-theorist + theory-critic
+  5. Run `/structural-estimation` — structural-estimation-expert + structural-critic + debugger
   **Gate:** All three scores >= 80
 
 - **`empirical+theory`:**
-  3. Run `/find-data` — Explorer + data-quality-surveyor
-  4. Run `/theory-model` — econ-finance-theorist + econometrics-critic (theory predictions drive empirical design)
-  5. Run `/identify` — causal-strategist + econometrics-critic
+  3. (Data lane already done by `/discovery`; run `/data-profile` once data is in hand)
+  4. Run `/theory-model` — econ-finance-theorist + theory-critic (theory predictions drive empirical design)
+  5. Run `/identify` — causal-strategist + identification-critic
   **Gate:** Theory model and strategy memo both >= 80
 
 ### Step 3: Execution Phase

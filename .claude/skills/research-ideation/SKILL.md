@@ -3,7 +3,7 @@ name: research-ideation
 description: Generate structured research questions, testable hypotheses, and empirical strategies from a topic or dataset
 disable-model-invocation: true
 argument-hint: "[topic, phenomenon, or dataset description]"
-allowed-tools: ["Read", "Grep", "Glob", "Write"]
+allowed-tools: ["Read", "Grep", "Glob", "Write", "Task"]
 ---
 
 # Research Ideation
@@ -36,6 +36,10 @@ Generate structured research questions, testable hypotheses, and empirical strat
 4. **Rank the questions** by feasibility and contribution.
 
 5. **Save the output** to `quality_reports/research_ideation_[sanitized_topic].md`
+
+6. **Dispatch the critic.** Ideation has a paired critic (`adversarial-pairing.md`). Launch `idea-critic` in Ideation mode on the saved report: it scores each RQ on novelty, contribution, identification credibility, data feasibility, and scooping risk, and returns a ranked GO / REFRAME / NO-GO table. Append the critic's ranking to the report under `## Critic Ranking` and present it alongside your own feasibility ranking — disagreements are the interesting part.
+
+7. **Hand off.** For the top-ranked GO or REFRAME candidate, suggest `/scout "[RQ]"` (cheap literature + data quick-scans) before `/interview-me`.
 
 ---
 

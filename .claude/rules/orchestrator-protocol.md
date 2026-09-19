@@ -46,8 +46,10 @@ The research-orchestrator selects agents based on what the task requires:
 
 | Task Involves | Agents Dispatched |
 |--------------|-------------------|
+| Idea triage (`/scout`, `/research-ideation`) | academic-librarian (quick-scan) + explorer (quick-scan) → idea-critic |
 | Literature/references | academic-librarian + academic-editor |
 | Data sourcing | explorer + data-quality-surveyor |
+| Dataset in hand (`/data-profile`) | profiler script → data-quality-surveyor |
 | Identification strategy (reduced-form) | causal-strategist + identification-critic |
 | Theoretical modeling | econ-finance-theorist + theory-critic |
 | Structural estimation | structural-estimation-expert + structural-critic |
@@ -60,8 +62,13 @@ The research-orchestrator selects agents based on what the task requires:
 ## Parallel Dispatch
 
 Independent phases run concurrently:
-- Literature and Data discovery run in parallel
+- Literature and Data discovery run in parallel (`/discovery` does this in one command, with critic loops and the bib merge)
 - Code and Paper execution run in parallel (after Strategy)
+
+## Automated Bookkeeping
+
+- `.claude/hooks/journal-append.py` (PostToolUse on the Agent tool) writes a `quality_reports/research_journal.md` entry after every research-agent dispatch — agent, phase, target, score, verdict, report path. The orchestrator adds only phase transitions, strike counts, escalations, and user overrides by hand.
+- `.claude/hooks/session-welcome.py` reads the journal at session start and prints the current phase and next command.
 
 ## Limits
 

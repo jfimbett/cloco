@@ -16,6 +16,10 @@ The overall project score that gates submission (>= 95) is a weighted aggregate:
 | Manuscript polish | 10% | academic-proofreader's score of economics-paper-writer |
 | Replication readiness | 5% | replication-verifier pass/fail (0 or 100) |
 
+## Advisory Scores (not aggregated)
+
+`idea-critic` verdicts (`/scout`, `/research-ideation`) and `data-quality-surveyor` scores on `/data-profile` output are pre-pipeline diagnostics. They are logged in the research journal but **not** included in the weighted aggregate.
+
 ## Minimum Per Component
 
 No component can be below 80 for submission. A perfect literature review can't compensate for broken identification.

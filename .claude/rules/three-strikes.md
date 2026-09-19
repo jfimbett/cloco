@@ -23,6 +23,7 @@ Round 3: Critic reviews → Worker fixes
 | econ-finance-theorist + theory-critic | User | Theoretical design deadlock — needs human judgment |
 | structural-estimation-expert + structural-critic | User | Structural model deadlock — needs human judgment |
 | academic-librarian + academic-editor | User | Scope disagreement — user decides breadth vs depth |
+| `/research-ideation` or `/scout` + idea-critic | User | Idea verdict is REFRAME/NO-GO three times — user decides whether to drop or reframe |
 | explorer + data-quality-surveyor | User | Data feasibility deadlock — user decides resource trade-offs |
 
 ## Rules

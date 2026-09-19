@@ -12,6 +12,8 @@ Usage (in .claude/settings.json):
     "Stop": [{ "hooks": [{ "type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/log-reminder.py" }] }]
 """
 
+from __future__ import annotations
+
 import json
 import sys
 import hashlib

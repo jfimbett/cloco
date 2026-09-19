@@ -6,6 +6,20 @@
 .claude/plans/
 .claude/specs/
 
+# Data: contents never tracked; the registry and READMEs are
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/README.md
+!data/registry.json
+*.parquet
+*.dta
+*.rds
+*.feather
+*.sas7bdat
+.pgpass
+
 # LaTeX build artifacts
 *.aux
 *.log
