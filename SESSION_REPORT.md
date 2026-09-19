@@ -98,3 +98,23 @@ Consolidated, append-only operations log. Detailed per-session logs live in `qua
 **Results:** intake verified on a synthetic old-paper folder (tex + compiled pdf + bib + R/Stata with hard-coded paths + csv duplicate + NOTES.md with referee stall): title, JEL, sample 2006–2016, 3 sources, 4 methods, stall hints incl. referee/rejection from notes, dup detection; single-PDF and missing-path cases; welcome hook and journal regex checked under python3 3.9
 
 **Status:** Done; uncommitted on master (10 files). Pending: user runs `/revive <folder>` on a real drawer paper; commit via `/commit`.
+
+## 2026-09-19 19:30 — /setup-project: template-vs-project identity, environment doctor, identity-guard
+
+**Operations:**
+- Added `.claude/scripts/project_setup.py`: `status` (folder / remotes / spec → verdict `no-spec` · `ok` · `needs-detach`, suggested `cloco-<slug>`), `doctor` (python3 ≥3.9, git, git identity, gh, gh auth, latexmk, Rscript, pdftotext/pypdf, .env, DROPBOX_ROOT with fix hints), `slug`, `detach --repo … --visibility private|public [--owner] [--no-github] [--rename-folder] [--dry-run]` (origin→`template`, `gh repo create --source . --remote origin --push`, folder rename last; refuses dirty tree and the template name)
+- Added hook `.claude/hooks/identity-guard.py` (PreToolUse Bash, registered after secrets-guard): denies `git push` whose target is the template remote once a research spec exists; `--no-verify` override
+- Added skill `.claude/skills/setup-project/SKILL.md`: doctor → identity → AskUserQuestion (repo name, create on GitHub?, private/public, owner + rename folder) → dry-run → detach → personalise CLAUDE.md/README → report; `doctor` / `identity` sub-modes
+- `project_state.py` → `identity` section; welcome banner ⚠ line; status line `⚠ template identity → /setup-project`; `git_tools.py audit` Identity row (counts as finding); git-steward agent Identity mode + checklist item 0
+- `/interview-me`, `/revive` write `project_slug:` and run the identity check after the spec; `/new-project` step mentions `/setup-project`
+- Rule `git-hygiene.md` gains "Template vs. project identity"; CLAUDE.md principle + commands + skill row; README (40 skills, feature bullet, getting started, tree); QUICK_REF
+
+**Decisions:**
+- Interactive part is a skill (main Claude can ask questions); git-steward gets a read-only Identity mode for audits
+- Template remote is renamed to `template`, never removed — `git fetch template && git merge template/master` pulls improvements
+- Folder rename is the last step and requires a session restart (cwd goes stale); private by default
+- Doctor never installs; it prints the brew/gh command
+
+**Results:** scratch clone with a spec → `needs-detach`; detach refused on dirty tree; dry-run prints the three commands; real `--no-github --rename-folder` renamed remote + folder and then flagged "no origin"; hook matrix (push origin=template → deny; bare push → deny; --no-verify → allow; git status → allow; after detach push origin → allow, push template → deny); banner / status line / audit render the warning; real repo without spec unaffected; all hooks and scripts parse and run under python3 3.9. Doctor on this machine: git `user.name`/`user.email` unset (commits show the OS account name) and `.env` missing.
+
+**Status:** Done, uncommitted. Pending: user sets git identity, decides on `/setup-project` when the first spec exists.

@@ -32,6 +32,7 @@ Economics research pipelines are fragmented: literature review in one tool, data
 - **Automated early stages**: `/scout` (10-minute go/no-go triage with an `idea-critic`), `/revive` (rescue an abandoned working paper from a PDF, notes, old code and data: reconstruct, check what changed since it stalled, REVIVE / REFRAME / RETIRE verdict, pre-filled spec and re-entry plan), `/discovery` (the whole Phase 1 — literature ∥ data, critic loops, bibliography merge — in one command), `/data-profile` (automated dataset profiling: panel key, pre-period, staggered treatment, codebook), and a rewritten `explorer` that actually discovers data.
 - **Data that lives outside git, with its location inside git**: `data/registry.json` maps every dataset to a `${DROPBOX_ROOT}/…` path template with provenance; `code/utils/data_paths.{py,R}` resolve it per machine; a `path-guard` hook flags hard-coded Dropbox/home paths in code.
 - **WRDS without the web downloader**: `/wrds` explores libraries, tables, and columns and `fetch`es SQL pulls straight to Dropbox, auto-registered and profiled — when the author has credentials; silent no-op otherwise.
+- **A project setup assistant**: `/setup-project` checks the machine (git, gh, gh login, python3, latexmk, R, PDF tools, `.env`) and, once a research spec exists, detaches the checkout from the template — folder `cloco-<slug>`, its own GitHub repository (private or public, created with `gh`), template kept as remote `template` for updates. An `identity-guard` hook blocks pushes to the template from a project.
 - **A git steward**: a `git-steward` agent plus a `secrets-guard` hook that blocks any `git commit`/`git push` carrying credentials, data files, or oversized blobs; repo audits, history scans, worktree proposals for parallel work (R&R vs. analysis, talk vs. paper), branch cleanup, submission tags.
 - **A terminal that knows where the project is**: a two-line Claude Code status line (project · phase · next command · gates │ git · data registry · context bar · model) plus terminal tab titles, a session-welcome banner, and `make status` for the same dashboard from the shell — all fed by one `project_state.py`.
 - **Automated bookkeeping**: a `journal-append` hook that writes the research journal after every agent dispatch, a session-welcome banner with phase, next command, and lesson count, and portable stdlib-only hooks (`python3`, 3.9+).
@@ -132,7 +133,7 @@ Research Spec
 
 ---
 
-## 39 Skills
+## 40 Skills
 
 | Category | Skill | What It Does |
 |----------|-------|-------------|
@@ -169,6 +170,7 @@ Research Spec
 | | `/visual-audit [file]` | Slide layout audit |
 | **Infrastructure** | `/commit [msg]` | Stage, commit, PR, merge |
 | | `/git-steward [cmd]` | **Repo hygiene**: `audit`, `secrets`, `history-scan`, `worktree NAME`, `cleanup`, `tag JOURNAL`, `pr` |
+| | `/setup-project [cmd]` | **Setup assistant**: environment `doctor` · `identity` check · detach from the template (asks repo name, GitHub create?, private/public, owner, rename folder) |
 | | `/humanizer [file]` | Strip 24 AI writing patterns |
 | | `/journal` | Research journal timeline |
 | | `/context-status` | Session health + context usage |
@@ -203,7 +205,7 @@ Research Spec
 | `storyteller` | Beamer / Quarto presentation builder derived from `paper/main.tex` | `discussant` |
 | `discussant` | Slide quality review: layout, paper fidelity, narrative arc | — |
 | `replication-verifier` | Replication audit: compilation, script execution, output freshness | — |
-| `git-steward` | Repository hygiene: secrets/data/large-file audits, worktree and branch planning, cleanup, submission tags; runs state-changing git only on explicit request | — |
+| `git-steward` | Identity check (template vs. project) · Repository hygiene: secrets/data/large-file audits, worktree and branch planning, cleanup, submission tags; runs state-changing git only on explicit request | — |
 
 ---
 
@@ -346,8 +348,9 @@ claude
 #    Or rescue a paper you stopped working on (PDF, .tex folder, notes, old data):
 /revive ~/Dropbox/old_papers/branch_closures
 
-# 6. On a GO verdict, formalise it and run Phase 1 in one command:
+# 6. On a GO verdict, formalise it — then give the project its own name and repository:
 /interview-me [your research topic]
+/setup-project            # folder cloco-<slug>, GitHub repo (private/public), template kept as remote
 /discovery
 
 # 7. Point the project at your data folders (once per machine) and, if you have WRDS, test it:
@@ -374,11 +377,11 @@ cloco/
 ├── .gitignore
 ├── .claude/
 │   ├── agents/                     # 21 agent definitions
-│   ├── skills/                     # 39 skill definitions
+│   ├── skills/                     # 40 skill definitions
 │   ├── rules/                      # 24 governance rules
 │   ├── hooks/                      # Workflow enforcement hooks (python3, stdlib only)
 │   ├── scripts/                    # project_state.py, statusline.py, dashboard.py, profile_data.py, merge_bib.py,
-│   │                               #   data_registry.py, wrds_client.py, git_tools.py, paper_intake.py
+│   │                               #   data_registry.py, wrds_client.py, git_tools.py, paper_intake.py, project_setup.py
 │   ├── lessons/
 │   │   └── LESSONS.md              # Project-specific corrections (append-only)
 │   ├── plans/ · specs/ · state/    # gitignored: plans, requirement specs, local memory

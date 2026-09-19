@@ -63,6 +63,10 @@ def render(st: dict) -> str:
             f"└{BORDER}┘",
             "  Type /pipeline-status for a full list of available commands.",
         ]
+    idn = st.get("identity")
+    if idn and idn.get("needs_detach"):
+        lines.append(f"  ⚠ Identity: still the template ({'; '.join(p.split(' — ')[0] for p in idn['problems'])})")
+        lines.append(f"    → /setup-project  (becomes {idn.get('suggested_repo') or 'cloco-<slug>'}; pushes to the template are blocked)")
     gs = st.get("git")
     if gs:
         hint = "  → work on a branch or worktree (/git-steward)" if gs["on_default"] and gs["dirty"] else ""

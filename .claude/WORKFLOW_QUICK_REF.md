@@ -12,6 +12,8 @@ Not sure the idea deserves a project? `/scout [idea]` runs capped literature and
 
 ## Step 0: Choose Project Type
 
+Run `/interview-me` first. Right after it writes the spec, run **`/setup-project`**: the checkout stops being the `cloco` template — folder `cloco-<slug>`, own GitHub repository (private/public), template kept as remote `template`. Pushes to the template are blocked from then on.
+
 Run `/interview-me` first. Phase 0 always asks:
 
 > "What kind of paper are you writing?"
@@ -139,6 +141,7 @@ Enter at any stage. Use `/new-project` for the full orchestrated pipeline.
 | `/scout [idea]` | Librarian + Explorer (quick) → idea-critic | 10-minute go/no-go triage |
 | `/revive [path]` | intake script → Librarian + Explorer (what changed since) → idea-critic (Revival) | Rescue an abandoned paper: REVIVE / REFRAME / RETIRE + pre-filled spec + re-entry plan |
 | `/interview-me [topic]` | — | Interactive Q&A → research spec + domain profile |
+| `/setup-project [cmd]` | — (git-steward Identity mode for audits) | Environment doctor + detach from the template: own folder, own GitHub repo |
 | `/discovery` | Librarian + Editor ∥ Explorer + Surveyor | Phase 1 in one command, critic loops, bib merge, Discovery Report |
 | `/lit-review [topic]` | Librarian + Editor | Literature search + synthesis + bib merge |
 

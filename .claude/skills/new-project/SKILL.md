@@ -54,6 +54,7 @@ Phase 5: Submission (depends on Phase 4, score >= 95)
    Run `/interview-me` to produce:
    - Research specification (`quality_reports/research_spec_*.md`)
    - Domain profile (`.claude/rules/domain-profile.md`) — if still template
+   Then run `/setup-project`: the checkout now holds a project and must leave the template identity — folder `cloco-<slug>`, its own GitHub repository (private/public), template kept as remote `template`. Pushes to the template are blocked until this is done.
 
 2. **Run `/discovery`** (reads the spec, runs `/lit-review` and — unless `project_type` is `theory` — `/find-data` in parallel, each with its critic loop, merges BibTeX into `paper/references.bib`, writes `quality_reports/discovery_report_*.md`).
 

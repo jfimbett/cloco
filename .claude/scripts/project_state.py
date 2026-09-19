@@ -8,7 +8,8 @@ that wants to know "where is this project right now?".
     python3 .claude/scripts/project_state.py --brief    # one line
 
 Reads (all optional):
-    quality_reports/research_spec_*.md    project_name, project_type
+    quality_reports/research_spec_*.md    project_name, project_type, project_slug
+    git remotes + folder name             template-vs-project identity (project_setup.py)
     quality_reports/research_journal.md   component scores (highest per component)
     data/registry.json + .env             registered datasets present / missing
     .claude/lessons/LESSONS.md            lesson count
@@ -206,6 +207,18 @@ def data_state(root: Path) -> dict | None:
         return {"registered": None, "missing": []}
 
 
+def identity_state(root: Path) -> dict | None:
+    """Template-vs-project identity (folder name, origin remote) — see project_setup.py."""
+    try:
+        sys.path.insert(0, str(root / ".claude" / "scripts"))
+        from project_setup import identity  # type: ignore
+        idn = identity(root)
+        return {"verdict": idn["verdict"], "needs_detach": idn["needs_detach"], "folder": idn["folder"],
+                "origin_repo": idn["origin_repo"], "suggested_repo": idn["suggested_repo"], "problems": idn["problems"]}
+    except Exception:
+        return None
+
+
 def lessons_state(root: Path) -> dict | None:
     p = root / ".claude" / "lessons" / "LESSONS.md"
     if not p.exists():
@@ -234,6 +247,7 @@ def state(root: Path | None = None) -> dict:
     st["git"] = git_state(root)
     st["data"] = data_state(root)
     st["lessons"] = lessons_state(root)
+    st["identity"] = identity_state(root)
     return st
 
 

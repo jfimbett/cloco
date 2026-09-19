@@ -116,12 +116,13 @@ Append the critic's verdict block to the memo under `## Verdict`. Add by hand to
 
 **REVIVE** — set the project up so the pipeline can enter mid-stream (`dependency-graph.md`):
 
-1. **Spec.** Write `quality_reports/research_spec_<slug>.md` in the `/interview-me` format, pre-filled from the memo, with `project_name:` and `project_type:` lines near the top and a `## Provenance` section pointing at the legacy materials and the revival memo. Sections the materials do not support get `[TO CONFIRM]`, not invented content. Fill `.claude/rules/domain-profile.md` if it still holds placeholders.
+1. **Spec.** Write `quality_reports/research_spec_<slug>.md` in the `/interview-me` format, pre-filled from the memo, with `project_name:`, `project_type:`, and `project_slug:` (two or three kebab-case words; the repo becomes `cloco-<slug>`) lines near the top and a `## Provenance` section pointing at the legacy materials and the revival memo. Sections the materials do not support get `[TO CONFIRM]`, not invented content. Fill `.claude/rules/domain-profile.md` if it still holds placeholders.
 2. **Bibliography.** If a `.bib` was found: `python3 .claude/scripts/merge_bib.py <old.bib>` into `paper/references.bib` (dedupes). Papers the librarian surfaced go into `quality_reports/literature/<slug>/references.bib` for the next `/lit-review` to merge.
 3. **Data.** For every usable local file, register in place: `python3 .claude/scripts/data_registry.py add <name> --path '<${DROPBOX_ROOT}/…>' --stage external --source '<provider>, pulled <year>, legacy'`. If a file sits outside every configured root, ask the user to move it under `${DROPBOX_ROOT}` (never into the repo) or add a `DATA_ROOT`. Then `/data-profile <name>` on the main analysis file.
 4. **Manuscript.** If a main `.tex` exists and `paper/main.tex` is still the template: copy the legacy sources into `paper/legacy/<slug>/` (sources only — no PDFs, no build artefacts) and record in the plan that `/draft-paper` should rebuild `paper/main.tex` from them section by section rather than from scratch. If `paper/main.tex` already holds another project, stop and ask.
 5. **Code.** Copy scripts into `code/legacy/<slug>/` unchanged. Do not fix them here; the plan routes them through `/review-code` and `/data-analysis`, which replace hard-coded paths with `data_path()`.
-6. **Revival plan.** Write `quality_reports/revival/<slug>/revival_plan.md`:
+6. **Identity.** Run `python3 .claude/scripts/project_setup.py status`; if `needs-detach`, the first line of the revival plan's next commands is `/setup-project` (own folder name and GitHub repository before any push).
+7. **Revival plan.** Write `quality_reports/revival/<slug>/revival_plan.md`:
 
 ```markdown
 # Revival Plan — [Title]

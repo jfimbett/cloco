@@ -18,6 +18,7 @@ Keep under 150 lines, since Claude loads it every session.
 - **Plan first** -- enter plan mode before non-trivial tasks.
 - **Verify after** -- compile and confirm output at the end of every task
 - **Single source of truth** -- `paper/main.tex` is authoritative; talks and supplements derive from it
+- **A project is not the template** -- once a research spec exists, the folder must be `cloco-<slug>` and `origin` its own repository (`cloco-<slug>.git`), with the template kept as remote `template`; `identity-guard` blocks pushes to the template and `/setup-project` (environment doctor + GitHub repo creation, private/public, folder rename) fixes it. See `.claude/rules/git-hygiene.md`.
 - **Nothing sensitive reaches GitHub** -- the `secrets-guard` hook blocks commits/pushes with credentials, data, or large blobs; `/git-steward` audits, plans worktrees for parallel tasks, and tags submissions. See `.claude/rules/git-hygiene.md`.
 - **Data lives outside git; its location lives in git** -- canonical data in `${DROPBOX_ROOT}` (never a git repo inside Dropbox), scratch in `data/` (gitignored), every file in `data/registry.json`; code reads paths via `code/utils/data_paths.{py,R}`, never literals. WRDS pulls go through `/wrds`. See `.claude/rules/data-management.md`.
 - **Quality gates** -- weighted aggregate score; nothing ships below 80/100; see `scoring-protocol.md`
@@ -75,7 +76,9 @@ python3 .claude/scripts/paper_intake.py ~/Dropbox/old_paper --slug NAME   # inve
 python3 .claude/scripts/data_registry.py check                         # every dataset present on this machine?
 python3 .claude/scripts/wrds_client.py search crsp                     # WRDS catalogue (needs ~/.pgpass or WRDS_USERNAME in .env)
 make status                            # pipeline dashboard from the shell (make help for all targets)
-python3 .claude/scripts/git_tools.py audit                             # secrets / data / big files / branch state
+python3 .claude/scripts/git_tools.py audit                             # secrets / data / big files / branch state / identity
+python3 .claude/scripts/project_setup.py doctor                        # git, gh, gh auth, python3, latexmk, R, PDF tools, .env
+python3 .claude/scripts/project_setup.py status                        # template-vs-project identity (folder, origin, spec)
 python3 .claude/scripts/git_tools.py worktree new rr-jfe-r1            # parallel task checkout in ../cloco-wt/
 python3 .claude/scripts/merge_bib.py quality_reports/literature/<slug>/references.bib   # dedupe-merge into paper/references.bib
 ```
@@ -133,6 +136,7 @@ See `scoring-protocol.md` for weighted aggregation formula.
 | `/validate-bib` | Cross-reference citations |
 | `/commit [msg]` | Stage, commit, PR, merge |
 | `/git-steward [cmd]` | Repo hygiene: audit / secrets / history-scan / worktree NAME / cleanup / tag JOURNAL / pr |
+| `/setup-project [cmd]` | Setup assistant: environment doctor + detach from the template (own folder `cloco-<slug>`, own GitHub repo private/public, template kept as remote) |
 | `/research-ideation [topic]` | Research questions + strategies → idea-critic ranking |
 | `/visual-audit [file]` | Slide layout audit |
 | `/learn` | Extract session discoveries into skills |

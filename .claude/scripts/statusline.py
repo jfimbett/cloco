@@ -94,6 +94,8 @@ def main() -> int:
         name = (st.get("project_name") or "")[:40]
         line1 = (f"{B}{st['repo']}{R} · {name} · {DIM}{st['project_type']}{R} · "
                  f"{CYAN}Phase {st['phase_num']} {st['phase']}{R} ▸ {B}{st['next']}{R}   {gates}")
+        if (st.get("identity") or {}).get("needs_detach"):
+            line1 += f"  {YELLOW}⚠ template identity → /setup-project{R}"
         title_phase = st["phase"]
     else:
         line1 = f"{B}{st.get('repo', 'cloco')}{R} · {DIM}no research spec{R} ▸ {B}/scout{R} or {B}/interview-me{R}"

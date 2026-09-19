@@ -164,11 +164,13 @@ Produce a **Research Specification Document**:
 
 **Save to:** `quality_reports/research_spec_[sanitized_topic].md`
 
-Include a `project_name:` line and a `project_type:` line near the top (the session-welcome hook and `/pipeline-status` parse them).
+Include `project_name:`, `project_type:`, and `project_slug:` lines near the top (the session-welcome hook, `/pipeline-status`, and `/setup-project` parse them). `project_slug` is two or three memorable words in kebab-case (e.g. `branch-closures`); the project's repository and folder become `cloco-<project_slug>`.
 
 ### After saving
 
-Tell the user the next command is `/discovery` — it reads this spec and runs the literature and data lanes in parallel with their critics. If the researcher seemed unsure whether the idea is worth a full project, suggest `/scout` first.
+**Identity first.** Run `python3 .claude/scripts/project_setup.py status`. If it reports `needs-detach` (folder still `cloco`, origin still `cloco.git`), tell the user the checkout is now a project and must get its own name and GitHub repository before any push — offer `/setup-project` right away (it asks: repository name, create on GitHub?, private or public, rename the folder). Pushes to the template are blocked until this is done.
+
+Then tell the user the next command is `/discovery` — it reads this spec and runs the literature and data lanes in parallel with their critics. If the researcher seemed unsure whether the idea is worth a full project, suggest `/scout` first.
 
 ---
 

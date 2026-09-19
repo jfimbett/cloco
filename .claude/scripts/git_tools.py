@@ -222,7 +222,14 @@ def audit() -> dict:
     if ts:
         import time
         rep["last_commit_age_days"] = round((time.time() - int(ts)) / 86400, 1)
-    rep["findings"] = len(rep["secrets_tree"]) + len(rep["secrets_staged"]) + len(rep["bigfiles"]) + len(rep["gitignore_missing"]) + int(rep["remote_insecure"])
+    try:
+        from project_setup import identity  # type: ignore
+        idn = identity(PROJECT_ROOT)
+        rep["identity"] = {"verdict": idn["verdict"], "problems": idn["problems"], "suggested_repo": idn["suggested_repo"]}
+    except Exception:
+        rep["identity"] = {"verdict": "unknown", "problems": [], "suggested_repo": None}
+    rep["findings"] = (len(rep["secrets_tree"]) + len(rep["secrets_staged"]) + len(rep["bigfiles"]) + len(rep["gitignore_missing"])
+                       + int(rep["remote_insecure"]) + len(rep["identity"]["problems"]))
     return rep
 
 
@@ -231,6 +238,13 @@ def print_audit(rep: dict) -> None:
     print(f"Branch     {rep['branch']}  (upstream {rep['upstream'] or 'none'}; ahead {rep['ahead']}, behind {rep['behind']})")
     print(f"Working    {rep['uncommitted']} uncommitted change(s){'  ← on the default branch' if rep['default_branch_dirty'] else ''}")
     print(f"Remote     {rep['remote']}  {'✗ http:// — switch to https://' if rep['remote_insecure'] else '✓'}")
+    idn = rep.get("identity", {})
+    if idn.get("verdict") == "needs-detach":
+        print(f"Identity   ✗ template identity with a research spec → /setup-project ({idn.get('suggested_repo')})")
+        for pr in idn.get("problems", []):
+            print(f"    {pr}")
+    else:
+        print(f"Identity   {'✓ project' if idn.get('verdict') == 'ok' else '· template / no spec'}")
     print(f"Worktrees  {len(rep['worktrees'])} extra: {', '.join(rep['worktrees']) or '—'}")
     print(f"Merged branches to delete: {', '.join(rep['stale_branches']) or '—'}")
     print(f".gitignore {ok(not rep['gitignore_missing'])} {'missing: ' + ', '.join(rep['gitignore_missing']) if rep['gitignore_missing'] else 'covers env, local settings, state, data'}")

@@ -13,6 +13,18 @@
 
 Enforcement: the `secrets-guard` hook blocks `git commit` / `git push` (and `git add` of credential files) when the staged or unpushed content matches; `git_tools.py secrets --history N` finds what already slipped in. **A secret that touched a commit is compromised — rotate it; deleting the line is not a fix.**
 
+## Template vs. project identity
+
+`cloco` is a template; every paper is a clone of it. **The moment a research spec exists (`quality_reports/research_spec_*.md`), the checkout is a project and must stop looking like the template:**
+
+| | Template | Project |
+|--|----------|---------|
+| Folder | `cloco` | `cloco-<project_slug>` (slug from the spec, 2–3 words) |
+| `origin` | `…/cloco.git` | `…/cloco-<project_slug>.git` — its own GitHub repository, private by default |
+| `template` remote | — | `…/cloco.git`, kept so `git fetch template && git merge template/master` pulls improvements |
+
+Enforcement: `identity-guard` blocks `git push` to the template once a spec exists; the welcome banner, status line, and `git_tools.py audit` flag `template identity`. `/setup-project` fixes it: environment doctor (git, gh, gh login, python3, latexmk, R, PDF tools, `.env`), then asks repository name · create on GitHub? · private/public · owner · rename folder, and runs `project_setup.py detach`. `/interview-me` and `/revive` propose it right after writing the spec.
+
 ## Branching model
 
 - `master` holds only reviewed, compiling, score ≥ 80 work. Never accumulate a large dirty tree on it.
