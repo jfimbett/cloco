@@ -80,3 +80,21 @@ Consolidated, append-only operations log. Detailed per-session logs live in `qua
 **Decisions:** two-line status line, no session cost (user choice); tab title piggybacks on the status line; `context-monitor.py` left in place (status line now shows the real context %; the hook still provides /learn nudges)
 
 **Results:** status line, banner, and dashboard verified on the real repo (no project) and on a scratch project with a spec, two journal entries (86, 82 → Phase 2, next /identify, overall 84.0) and one missing registered dataset.
+
+## 2026-09-19 18:40 — /revive: rescue an abandoned working paper
+
+**Operations:**
+- Added `.claude/scripts/paper_intake.py` (stdlib; pdftotext → pypdf → none for PDFs, zipfile for .docx): walks PDF/.tex/.bib/notes/code/data, classifies roles, extracts text to `quality_reports/revival/<slug>/extracted/` (gitignored), detects title/abstract/JEL, sample period, data sources, methods, stall hints, bib horizon year, hard-coded paths, big files, duplicates → `inventory.md` + `manifest.json`
+- Added skill `.claude/skills/revive/SKILL.md`: intake → reconstruct brief + stall diagnosis → gap interview (≤4 questions, `--no-questions`) → librarian + explorer "what changed since [year]" quick-scans → idea-critic Revival verdict → REVIVE (pre-filled spec, bib merge, register data in place, `paper/legacy/`, `code/legacy/`, revival plan with re-entry phase) / REFRAME / RETIRE (archive note)
+- `idea-critic`: new Revival mode — rubric (still novel · contribution today · design by current standards · data & code salvage · scooping), revival deductions, REVIVE/REFRAME/RETIRE, re-entry phase + keep/redo section
+- `/scout` routes path inputs (PDF/.tex/folder) to `/revive`; `journal-append.py` score regex accepts REVIVE/RETIRE; welcome banner shows `/revive [path]`; `.gitignore` excludes `quality_reports/revival/*/extracted/`
+- CLAUDE.md (principle, command, skill row), README (39 skills, diagram, getting started, folder tree), WORKFLOW_QUICK_REF updated
+
+**Decisions:**
+- Standalone skill rather than a mode inside `/scout` — the inputs (files, not a sentence) and the outputs (spec + plan, not just a verdict) differ; `/scout` delegates instead
+- Data is never copied into the repo by the intake; registered in place with `--stage external`
+- Revival scores are advisory (not in the weighted aggregate), matching scout
+
+**Results:** intake verified on a synthetic old-paper folder (tex + compiled pdf + bib + R/Stata with hard-coded paths + csv duplicate + NOTES.md with referee stall): title, JEL, sample 2006–2016, 3 sources, 4 methods, stall hints incl. referee/rejection from notes, dup detection; single-PDF and missing-path cases; welcome hook and journal regex checked under python3 3.9
+
+**Status:** Done; uncommitted on master (10 files). Pending: user runs `/revive <folder>` on a real drawer paper; commit via `/commit`.

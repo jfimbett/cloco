@@ -29,7 +29,7 @@ Economics research pipelines are fragmented: literature review in one tool, data
 
 - **Four project-type-aware pipelines** (`empirical`, `theory`, `structural`, `empirical+theory`) with type-specific scoring weights, so a pure theory paper isn't penalized for lacking data.
 - **Specialist creators and critics**: `econ-finance-theorist` / `theory-critic`, `structural-estimation-expert` / `structural-critic`, `causal-strategist` / `identification-critic`.
-- **Automated early stages**: `/scout` (10-minute go/no-go triage with an `idea-critic`), `/discovery` (the whole Phase 1 — literature ∥ data, critic loops, bibliography merge — in one command), `/data-profile` (automated dataset profiling: panel key, pre-period, staggered treatment, codebook), and a rewritten `explorer` that actually discovers data.
+- **Automated early stages**: `/scout` (10-minute go/no-go triage with an `idea-critic`), `/revive` (rescue an abandoned working paper from a PDF, notes, old code and data: reconstruct, check what changed since it stalled, REVIVE / REFRAME / RETIRE verdict, pre-filled spec and re-entry plan), `/discovery` (the whole Phase 1 — literature ∥ data, critic loops, bibliography merge — in one command), `/data-profile` (automated dataset profiling: panel key, pre-period, staggered treatment, codebook), and a rewritten `explorer` that actually discovers data.
 - **Data that lives outside git, with its location inside git**: `data/registry.json` maps every dataset to a `${DROPBOX_ROOT}/…` path template with provenance; `code/utils/data_paths.{py,R}` resolve it per machine; a `path-guard` hook flags hard-coded Dropbox/home paths in code.
 - **WRDS without the web downloader**: `/wrds` explores libraries, tables, and columns and `fetch`es SQL pulls straight to Dropbox, auto-registered and profiled — when the author has credentials; silent no-op otherwise.
 - **A git steward**: a `git-steward` agent plus a `secrets-guard` hook that blocks any `git commit`/`git push` carrying credentials, data files, or oversized blobs; repo audits, history scans, worktree proposals for parallel work (R&R vs. analysis, talk vs. paper), branch cleanup, submission tags.
@@ -45,6 +45,8 @@ Economics research pipelines are fragmented: literature review in one tool, data
 /scout [idea]  →  GO / REFRAME / NO-GO          (optional, ~10 min, idea-critic)
        │ GO
 /interview-me  →  Research Spec + Domain Profile
+       │                                        /revive [old paper] → REVIVE / REFRAME / RETIRE
+       │                                              └─ pre-filled spec, enters below at the phase the critic names
        │
 /discovery     →  /lit-review ∥ /find-data  (critic loops, bib merge, Discovery Report)
        │
@@ -130,7 +132,7 @@ Research Spec
 
 ---
 
-## 38 Skills
+## 39 Skills
 
 | Category | Skill | What It Does |
 |----------|-------|-------------|
@@ -139,6 +141,7 @@ Research Spec
 | | `/discovery` | **Phase 1 in one command**: lit-review ∥ find-data, critic loops, bib merge, Discovery Report |
 | **Ideation** | `/research-ideation [topic]` | 3–5 research questions + strategies, ranked by `idea-critic` |
 | | `/scout [idea]` | **Go/no-go triage**: capped librarian + explorer quick-scans → `idea-critic` verdict |
+| | `/revive [path]` | **Rescue an abandoned paper**: intake PDF / .tex / notes / .bib / code / data → librarian + explorer "what changed since" → `idea-critic` REVIVE / REFRAME / RETIRE → pre-filled spec + revival plan (enters the pipeline mid-stream) |
 | **Literature** | `/lit-review [topic]` | Librarian + Editor: literature search + synthesis + dedupe-merge into `paper/references.bib` |
 | **Theory & Structural** | `/theory-model [question]` | Theorist + theory-critic: formal model design |
 | | `/structural-estimation [spec]` | Structural expert + structural-critic: estimation design |
@@ -180,7 +183,7 @@ Research Spec
 | Agent | Role | Paired Critic |
 |-------|------|--------------|
 | `research-orchestrator` | Master controller — manages the dependency graph, dispatches agents, enforces quality gates | — |
-| `idea-critic` | Scores research ideas on novelty, contribution, identification credibility, data feasibility, scooping risk → GO / REFRAME / NO-GO | — (critic for `/scout`, `/research-ideation`) |
+| `idea-critic` | Scores research ideas on novelty, contribution, identification credibility, data feasibility, scooping risk → GO / REFRAME / NO-GO; Revival mode scores an abandoned paper → REVIVE / REFRAME / RETIRE with a re-entry phase | — (critic for `/scout`, `/research-ideation`, `/revive`) |
 | `academic-librarian` | Systematic literature search across top journals, NBER, SSRN, RePeC; quick-scan mode for `/scout` | `academic-editor` |
 | `academic-editor` | Literature critique + peer review dispatcher | — |
 | `blind-peer-referee` | Simulated adversarial referee — two instances per paper | — |
@@ -340,6 +343,9 @@ claude
 # 5. Not sure the idea is worth a paper? Ten-minute triage:
 /scout "your idea in one sentence"
 
+#    Or rescue a paper you stopped working on (PDF, .tex folder, notes, old data):
+/revive ~/Dropbox/old_papers/branch_closures
+
 # 6. On a GO verdict, formalise it and run Phase 1 in one command:
 /interview-me [your research topic]
 /discovery
@@ -368,11 +374,11 @@ cloco/
 ├── .gitignore
 ├── .claude/
 │   ├── agents/                     # 21 agent definitions
-│   ├── skills/                     # 38 skill definitions
+│   ├── skills/                     # 39 skill definitions
 │   ├── rules/                      # 24 governance rules
 │   ├── hooks/                      # Workflow enforcement hooks (python3, stdlib only)
 │   ├── scripts/                    # project_state.py, statusline.py, dashboard.py, profile_data.py, merge_bib.py,
-│   │                               #   data_registry.py, wrds_client.py, git_tools.py
+│   │                               #   data_registry.py, wrds_client.py, git_tools.py, paper_intake.py
 │   ├── lessons/
 │   │   └── LESSONS.md              # Project-specific corrections (append-only)
 │   ├── plans/ · specs/ · state/    # gitignored: plans, requirement specs, local memory
@@ -401,6 +407,7 @@ cloco/
 │   ├── data/<slug>/                # data_assessment.md, variable_map.csv (+ profiles/ from /data-profile)
 │   ├── strategy/<slug>/            # strategy_memo.md, pseudo_code.md, robustness_plan.md, falsification_tests.md
 │   ├── scout_*.md · idea_review_*.md · discovery_report_*.md
+│   ├── revival/<slug>/             # inventory.md, revival_memo.md, idea_review.md, revival_plan.md (extracted/ gitignored)
 │   └── research_journal.md         # Agent-level history — auto-appended by journal-append.py
 ├── templates/                      # Session log, quality report templates
 └── master_supporting_docs/         # Reference papers and data documentation

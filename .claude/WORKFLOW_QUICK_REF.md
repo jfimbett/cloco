@@ -8,6 +8,8 @@
 
 Not sure the idea deserves a project? `/scout [idea]` runs capped literature and data quick-scans and an `idea-critic` verdict: **GO** → `/interview-me`; **REFRAME** → fix the blocking dimension; **NO-GO** → move on. Several ideas? `/research-ideation [topic]` then `/scout` the ideation report.
 
+**An old paper instead of an idea?** `/revive [path]` (PDF, `.tex` folder, notes, old code and data) reconstructs where it stalled, checks what changed in the literature and data since, and gets an `idea-critic` verdict: **REVIVE** → pre-filled research spec + revival plan, re-entering the pipeline at the phase the critic names; **REFRAME** → one blocking change first; **RETIRE** → archive note with a salvage list. It replaces `/interview-me` for a revived paper.
+
 ## Step 0: Choose Project Type
 
 Run `/interview-me` first. Phase 0 always asks:
@@ -135,6 +137,7 @@ Enter at any stage. Use `/new-project` for the full orchestrated pipeline.
 |---------|--------|-------------|
 | `/research-ideation [topic]` | idea-critic | 3–5 research questions + strategies, critic-ranked |
 | `/scout [idea]` | Librarian + Explorer (quick) → idea-critic | 10-minute go/no-go triage |
+| `/revive [path]` | intake script → Librarian + Explorer (what changed since) → idea-critic (Revival) | Rescue an abandoned paper: REVIVE / REFRAME / RETIRE + pre-filled spec + re-entry plan |
 | `/interview-me [topic]` | — | Interactive Q&A → research spec + domain profile |
 | `/discovery` | Librarian + Editor ∥ Explorer + Surveyor | Phase 1 in one command, critic loops, bib merge, Discovery Report |
 | `/lit-review [topic]` | Librarian + Editor | Literature search + synthesis + bib merge |
@@ -230,7 +233,7 @@ Enter at any stage. Use `/new-project` for the full orchestrated pipeline.
 
 | Worker | Critic | Used In |
 |--------|--------|---------|
-| main Claude (`/scout`, `/research-ideation`) | idea-critic | Pre-pipeline, all types (advisory) |
+| main Claude (`/scout`, `/research-ideation`, `/revive`) | idea-critic | Pre-pipeline, all types (advisory) |
 | academic-librarian | academic-editor | All types |
 | explorer | data-quality-surveyor | empirical, structural, empirical+theory |
 | econ-finance-theorist | theory-critic | theory, structural, empirical+theory |

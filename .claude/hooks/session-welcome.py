@@ -57,6 +57,7 @@ def render(st: dict) -> str:
         lines += [
             row("No active research project."),
             row("Not sure about the idea?   /scout [idea]"),
+            row("Old draft in a drawer?     /revive [path]"),
             row("Committed?                 /interview-me [topic], /discovery"),
             row("Full pipeline:             /new-project [topic]"),
             f"└{BORDER}┘",

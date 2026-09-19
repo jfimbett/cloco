@@ -14,6 +14,7 @@ Keep under 150 lines, since Claude loads it every session.
 ## Core Principles
 
 - **Scout before you commit** -- `/scout [idea]` is a 10-minute go/no-go; run it before `/interview-me` unless the idea is already settled.
+- **Revive before you restart** -- an old draft, notes, or data from a stalled paper go through `/revive [path]`, which reconstructs the paper, checks what changed, and re-enters the pipeline mid-stream instead of starting from `/interview-me`.
 - **Plan first** -- enter plan mode before non-trivial tasks.
 - **Verify after** -- compile and confirm output at the end of every task
 - **Single source of truth** -- `paper/main.tex` is authoritative; talks and supplements derive from it
@@ -70,6 +71,7 @@ latexmk -pdf -cd paper/main.tex        # full build (handles bib, cross-refs)
 latexmk -pdf -cd -pvc paper/main.tex   # continuous preview mode (auto-recompile on save)
 latexmk -cd -C paper/main.tex          # clean all auxiliary files
 python3 .claude/scripts/profile_data.py data/raw/file.csv      # dataset profile + codebook
+python3 .claude/scripts/paper_intake.py ~/Dropbox/old_paper --slug NAME   # inventory an abandoned paper's materials (/revive)
 python3 .claude/scripts/data_registry.py check                         # every dataset present on this machine?
 python3 .claude/scripts/wrds_client.py search crsp                     # WRDS catalogue (needs ~/.pgpass or WRDS_USERNAME in .env)
 make status                            # pipeline dashboard from the shell (make help for all targets)
@@ -102,6 +104,7 @@ See `scoring-protocol.md` for weighted aggregation formula.
 |---------|-------------|
 | `/new-project [topic]` | Full pipeline: idea → paper (orchestrated) |
 | `/scout [idea]` | Go/no-go triage: librarian + explorer quick-scans → idea-critic verdict |
+| `/revive [path]` | Rescue an abandoned paper: intake PDF/tex/notes/code/data → what changed since → idea-critic REVIVE/REFRAME/RETIRE → pre-filled spec + revival plan |
 | `/interview-me [topic]` | Interactive research interview → spec + domain profile |
 | `/discovery` | Phase 1 in one command: lit-review ∥ find-data with critic loops + bib merge |
 | `/lit-review [topic]` | Librarian + Editor: literature search + synthesis + bib merge |

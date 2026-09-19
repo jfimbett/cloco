@@ -20,6 +20,9 @@ data/processed/*
 *.sas7bdat
 .pgpass
 
+# Extracted text of legacy manuscripts and reference PDFs (/revive intake)
+quality_reports/revival/*/extracted/
+
 # LaTeX build artifacts
 *.aux
 *.log

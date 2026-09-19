@@ -56,7 +56,7 @@ RESEARCH_AGENTS: dict[str, str] = {
 
 SCORE_PATTERNS = [
     r"\*\*Score:\*\*\s*(\d{1,3})\s*/\s*100",
-    r"Verdict:\s*(?:GO|REFRAME|NO-GO)\s*[—-]\s*(\d{1,3})\s*/\s*100",
+    r"Verdict:\s*(?:GO|REFRAME|NO-GO|REVIVE|RETIRE)\s*[—-]\s*(\d{1,3})\s*/\s*100",
     r"Final(?: Score)?:\s*\**\s*(\d{1,3})\s*/\s*100",
     r"Overall(?: Score)?:\s*\**\s*(\d{1,3})\s*/\s*100",
     r"Score:\s*(\d{1,3})\s*/\s*100",

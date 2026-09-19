@@ -12,6 +12,8 @@ Triage a research idea in ~10 minutes of agent time. The output is a **verdict**
 
 **Input:** `$ARGUMENTS` — a single idea in one or two sentences, or a path to `quality_reports/research_ideation_*.md` (scouts each candidate, max 5).
 
+**Existing paper instead of an idea?** If `$ARGUMENTS` is a path to a PDF, a `.tex`, a `.docx`, or a folder of old materials (a drawer paper, an abandoned draft, notes plus data), do not scout it — hand it to `/revive` with the same arguments. Revival reconstructs the paper, checks what changed since it stalled, and reuses the sunk work; scouting would treat it as a blank idea.
+
 ---
 
 ## Why this exists
@@ -111,3 +113,4 @@ When scouting an ideation report, run Steps 1–4 for each candidate (parallelis
 - Quick-scans are capped; a GO verdict still requires the full `/lit-review` and `/find-data` later — scouting reduces false starts, it does not replace Discovery.
 - Scout scores are **advisory** and are not part of the weighted project score.
 - The journal-append hook logs the three agent runs automatically; add a `Scout verdict: …` line to `quality_reports/research_journal.md` by hand if the idea proceeds.
+- Scouting is for ideas that do not yet exist as a paper. For an old draft with text, code, or data behind it, `/revive` is the right entry point.
