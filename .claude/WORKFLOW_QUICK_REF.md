@@ -191,6 +191,7 @@ Enter at any stage. Use `/new-project` for the full orchestrated pipeline.
 | Command | What It Does |
 |---------|-------------|
 | `/commit [msg]` | Stage, commit, PR, merge |
+| `/git-steward [cmd]` | Audit secrets/data/big files; worktrees for parallel tasks; cleanup; submission tags |
 | `/humanizer [file]` | Strip 24 AI writing patterns |
 | `/journal` | Research journal timeline |
 | `/context-status` | Session health + context usage |
@@ -260,6 +261,10 @@ Enter at any stage. Use `/new-project` for the full orchestrated pipeline.
 ## Data Rules (one paragraph)
 
 Canonical data → `${DROPBOX_ROOT}` (repo is never inside Dropbox). Scratch → `data/` (gitignored). Every file → `data/registry.json` (committed). Code → `data_path("name")`, never a literal path (`path-guard` hook will nag). WRDS → `/wrds fetch`, never the web downloader. Details: `.claude/rules/data-management.md`.
+
+## Git Rules (one paragraph)
+
+`master` holds only finished work; one branch per task; a **worktree** (`/git-steward worktree NAME`) when two streams run at once. The `secrets-guard` hook blocks commits/pushes with credentials, data files, or blobs ≥ 20 MB — rotate any secret that touched a commit. Details: `.claude/rules/git-hygiene.md`.
 
 ## Exploration Mode
 

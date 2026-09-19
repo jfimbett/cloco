@@ -57,3 +57,26 @@ Consolidated, append-only operations log. Detailed per-session logs live in `qua
 - Live WRDS connection not tested (no credentials on this machine)
 
 **Status:** Done. Pending: user adds `.env` / `~/.pgpass` and runs `/wrds test`.
+
+## 2026-09-19 17:45 — git-steward agent, secrets-guard hook, git tooling
+
+**Operations:**
+- Added `.claude/agents/git-steward.md` (Audit / Secrets / Worktree-Planning / Cleanup / Release / PR modes; state-changing git only on explicit request)
+- Added `.claude/scripts/git_tools.py` (status, audit, secrets --staged/--unpushed/--tree/--history, bigfiles, worktree new/list/remove/prune → `../<repo>-wt/<name>` with `.env` linked)
+- Added hook `.claude/hooks/secrets-guard.py` (PreToolUse Bash: blocks `git commit`/`push` with critical/high findings and `git add` of credential files; `--no-verify` override) — registered before quality-gate
+- Added skill `/git-steward`, rule `.claude/rules/git-hygiene.md`; `/commit` now audits first; welcome banner shows git state with a branch/worktree hint when master is dirty
+- README/CLAUDE.md/QUICK_REF updated (38 skills, 21 agents, 24 rules)
+
+**Results:** on a scratch repo — staged AWS key + password + data/raw parquet → commit blocked; `git add .env` blocked; clean commit passes; leaked GitHub token in an unpushed commit → push blocked; history scan finds it; worktree new/list/remove round-trip works. Real repo audit: 0 secrets, 0 big files; flags `http://` remote.
+
+## 2026-09-19 18:10 — Terminal status: status line, tab title, dashboard
+
+**Operations:**
+- Added `.claude/scripts/project_state.py` (single source: spec, journal scores → phase/gates/next, git, data registry, lessons) and refactored `session-welcome.py` to render from it
+- Added `.claude/scripts/statusline.py` (two lines, ANSI colours, context bar from Claude's stdin JSON, no cost; sets terminal title via OSC 0 on /dev/tty; `CLOCO_NO_TITLE=1` disables) and configured `statusLine` in `.claude/settings.json` (`refreshInterval` 10 s)
+- Added `.claude/scripts/dashboard.py` + `Makefile` (`status`, `watch`, `audit`, `data`, `wrds`, `paper`, `clean`)
+- README "Terminal Status" section; CLAUDE.md commands
+
+**Decisions:** two-line status line, no session cost (user choice); tab title piggybacks on the status line; `context-monitor.py` left in place (status line now shows the real context %; the hook still provides /learn nudges)
+
+**Results:** status line, banner, and dashboard verified on the real repo (no project) and on a scratch project with a spec, two journal entries (86, 82 → Phase 2, next /identify, overall 84.0) and one missing registered dataset.

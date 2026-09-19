@@ -32,6 +32,8 @@ Economics research pipelines are fragmented: literature review in one tool, data
 - **Automated early stages**: `/scout` (10-minute go/no-go triage with an `idea-critic`), `/discovery` (the whole Phase 1 — literature ∥ data, critic loops, bibliography merge — in one command), `/data-profile` (automated dataset profiling: panel key, pre-period, staggered treatment, codebook), and a rewritten `explorer` that actually discovers data.
 - **Data that lives outside git, with its location inside git**: `data/registry.json` maps every dataset to a `${DROPBOX_ROOT}/…` path template with provenance; `code/utils/data_paths.{py,R}` resolve it per machine; a `path-guard` hook flags hard-coded Dropbox/home paths in code.
 - **WRDS without the web downloader**: `/wrds` explores libraries, tables, and columns and `fetch`es SQL pulls straight to Dropbox, auto-registered and profiled — when the author has credentials; silent no-op otherwise.
+- **A git steward**: a `git-steward` agent plus a `secrets-guard` hook that blocks any `git commit`/`git push` carrying credentials, data files, or oversized blobs; repo audits, history scans, worktree proposals for parallel work (R&R vs. analysis, talk vs. paper), branch cleanup, submission tags.
+- **A terminal that knows where the project is**: a two-line Claude Code status line (project · phase · next command · gates │ git · data registry · context bar · model) plus terminal tab titles, a session-welcome banner, and `make status` for the same dashboard from the shell — all fed by one `project_state.py`.
 - **Automated bookkeeping**: a `journal-append` hook that writes the research journal after every agent dispatch, a session-welcome banner with phase, next command, and lesson count, and portable stdlib-only hooks (`python3`, 3.9+).
 - **A lessons protocol** that captures project-specific corrections and prevents recurring mistakes.
 
@@ -128,7 +130,7 @@ Research Spec
 
 ---
 
-## 37 Skills
+## 38 Skills
 
 | Category | Skill | What It Does |
 |----------|-------|-------------|
@@ -163,6 +165,7 @@ Research Spec
 | **Presentations** | `/create-talk [format]` | Storyteller + Discussant: Beamer/Quarto talk from paper |
 | | `/visual-audit [file]` | Slide layout audit |
 | **Infrastructure** | `/commit [msg]` | Stage, commit, PR, merge |
+| | `/git-steward [cmd]` | **Repo hygiene**: `audit`, `secrets`, `history-scan`, `worktree NAME`, `cleanup`, `tag JOURNAL`, `pr` |
 | | `/humanizer [file]` | Strip 24 AI writing patterns |
 | | `/journal` | Research journal timeline |
 | | `/context-status` | Session health + context usage |
@@ -172,7 +175,7 @@ Research Spec
 
 ---
 
-## 20 Agents
+## 21 Agents
 
 | Agent | Role | Paired Critic |
 |-------|------|--------------|
@@ -197,10 +200,11 @@ Research Spec
 | `storyteller` | Beamer / Quarto presentation builder derived from `paper/main.tex` | `discussant` |
 | `discussant` | Slide quality review: layout, paper fidelity, narrative arc | — |
 | `replication-verifier` | Replication audit: compilation, script execution, output freshness | — |
+| `git-steward` | Repository hygiene: secrets/data/large-file audits, worktree and branch planning, cleanup, submission tags; runs state-changing git only on explicit request | — |
 
 ---
 
-## Governance: 23 Rules
+## Governance: 24 Rules
 
 The `.claude/rules/` directory contains the operational rules Claude follows:
 
@@ -210,6 +214,7 @@ The `.claude/rules/` directory contains the operational rules Claude follows:
 | `data-management.md` | Data outside git, registry inside git; Dropbox roots via `.env`; no hard-coded paths; WRDS pulls via `/wrds` |
 | `dependency-graph.md` | Phases activate by dependency, not sequence |
 | `domain-profile.md` | Field-specific conventions, journals, data sources |
+| `git-hygiene.md` | What never enters git; branching model; worktrees for parallel work; secret-rotation protocol |
 | `exploration-fast-track.md` | Fast-track protocol for exploratory work |
 | `exploration-folder-protocol.md` | `explorations/` folder conventions and quality gate (60/100) |
 | `lessons-protocol.md` | Append-only lessons log for project-specific corrections |
@@ -240,11 +245,12 @@ All hooks are stdlib-only Python invoked as `python3` (3.9+), so they run unchan
 
 | Hook | Event | Purpose |
 |------|-------|---------|
-| `session-welcome.py` | SessionStart (startup/resume/clear) | Banner with project, phase, last action, next command, gate status, and lesson count |
+| `session-welcome.py` | SessionStart (startup/resume/clear) | Banner with project, phase, last action, next command, gates, git, data registry, lessons (via `project_state.py`) |
 | `post-compact-restore.py` | SessionStart (compact) | Restores plan/task/decisions after auto-compression |
 | `path-guard.py` | PostToolUse (Write/Edit on `code/**`) | Flags hard-coded home/Dropbox/drive-letter paths; points to `data_path()` |
 | `journal-append.py` | PostToolUse (Agent) | **Auto-writes `quality_reports/research_journal.md`** after every research-agent dispatch: agent, phase, target, score, verdict, report path |
 | `protect-files.py` | PreToolUse (Write/Edit) | Blocks edits to protected files (`paper/references.bib`, approved strategy memos, referee reports) |
+| `secrets-guard.py` | PreToolUse (Bash `git commit`/`push`/`add`) | **Blocks** commits/pushes carrying credentials, `.env`/`.pgpass`/keys, data files, or blobs ≥ 20 MB; `--no-verify` overrides with a stated reason |
 | `quality-gate.py` | PreToolUse (Bash `git commit`) | Blocks commits whose latest quality report scores below 80 |
 | `verify-reminder.py` | PostToolUse (Write/Edit) | Reminds Claude to compile/run after editing `.tex`, `.qmd`, `.R`, `.py`, `.do`, `.jl` |
 | `context-monitor.py` | PostToolUse | Progressive context-usage warnings; suggests `/learn` |
@@ -260,9 +266,23 @@ All hooks are stdlib-only Python invoked as `python3` (3.9+), so they run unchan
 | `profile_data.py` | `/data-profile`, `explorer` (Inventory) | Profiles csv/tsv/parquet/dta/xlsx: types, missingness, distributions, panel key & balance, treated units, staggered cohorts; writes `_profile.md` + `_codebook.csv`. Uses pandas if present, pure-Python fallback otherwise |
 | `data_registry.py` | `/data-registry`, `explorer`, `code/utils/data_paths.*` | `list` / `check` / `where` / `add` / `remove` / `roots` on `data/registry.json`; resolves `${DROPBOX_ROOT}`-style templates through `.env` |
 | `wrds_client.py` | `/wrds`, `explorer` | WRDS catalogue exploration and SQL `fetch` (via `wrds` package or direct psycopg2); registers pulls with the SQL as provenance; exits 3 without credentials |
+| `git_tools.py` | `/git-steward`, `secrets-guard`, welcome banner | `status`, `audit`, `secrets --staged/--unpushed/--tree/--history N`, `bigfiles`, `worktree new/list/remove/prune` |
 | `merge_bib.py` | `/lit-review`, `/discovery` | Appends librarian BibTeX into `paper/references.bib` without duplicates (key, DOI, title/author/year) |
 
 ---
+
+## Terminal Status
+
+Everything that reports project state reads one script, `.claude/scripts/project_state.py` (spec → type, journal → phase & scores & gates, git, data registry, lessons), so the four views never disagree:
+
+| View | Where | What |
+|------|-------|------|
+| **Status line** | bottom of Claude Code, every turn + every 10 s (`statusLine` in `.claude/settings.json`) | `cloco · <project> · empirical · Phase 2 Strategy ▸ /identify   Commit ✓ PR ○ Submit ○ 84.5`<br>`master ↑0 ↓0 3 dirty · 1 wt │ data 4 reg · 1 missing │ ctx ▓▓▓▓░░░░░░ 38% │ Fable 5.1` |
+| **Tab title** | terminal tab/window (set by the status line via OSC 0; `CLOCO_NO_TITLE=1` disables) | `cloco · Strategy · master*` — tells worktree sessions apart |
+| **Welcome banner** | SessionStart hook | project, phase, last agent action, next command, gates, git, data, lessons |
+| **Shell dashboard** | `make status` / `make watch` (`.claude/scripts/dashboard.py`) | the `/pipeline-status` box + git audit line, without opening Claude |
+
+Colour cues: dirty tree on `master` in yellow, missing registered data in red, context bar yellow ≥ 70 % and red ≥ 85 %. No session cost is shown. Other `make` targets: `audit`, `data`, `wrds`, `paper`, `clean`.
 
 ## Quality Gates & Scoring
 
@@ -347,11 +367,12 @@ cloco/
 ├── SESSION_REPORT.md               # Consolidated append-only operations log
 ├── .gitignore
 ├── .claude/
-│   ├── agents/                     # 20 agent definitions
-│   ├── skills/                     # 37 skill definitions
-│   ├── rules/                      # 23 governance rules
+│   ├── agents/                     # 21 agent definitions
+│   ├── skills/                     # 38 skill definitions
+│   ├── rules/                      # 24 governance rules
 │   ├── hooks/                      # Workflow enforcement hooks (python3, stdlib only)
-│   ├── scripts/                    # profile_data.py, merge_bib.py, data_registry.py, wrds_client.py
+│   ├── scripts/                    # project_state.py, statusline.py, dashboard.py, profile_data.py, merge_bib.py,
+│   │                               #   data_registry.py, wrds_client.py, git_tools.py
 │   ├── lessons/
 │   │   └── LESSONS.md              # Project-specific corrections (append-only)
 │   ├── plans/ · specs/ · state/    # gitignored: plans, requirement specs, local memory
@@ -370,6 +391,7 @@ cloco/
 │   ├── raw/                        # gitignored scratch; canonical raw data lives in Dropbox
 │   └── processed/                  # gitignored intermediates
 ├── .env.example                    # DROPBOX_ROOT, DATA_ROOT, WRDS_USERNAME — copy to .env (gitignored)
+├── Makefile                        # make status | watch | audit | data | wrds | paper | clean
 ├── talks/                          # Beamer / Quarto presentations
 ├── output/                         # Intermediate results and logs
 ├── replication/                    # Replication package
@@ -409,7 +431,11 @@ When you run `/interview-me`, Claude will ask for your project type. This sets t
 
 Data is never committed; its location is. Copy `.env.example` to `.env` and set `DROPBOX_ROOT` (and `DATA_ROOT` for an external drive). Register every dataset once — `python3 .claude/scripts/data_registry.py add NAME --path '${DROPBOX_ROOT}/proj/data/x.parquet' --stage raw --source '...'` — and read it in code with `data_path("NAME")`. Keep the git repo *outside* the Dropbox folder. With WRDS credentials in `~/.pgpass` (or `WRDS_USERNAME` in `.env`), `/wrds fetch` pulls data straight to Dropbox and registers it; `pip install wrds` (or `psycopg2-binary pandas pyarrow`).
 
-### 5. Local settings
+### 5. Git hygiene
+
+The `secrets-guard` hook refuses to commit or push credentials, data files, or large blobs. `/git-steward audit` before a push after touching data or credentials; `/git-steward worktree NAME` when two streams (e.g. a referee response and new analysis) must run in parallel; `/git-steward history-scan 500` before making the repo public. See `.claude/rules/git-hygiene.md`.
+
+### 6. Local settings
 
 Machine-specific settings (LaTeX paths, personal tool preferences) go in `.claude/settings.local.json` (gitignored) or `.claude/state/personal-memory.md` (gitignored). These stay local — the repo only commits generic patterns.
 

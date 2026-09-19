@@ -25,3 +25,9 @@
 ## Addendum 17:20 — data registry + WRDS
 - User request: data in Dropbox (repo outside it), intermediates gitignored, registry of paths, WRDS access when credentials exist.
 - Built registry CLI + helpers + WRDS client + path-guard hook + rule + 2 skills; all tested except a live WRDS login.
+
+## Addendum 17:45 — git steward
+- Agent + secrets-guard hook + git_tools.py + rule + skill; tested on scratch repo (block/pass cases, worktrees).
+
+## Addendum 18:10 — terminal status
+- project_state.py + statusline.py + dashboard.py + Makefile; welcome hook refactored; statusLine in settings.json.

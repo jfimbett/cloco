@@ -17,6 +17,7 @@ Keep under 150 lines, since Claude loads it every session.
 - **Plan first** -- enter plan mode before non-trivial tasks.
 - **Verify after** -- compile and confirm output at the end of every task
 - **Single source of truth** -- `paper/main.tex` is authoritative; talks and supplements derive from it
+- **Nothing sensitive reaches GitHub** -- the `secrets-guard` hook blocks commits/pushes with credentials, data, or large blobs; `/git-steward` audits, plans worktrees for parallel tasks, and tags submissions. See `.claude/rules/git-hygiene.md`.
 - **Data lives outside git; its location lives in git** -- canonical data in `${DROPBOX_ROOT}` (never a git repo inside Dropbox), scratch in `data/` (gitignored), every file in `data/registry.json`; code reads paths via `code/utils/data_paths.{py,R}`, never literals. WRDS pulls go through `/wrds`. See `.claude/rules/data-management.md`.
 - **Quality gates** -- weighted aggregate score; nothing ships below 80/100; see `scoring-protocol.md`
 - **Worker-critic pairs** -- every creator has a paired critic; critics never edit files
@@ -71,10 +72,13 @@ latexmk -cd -C paper/main.tex          # clean all auxiliary files
 python3 .claude/scripts/profile_data.py data/raw/file.csv      # dataset profile + codebook
 python3 .claude/scripts/data_registry.py check                         # every dataset present on this machine?
 python3 .claude/scripts/wrds_client.py search crsp                     # WRDS catalogue (needs ~/.pgpass or WRDS_USERNAME in .env)
+make status                            # pipeline dashboard from the shell (make help for all targets)
+python3 .claude/scripts/git_tools.py audit                             # secrets / data / big files / branch state
+python3 .claude/scripts/git_tools.py worktree new rr-jfe-r1            # parallel task checkout in ../cloco-wt/
 python3 .claude/scripts/merge_bib.py quality_reports/literature/<slug>/references.bib   # dedupe-merge into paper/references.bib
 ```
 
-**Hooks** run with `python3` (3.9+, stdlib only). `journal-append.py` writes research-journal entries automatically after every research-agent dispatch — critics must print `**Score:** XX/100` for it to parse.
+**Status line**: `.claude/scripts/statusline.py` (configured in `settings.json`) shows project · phase · next command · gates │ git · data · context; it, the welcome banner, and `make status` all read `.claude/scripts/project_state.py`. **Hooks** run with `python3` (3.9+, stdlib only). `journal-append.py` writes research-journal entries automatically after every research-agent dispatch — critics must print `**Score:** XX/100` for it to parse.
 
 ---
 
@@ -125,6 +129,7 @@ See `scoring-protocol.md` for weighted aggregation formula.
 | `/compile-latex [file]` | 3-pass XeLaTeX + bibtex |
 | `/validate-bib` | Cross-reference citations |
 | `/commit [msg]` | Stage, commit, PR, merge |
+| `/git-steward [cmd]` | Repo hygiene: audit / secrets / history-scan / worktree NAME / cleanup / tag JOURNAL / pr |
 | `/research-ideation [topic]` | Research questions + strategies → idea-critic ranking |
 | `/visual-audit [file]` | Slide layout audit |
 | `/learn` | Extract session discoveries into skills |

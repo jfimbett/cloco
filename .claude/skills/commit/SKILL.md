@@ -20,6 +20,8 @@ git diff --stat
 git log --oneline -5
 ```
 
+1b. **Audit first** — `python3 .claude/scripts/git_tools.py audit`; a `critical` finding means stop and run `/git-steward secrets`. (The `secrets-guard` hook will block the commit anyway; the audit tells you *why* before it does.) If the work should have been in a worktree — parallel to something else in progress — say so and offer `/git-steward worktree NAME`.
+
 2. **Create a branch** from the current state:
 
 ```bash
