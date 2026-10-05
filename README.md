@@ -32,8 +32,9 @@ Economics research pipelines are fragmented: literature review in one tool, data
 - **Automated early stages**: `/scout` (10-minute go/no-go triage with an `idea-critic`), `/revive` (rescue an abandoned working paper from a PDF, notes, old code and data: reconstruct, check what changed since it stalled, REVIVE / REFRAME / RETIRE verdict, pre-filled spec and re-entry plan), `/discovery` (the whole Phase 1 — literature ∥ data, critic loops, bibliography merge — in one command), `/data-profile` (automated dataset profiling: panel key, pre-period, staggered treatment, codebook), and a rewritten `explorer` that actually discovers data.
 - **Data that lives outside git, with its location inside git**: `data/registry.json` maps every dataset to a `${DROPBOX_ROOT}/…` path template with provenance; `code/utils/data_paths.{py,R}` resolve it per machine; a `path-guard` hook flags hard-coded Dropbox/home paths in code.
 - **WRDS without the web downloader**: `/wrds` explores libraries, tables, and columns and `fetch`es SQL pulls straight to Dropbox, auto-registered and profiled — when the author has credentials; silent no-op otherwise.
-- **A project setup assistant**: `/setup-project` checks the machine (git, gh, gh login, python3, latexmk, R, PDF tools, `.env`) and, once a research spec exists, detaches the checkout from the template — folder `cloco-<slug>`, its own GitHub repository (private or public, created with `gh`), template kept as remote `template` for updates. An `identity-guard` hook blocks pushes to the template from a project.
+- **A project setup assistant**: `/setup-project` checks the machine (git, gh, gh login, python3, latexmk, R, PDF tools, Lean 4 + Mathlib, `.env`) and, once a research spec exists, detaches the checkout from the template — folder `cloco-<slug>`, its own GitHub repository (private or public, created with `gh`), template kept as remote `template` for updates. An `identity-guard` hook blocks pushes to the template from a project.
 - **A git steward**: a `git-steward` agent plus a `secrets-guard` hook that blocks any `git commit`/`git push` carrying credentials, data files, or oversized blobs; repo audits, history scans, worktree proposals for parallel work (R&R vs. analysis, talk vs. paper), branch cleanup, submission tags.
+- **Machine-checked theory**: every lemma, proposition, and comparative static the theory agents derive is also formalised in Lean 4 + Mathlib (`lean/`) and checked by `lean_tools.py verify`, which audits `#print axioms` so a `sorry` or custom axiom anywhere in a proof's dependency cone is caught. `lean/ledger.json` maps each paper `\label` to its Lean declarations and status; theory-critic judges whether the Lean statement says what the paper says. `/lean-verify` runs it standalone.
 - **A terminal that knows where the project is**: a two-line Claude Code status line (project · phase · next command · gates │ git · data registry · context bar · model) plus terminal tab titles, a session-welcome banner, and `make status` for the same dashboard from the shell — all fed by one `project_state.py`.
 - **Automated bookkeeping**: a `journal-append` hook that writes the research journal after every agent dispatch, a session-welcome banner with phase, next command, and lesson count, and portable stdlib-only hooks (`python3`, 3.9+).
 - **A lessons protocol** that captures project-specific corrections and prevents recurring mistakes.
@@ -96,12 +97,12 @@ Research Spec
 Research Spec
     ├── academic-librarian  ──[no data needed]
     │         ↓ academic-editor
-    └──────── econ-finance-theorist
-                    ↓ theory-critic
+    └──────── econ-finance-theorist  ── proofs formalised in Lean 4 (lean/, lean_tools.py verify)
+                    ↓ theory-critic  (incl. Lean coverage + statement fidelity)
               economics-paper-writer
                     ↓ academic-proofreader
               blind-peer-referee ×2
-                    ↓ academic-editor  →  submit
+                    ↓ academic-editor  →  /lean-verify  →  submit
 ```
 
 ### C — Structural
@@ -110,9 +111,9 @@ Research Spec
 Research Spec
     ├── academic-librarian  ──[parallel]──  explorer
     │         ↓ academic-editor               ↓ data-quality-surveyor
-    ├──────── econ-finance-theorist
+    ├──────── econ-finance-theorist  ── Lean-verified propositions
     │               ↓ theory-critic
-    └──────── structural-estimation-expert
+    └──────── structural-estimation-expert  ── Lean-verified analytic lemmas
                     ↓ structural-critic
               Coder (main Claude)
                     ↓ debugger
@@ -133,7 +134,7 @@ Research Spec
 
 ---
 
-## 40 Skills
+## 41 Skills
 
 | Category | Skill | What It Does |
 |----------|-------|-------------|
@@ -144,7 +145,8 @@ Research Spec
 | | `/scout [idea]` | **Go/no-go triage**: capped librarian + explorer quick-scans → `idea-critic` verdict |
 | | `/revive [path]` | **Rescue an abandoned paper**: intake PDF / .tex / notes / .bib / code / data → librarian + explorer "what changed since" → `idea-critic` REVIVE / REFRAME / RETIRE → pre-filled spec + revival plan (enters the pipeline mid-stream) |
 | **Literature** | `/lit-review [topic]` | Librarian + Editor: literature search + synthesis + dedupe-merge into `paper/references.bib` |
-| **Theory & Structural** | `/theory-model [question]` | Theorist + theory-critic: formal model design |
+| **Theory & Structural** | `/theory-model [question]` | Theorist + theory-critic: formal model design, proofs machine-checked in Lean |
+| | `/lean-verify [label\|setup\|status]` | Build `lean/`, audit axioms, update the proof ledger, theory-critic checks statement fidelity |
 | | `/structural-estimation [spec]` | Structural expert + structural-critic: estimation design |
 | **Data & Strategy** | `/find-data [question]` | Explorer + Surveyor: data discovery (9 source categories) + assessment |
 | | `/data-profile [name\|file]` | **Automated profiling** of data on disk: panel key, balance, pre-period, staggered cohorts, codebook → Surveyor critique |
@@ -326,6 +328,7 @@ The orchestrator reads `project_type` from the research spec and applies the mat
 - [Claude Code](https://claude.ai/code): `npm install -g @anthropic/claude-code`
 - [GitHub CLI](https://cli.github.com): `gh auth login`
 - LaTeX distribution (for paper compilation): TeX Live or MiKTeX
+- Lean 4 + Mathlib (theory projects): `make lean-setup` installs elan, the pinned toolchain, and Mathlib's prebuilt cache (≈5 GB, once per machine); `python3 .claude/scripts/project_setup.py doctor` reports what is missing
 
 **Steps:**
 
@@ -377,7 +380,7 @@ cloco/
 ├── .gitignore
 ├── .claude/
 │   ├── agents/                     # 21 agent definitions
-│   ├── skills/                     # 40 skill definitions
+│   ├── skills/                     # 41 skill definitions
 │   ├── rules/                      # 24 governance rules
 │   ├── hooks/                      # Workflow enforcement hooks (python3, stdlib only)
 │   ├── scripts/                    # project_state.py, statusline.py, dashboard.py, profile_data.py, merge_bib.py,
@@ -394,13 +397,16 @@ cloco/
 │   ├── tables/
 │   └── appendix/
 ├── code/                           # Analysis scripts (R, Python, Stata)
+├── lean/                           # Lean 4 + Mathlib proofs of the paper's results (library Cloco)
+│   ├── Cloco/                      # one module per topic; Examples/MeanVariance.lean shows the style
+│   └── ledger.json                 # paper \label → Lean declarations → verified / partial / not_formalized
 │   └── utils/data_paths.{py,R}     # data_path("name") / out_path("name") — code never hardcodes a path
 ├── data/
 │   ├── registry.json               # COMMITTED: name → ${DROPBOX_ROOT}/... template, stage, source, SQL/script
 │   ├── raw/                        # gitignored scratch; canonical raw data lives in Dropbox
 │   └── processed/                  # gitignored intermediates
 ├── .env.example                    # DROPBOX_ROOT, DATA_ROOT, WRDS_USERNAME — copy to .env (gitignored)
-├── Makefile                        # make status | watch | audit | data | wrds | paper | clean
+├── Makefile                        # make status | watch | audit | data | wrds | paper | lean | lean-setup | clean
 ├── talks/                          # Beamer / Quarto presentations
 ├── output/                         # Intermediate results and logs
 ├── replication/                    # Replication package

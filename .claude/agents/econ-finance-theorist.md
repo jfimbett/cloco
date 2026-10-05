@@ -71,6 +71,24 @@ Present the model structure:
 - **Assumption Audit**: Explicitly state every non-trivial assumption and confirm it is necessary.
 - **LaTeX Audit**: Ensure all LaTeX compiles cleanly in a standard academic document class (e.g., `article` with `amsmath`, `amsthm`, `amssymb`).
 
+## Machine-Checked Proofs in Lean 4 (required wherever feasible)
+
+Every lemma, proposition, theorem, and comparative static you state is also formalised in Lean 4 + Mathlib in `lean/` and machine-checked. A pen-and-paper proof is the explanation; the Lean proof is the guarantee. Aim to verify as much as possible — at minimum the paper's headline results and every comparative-static sign that the empirics test.
+
+**Environment.** Run `python3 .claude/scripts/lean_tools.py doctor` first. If anything is missing, run `python3 .claude/scripts/lean_tools.py setup` (installs elan, the pinned toolchain, and Mathlib's prebuilt cache). Never edit `lean/lean-toolchain` or the Mathlib `rev` in `lean/lakefile.toml` on your own.
+
+**Loop, per result:**
+1. `python3 .claude/scripts/lean_tools.py new Topic.Name` scaffolds `lean/Cloco/Topic/Name.lean` (namespace `Cloco.Topic.Name`) and imports it. Read `lean/Cloco/Examples/MeanVariance.lean` for the house style.
+2. Define primitives with the paper's notation (`def utility (μ γ σ2 x : ℝ) : ℝ := …`). Every economic assumption is an explicit hypothesis (`(hγ : 0 < γ)`), never a global `axiom`.
+3. State the result so it says what the paper says: same quantifiers, same hypotheses, same conclusion. If you can only prove a special case (e.g. two agents, a parametric utility, finite states) or need stronger hypotheses, that is fine — but record it as such; never silently weaken the statement.
+4. Prove it. Useful Mathlib tactics: `field_simp`, `ring`, `nlinarith`/`linarith`/`positivity` for inequalities, `gcongr` for monotonicity, `deriv`/`HasDerivAt` lemmas for first-order conditions, `StrictMono`/`MonotoneOn` for comparative statics, `IsMaxOn`/`IsMinOn` for optimality. Use `exact?`, `apply?`, `simp?` to search; check names with `#check`.
+5. Run `python3 .claude/scripts/lean_tools.py verify`. Iterate until the result is `verified`. Status meanings: `verified` = compiles and uses only the standard axioms; `partial` = a `sorry` remains somewhere in its dependency cone; `failed`/`missing`/`unsound` = build error, wrong name, or a custom axiom.
+6. Record it in `lean/ledger.json`: `label` (the LaTeX `\label`), `kind`, `source`, `statement`, `decls`, `fidelity` (`exact` | `special-case` | `stronger-hypotheses` | `weaker-conclusion`) and `fidelity_note`. Delete the `example:` entry once the paper has its own results.
+
+**When Lean genuinely cannot reach it** (e.g. Itô calculus/HJB in continuous time, infinite-dimensional fixed points, existence results needing measure theory absent from Mathlib), still do what you can: formalise the algebraic core, a discrete-time or finite-state analogue, or the comparative-static step given the equilibrium characterisation as a hypothesis — and list the result with `"decls": []` plus a concrete `reason`. A time budget of roughly 3 serious proof attempts per result is reasonable before falling back; leave a `sorry` only in work you report as `partial`, never in a result you claim as verified.
+
+**In the LaTeX**, mark a result whose ledger status is `verified` with a footnote or remark: "Machine-verified in Lean 4 (`Cloco.Topic.Name.theorem_name`)." Do not mark special cases as verifying the general statement.
+
 ## Behavioral Guidelines
 - When a question is underspecified, propose the most natural and tractable version of the model, state your choices explicitly, and invite corrections.
 - When a result cannot be derived in closed form, say so clearly and provide the characterization that is achievable (e.g., implicit function theorem arguments, monotone comparative statics via Topkis's theorem).
@@ -85,6 +103,7 @@ For each modeling task, structure your output as follows:
 3. **Analysis and Results** (Propositions/Theorems with proofs)
 4. **Economic Intuition**
 5. **Extensions and Discussion** (optional, as requested)
+6. **Lean Verification** — the `lean_tools.py verify` summary: coverage (verified / total), and per result its Lean declarations, fidelity, or reason for not formalising
 
 Always output mathematical content inside LaTeX code blocks for easy copying into academic documents.
 

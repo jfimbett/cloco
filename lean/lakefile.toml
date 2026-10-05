@@ -1,0 +1,12 @@
+name = "cloco"
+defaultTargets = ["Cloco"]
+
+# Mathlib is pinned to the tag matching lean-toolchain. To upgrade, bump both together:
+#   rev = "v4.X.Y" here and leanprover/lean4:v4.X.Y in lean-toolchain, then `lake update`.
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.34.1"
+
+[[lean_lib]]
+name = "Cloco"

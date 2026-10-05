@@ -10,7 +10,7 @@ kept as a second remote (`template`) so improvements can still be pulled.
 
 Usage:
     python3 .claude/scripts/project_setup.py status  [--json]   # identity: folder, remotes, spec, verdict
-    python3 .claude/scripts/project_setup.py doctor  [--json]   # git, gh, gh auth, python, latexmk, R, pdf tools, .env
+    python3 .claude/scripts/project_setup.py doctor  [--json]   # git, gh, gh auth, python, latexmk, R, pdf tools, Lean, .env
     python3 .claude/scripts/project_setup.py slug "Project name" # propose cloco-<slug>
     python3 .claude/scripts/project_setup.py detach --repo cloco-<slug> [--visibility private|public]
             [--owner USER_OR_ORG] [--no-github] [--rename-folder] [--dry-run]
@@ -210,6 +210,13 @@ def doctor(root: Path | None = None) -> list[dict]:
     else:
         pdf_detail = "pdftotext"
     add("PDF text tool", pdf_ok, pdf_detail, "brew install poppler  (or pip install pypdf) — needed by /revive", required=False)
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import lean_tools  # noqa: E402
+        for c in lean_tools.doctor():
+            checks.append(c)
+    except Exception as e:  # never let an optional tool break the doctor
+        add("Lean", False, f"check failed: {e}", "python3 .claude/scripts/lean_tools.py doctor", required=False)
     env = root / ".env"
     add(".env", env.exists(), "present" if env.exists() else "missing", "cp .env.example .env, then /data-registry setup", required=False)
     if env.exists():

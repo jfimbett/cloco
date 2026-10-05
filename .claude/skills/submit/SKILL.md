@@ -43,6 +43,10 @@ Run /audit-replication Replication/
 
 This runs all 10 checks including end-to-end execution.
 
+### Step 3b: Lean Verification (theory, structural, empirical+theory projects)
+
+If `lean/ledger.json` lists any result, run `python3 .claude/scripts/lean_tools.py verify`. It must PASS: every ledger entry `verified` or `not_formalized` with a reason, no `partial`/`failed`/`missing`/`unsound`. A paper that claims "machine-verified" for a result that is not `verified` blocks submission.
+
 ### Step 4: Score Gate
 
 Read the most recent aggregate score and check:
@@ -54,6 +58,7 @@ Read the most recent aggregate score and check:
 | Code component | >= 80 | PASS/FAIL |
 | Paper component | >= 80 | PASS/FAIL |
 | Replication (10/10 checks) | PASS | PASS/FAIL |
+| Lean verification (if ledger non-empty) | `lean_tools.py verify` PASS | PASS/FAIL |
 
 **If any requirement FAILS:** List specific blocking issues and stop. Do not generate submission materials.
 

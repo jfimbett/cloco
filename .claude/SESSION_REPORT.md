@@ -118,3 +118,21 @@ Consolidated, append-only operations log. Detailed per-session logs live in `qua
 **Results:** scratch clone with a spec → `needs-detach`; detach refused on dirty tree; dry-run prints the three commands; real `--no-github --rename-folder` renamed remote + folder and then flagged "no origin"; hook matrix (push origin=template → deny; bare push → deny; --no-verify → allow; git status → allow; after detach push origin → allow, push template → deny); banner / status line / audit render the warning; real repo without spec unaffected; all hooks and scripts parse and run under python3 3.9. Doctor on this machine: git `user.name`/`user.email` unset (commits show the OS account name) and `.env` missing.
 
 **Status:** Done, uncommitted. Pending: user sets git identity, decides on `/setup-project` when the first spec exists.
+
+## 2026-10-05 16:30 — Lean 4 proof verification for the theory lane
+
+**Operations:**
+- New `lean/` Lake project (library `Cloco`, Lean v4.34.1 + Mathlib v4.34.1 pinned), worked example `lean/Cloco/Examples/MeanVariance.lean` (3 theorems), `lean/ledger.json` (paper label → Lean decls → status)
+- New `.claude/scripts/lean_tools.py` (`doctor` · `setup` · `new` · `verify` · `ledger`); `verify` builds, runs `#print axioms`, writes `quality_reports/lean_verification.md`
+- `project_setup.py doctor` gains Lean rows; Makefile `lean`, `lean-setup`; `.gitignore` `lean/.lake/`
+- Agents: econ-finance-theorist (formalise-and-verify loop), theory-critic (Phase 5 + Lean deductions), structural-estimation-expert, structural-critic
+- Skills: new `/lean-verify`; `/theory-model` gains setup + verification gate. Docs: CLAUDE.md, README, orchestrator-protocol
+
+**Decisions:**
+- VERIFIED = compiles and `#print axioms` ⊆ {propext, Classical.choice, Quot.sound} — catches `sorry` hidden in helper lemmas and custom axioms
+- Statement fidelity judged by theory-critic (script cannot); ledger carries an explicit `fidelity` label
+- Axiom probe imports only modules that built, so one broken file does not mask the rest
+
+**Results:** example verifies (PASS); probes gave partial (hidden sorry), unsound (custom axiom), missing (typo), failed (compile error), not_formalized (with reason), stated — all as intended; doctor green except `~/.elan/bin` not on shell PATH.
+
+**Status:** Done on branch `lean-verification`, uncommitted. Pending: add elan to PATH in ~/.zshrc; commit/PR.
