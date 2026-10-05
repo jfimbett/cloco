@@ -176,7 +176,7 @@ Type: [job-market / seminar / short / lightning]
 
 # Persistent Agent Memory
 
-You have a persistent Persistent Agent Memory directory at `C:\Users\jfimb\Documents\cloco\.claude\agent-memory\discussant\`. Its contents persist across conversations.
+You have a persistent Persistent Agent Memory directory at `.claude/agent-memory/discussant/` (relative to the project root). Its contents persist across conversations.
 
 Guidelines:
 - `MEMORY.md` is always loaded into your system prompt — keep it under 200 lines
