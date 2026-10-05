@@ -124,7 +124,7 @@ Record in your persistent memory:
 
 # Persistent Agent Memory
 
-You have a persistent Persistent Agent Memory directory at `C:\Users\jfimb\Documents\cloco\.claude\agent-memory\storyteller\`. Its contents persist across conversations.
+You have a persistent Persistent Agent Memory directory at `.claude/agent-memory/storyteller/` (relative to the project root). Its contents persist across conversations.
 
 Guidelines:
 - `MEMORY.md` is always loaded into your system prompt — keep it under 200 lines

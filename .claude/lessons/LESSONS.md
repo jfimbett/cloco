@@ -20,6 +20,11 @@ Categories: `workflow` · `tools` · `writing` · `econometrics` · `code` · `l
 
 <!-- New lessons go below this line, most recent first -->
 
+### 2026-10-05 — agents
+**Mistake:** Fifteen agent definitions told the agent its memory lived at `C:\Users\jfimb\Documents\cloco\.claude\agent-memory\<name>\` — an absolute Windows path baked in when the agents were generated. On any other machine (and on macOS) agents were pointed at a directory that does not exist. The template's `origin` also used `http://www.github.com/...` instead of `https://github.com/...`.
+**Correction:** Agent bodies reference `.claude/agent-memory/<name>/` relative to the project root; `origin` uses `https://github.com/<owner>/<repo>.git`.
+**Prevention:** After generating or importing agents/skills, run `git grep -nI -E '[A-Za-z]:\\\\Users|/Users/[A-Za-z]|/home/[a-z]+/' -- .claude` and fix every hit that is not a detection regex; `git_tools.py audit` flags `http://` remotes.
+
 ### 2026-09-19 — tools
 **Mistake:** `.claude/settings.json` invoked hooks through a hard-coded Windows interpreter path (`C:/Users/.../python.exe`), and every hook used PEP 604 unions (`dict | None`) in function signatures. On macOS the hooks were never executed; under the system `python3` (3.9) they crash on import. No banner, no quality gate, no log reminders — silently.
 **Correction:** Hooks are invoked as `python3 "$CLAUDE_PROJECT_DIR/..."`, every hook starts with `from __future__ import annotations`, and hooks stay stdlib-only. Machine-specific interpreter paths belong in `.claude/settings.local.json` (gitignored), never in the committed settings.

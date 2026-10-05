@@ -136,3 +136,14 @@ Consolidated, append-only operations log. Detailed per-session logs live in `qua
 **Results:** example verifies (PASS); probes gave partial (hidden sorry), unsound (custom axiom), missing (typo), failed (compile error), not_formalized (with reason), stated — all as intended; doctor green except `~/.elan/bin` not on shell PATH.
 
 **Status:** Done on branch `lean-verification`, uncommitted. Pending: add elan to PATH in ~/.zshrc; commit/PR.
+
+## 2026-10-05 16:50 — Portable paths and https remote
+
+**Operations:**
+- `git remote set-url origin https://github.com/jfimbett/cloco.git` (was `http://www.github.com/...`)
+- 15 `.claude/agents/*.md`: agent-memory path `C:\Users\jfimb\...\agent-memory\<name>\` → `.claude/agent-memory/<name>/` (project-relative)
+- Lesson added to `.claude/lessons/LESSONS.md`
+
+**Results:** no machine-specific paths left in agents, settings, hooks, or scripts (remaining hits are detection regexes and documentation examples); `git ls-remote origin` works over https.
+
+**Status:** Done.
