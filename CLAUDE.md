@@ -21,10 +21,12 @@ Keep under 150 lines, since Claude loads it every session.
 - **A project is not the template** -- once a research spec exists, the folder must be `cloco-<slug>` and `origin` its own repository (`cloco-<slug>.git`), with the template kept as remote `template`; `identity-guard` blocks pushes to the template and `/setup-project` (environment doctor + GitHub repo creation, private/public, folder rename) fixes it. See `.claude/rules/git-hygiene.md`.
 - **Nothing sensitive reaches GitHub** -- the `secrets-guard` hook blocks commits/pushes with credentials, data, or large blobs; `/git-steward` audits, plans worktrees for parallel tasks, and tags submissions. See `.claude/rules/git-hygiene.md`.
 - **Data lives outside git; its location lives in git** -- canonical data in `${DROPBOX_ROOT}` (never a git repo inside Dropbox), scratch in `data/` (gitignored), every file in `data/registry.json`; code reads paths via `code/utils/data_paths.{py,R}`, never literals. WRDS pulls go through `/wrds`. See `.claude/rules/data-management.md`.
+- **Proofs are machine-checked** -- formal results are formalised in Lean 4 + Mathlib in `lean/` and verified with `lean_tools.py verify`; `lean/ledger.json` maps each paper `\label` to its Lean declarations and status; theory-critic audits statement fidelity. Unformalisable results carry a stated reason.
 - **Quality gates** -- weighted aggregate score; nothing ships below 80/100; see `scoring-protocol.md`
 - **Worker-critic pairs** -- every creator has a paired critic; critics never edit files
 - **[LEARN] tags** -- when corrected, save `[LEARN:category] wrong → right` to MEMORY.md
 - **Lessons log** -- after any mistake or user correction, append an entry to `.claude/lessons/LESSONS.md`; read it at the start of every session
+- **Short final answers** -- the last message after a prompt is short (outcome, failures, next command); long updates are fine while iterating through steps
 - **Update CLAUDE.md** -- if you find yourself writing the same instructions repeatedly, add a new command or guideline here. Also, update every time there is an important change.
 
 ---
@@ -53,6 +55,7 @@ Keep under 150 lines, since Claude loads it every session.
 ├── replication/                # Replication package materials
 ├── code/                       # All the code for the project.
 │   └── utils/data_paths.{py,R} # data_path(name) / out_path(name) — the only way code touches data files
+├── lean/                       # Lean 4 + Mathlib proofs (library Cloco) + ledger.json
 ├── templates/                  # Session log, quality report templates
 ├── quality_reports/            # Paper quality artifacts only: scores, session logs, merge reports, research journal
 ├── master_supporting_docs/     # Reference papers and data docs if needed
@@ -77,8 +80,11 @@ python3 .claude/scripts/data_registry.py check                         # every d
 python3 .claude/scripts/wrds_client.py search crsp                     # WRDS catalogue (needs ~/.pgpass or WRDS_USERNAME in .env)
 make status                            # pipeline dashboard from the shell (make help for all targets)
 python3 .claude/scripts/git_tools.py audit                             # secrets / data / big files / branch state / identity
-python3 .claude/scripts/project_setup.py doctor                        # git, gh, gh auth, python3, latexmk, R, PDF tools, .env
+python3 .claude/scripts/project_setup.py doctor                        # git, gh, gh auth, python3, latexmk, R, PDF tools, Lean, .env
 python3 .claude/scripts/project_setup.py status                        # template-vs-project identity (folder, origin, spec)
+python3 .claude/scripts/lean_tools.py setup                           # elan + pinned Lean + Mathlib cache (≈5 GB once)
+python3 .claude/scripts/lean_tools.py new Contracting.MoralHazard     # scaffold lean/Cloco/Contracting/MoralHazard.lean
+python3 .claude/scripts/lean_tools.py verify                          # build + axiom audit → ledger + quality_reports/lean_verification.md
 python3 .claude/scripts/git_tools.py worktree new rr-jfe-r1            # parallel task checkout in ../cloco-wt/
 python3 .claude/scripts/merge_bib.py quality_reports/literature/<slug>/references.bib   # dedupe-merge into paper/references.bib
 ```
@@ -116,6 +122,7 @@ See `scoring-protocol.md` for weighted aggregation formula.
 | `/data-registry [cmd]` | Where every dataset lives (Dropbox / local / WRDS) with provenance; `setup` on a new machine |
 | `/wrds [cmd]` | Explore WRDS libraries/tables/columns and `fetch` SQL pulls straight to Dropbox, auto-registered |
 | `/identify [question]` | causal-strategist + identification-critic: design identification strategy |
+| `/lean-verify [label|setup|status]` | Machine-check formal results in Lean 4: build, axiom audit, ledger, theory-critic fidelity check |
 | `/data-analysis [dataset]` | Coder + Debugger: end-to-end analysis |
 | `/draft-paper [section]` | Writer: draft paper sections + humanizer pass |
 | `/econometrics-check [file]` | Econometrician: 4-phase causal inference audit |

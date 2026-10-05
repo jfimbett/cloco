@@ -1,5 +1,5 @@
 # cloco — shell entry points (everything here also works inside Claude Code via skills)
-.PHONY: status watch audit data wrds paper clean help
+.PHONY: status watch audit data wrds paper lean lean-setup clean help
 
 help:            ## list targets
 	@grep -E '^[a-z-]+:.*##' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  make %-10s %s\n", $$1, $$2}'
@@ -21,6 +21,12 @@ wrds:            ## test WRDS credentials
 
 paper:           ## build paper/main.pdf
 	latexmk -pdf -cd paper/main.tex
+
+lean:            ## build lean/ and machine-check every proof in lean/ledger.json
+	@python3 .claude/scripts/lean_tools.py verify
+
+lean-setup:      ## install elan + Lean toolchain + Mathlib cache (first time ≈5 GB)
+	@python3 .claude/scripts/lean_tools.py setup
 
 clean:           ## remove LaTeX build artefacts
 	latexmk -cd -C paper/main.tex

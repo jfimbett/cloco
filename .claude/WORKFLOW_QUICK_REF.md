@@ -62,16 +62,17 @@ Scoring: Literature 10% · Data 10% · Identification 25% · Code 15% · Paper 2
     ↓
 /discovery   = /lit-review only (no data lane)
     ↓
-/theory-model  (econ-finance-theorist + theory-critic)
+/theory-model  (econ-finance-theorist + theory-critic; proofs machine-checked in Lean)
     ↓
 /draft-paper  (Writer + Proofreader)
     ↓
 /paper-excellence → /review-paper
     ↓
-/submit
+/lean-verify → /submit
 ```
 
 Scoring: Literature 15% · Theory 40% · Paper 30% · Polish 15%
+Lean: `make lean-setup` once per machine; `make lean` / `/lean-verify` re-checks every result in `lean/ledger.json`
 Skipped: `/find-data`, `/identify`, `/data-analysis`, `/audit-replication`
 
 ---

@@ -51,7 +51,7 @@ The research-orchestrator selects agents based on what the task requires:
 | Data sourcing | explorer + data-quality-surveyor |
 | Dataset in hand (`/data-profile`) | profiler script → data-quality-surveyor |
 | Identification strategy (reduced-form) | causal-strategist + identification-critic |
-| Theoretical modeling | econ-finance-theorist + theory-critic |
+| Theoretical modeling | econ-finance-theorist + theory-critic (proofs machine-checked in Lean via `lean_tools.py verify`; theory-critic Phase 5) |
 | Structural estimation | structural-estimation-expert + structural-critic |
 | R/Stata/Python scripts | Coder (main Claude) + debugger |
 | Paper manuscript | economics-paper-writer + academic-proofreader |

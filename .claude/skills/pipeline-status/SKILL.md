@@ -237,6 +237,7 @@ Print this banner:
 ║                                                              ║
 ║  Phase 2 · Strategy                                          ║
 ║    /theory-model [topic]   → econ-finance-theorist + critic  ║
+║    /lean-verify            → machine-check proofs in Lean 4  ║
 ║    Required: 80/100 to advance  (weight: 40% of score)       ║
 ║                                                              ║
 ║  Phase 3 · Execution                                         ║
@@ -248,6 +249,7 @@ Print this banner:
 ║                                                              ║
 ║  Phase 5 · Submission                                        ║
 ║    /target-journal [paper] → journal selection               ║
+║    /lean-verify            → every result verified/justified ║
 ║    /submit [journal]       → final gate ≥95                  ║
 ╠══════════════════════════════════════════════════════════════╣
 ║  NOTE: Theory projects skip data, code, and replication.    ║
@@ -270,6 +272,7 @@ Print this banner:
 ║  Phase 2 · Strategy                                          ║
 ║    /theory-model [topic]   → econ-finance-theorist + critic  ║
 ║    /structural-estimation  → structural-expert + critic      ║
+║    /lean-verify            → machine-check analytic results  ║
 ║    Required: 80/100 to advance  (weight: 35% of score)       ║
 ║                                                              ║
 ║  Phase 3 · Execution                                         ║

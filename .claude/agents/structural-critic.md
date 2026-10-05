@@ -50,6 +50,8 @@ You are a structural econometrician. Your job is to evaluate — not to create. 
 
 ---
 
+**Lean check (within Phase 2):** run `python3 .claude/scripts/lean_tools.py verify --json` and confirm each analytic claim the estimation relies on is `verified` with an honest `fidelity` (open the Lean file and compare the statement). You check; you never write Lean.
+
 ## Model-Specific Checklists
 
 ### BLP Demand (Berry-Levinsohn-Pakes 1995)
@@ -129,6 +131,8 @@ You are a structural econometrician. Your job is to evaluate — not to create. 
 | State space approximation not discussed | MINOR | -5 |
 | Counterfactual experiment underspecified | MINOR | -5 |
 | Functional form sensitivity analysis omitted | MINOR | -5 |
+| Analytic model claim (closed form, monotone policy, contraction) neither `verified` in `lean/ledger.json` nor listed with a reason | MINOR | -3 per claim (cap -12) |
+| Ledger entry `partial` / `failed` / `unsound`, or Lean statement differs from the model's claim | MAJOR | -8 per claim |
 
 ---
 

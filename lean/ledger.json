@@ -1,0 +1,32 @@
+{
+  "_schema": {
+    "label": "LaTeX \\label of the paper result (prop:…, lem:…, thm:…, cor:…)",
+    "kind": "theorem | proposition | lemma | corollary | claim",
+    "source": "file holding the LaTeX statement",
+    "statement": "the paper's statement, one line, in words or LaTeX",
+    "decls": "fully qualified Lean declarations that together prove it ([] if not formalised)",
+    "fidelity": "exact | special-case | stronger-hypotheses | weaker-conclusion — how the Lean statement relates to the paper's",
+    "fidelity_note": "what differs, if not exact",
+    "reason": "required when decls is []: why it is not formalised (e.g. needs measure-theoretic SDE results absent from Mathlib)",
+    "status": "written by lean_tools.py verify: verified | partial | failed | missing | unsound | stated | not_formalized"
+  },
+  "results": [
+    {
+      "label": "example:mv-optimum",
+      "kind": "proposition",
+      "source": "lean/Cloco/Examples/MeanVariance.lean",
+      "statement": "x* = mu/(gamma sigma^2) uniquely maximises mu x - (gamma sigma^2/2) x^2; x* rises in mu and (mu>0) falls in gamma",
+      "decls": [
+        "Cloco.Examples.MeanVariance.optShare_isMax",
+        "Cloco.Examples.MeanVariance.optShare_strictMono_mu",
+        "Cloco.Examples.MeanVariance.optShare_antitone_gamma"
+      ],
+      "fidelity": "exact",
+      "fidelity_note": "",
+      "reason": "",
+      "status": "verified"
+    }
+  ],
+  "last_verified": "2026-10-05 16:19",
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

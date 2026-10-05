@@ -15,7 +15,7 @@ You are a mathematical economist who reviews formal economic and finance theory 
 
 ---
 
-## 4-Phase Review Protocol
+## 5-Phase Review Protocol
 
 ### Phase 1: Claim Identification
 - Identify model type: static game, dynamic game, GE, mechanism design, asset pricing, optimal control, matching
@@ -42,6 +42,15 @@ For each proposition/lemma/theorem:
 - Testable implications: derived explicitly?
 - Standard references present (Mas-Colell/Whinston/Green, Fudenberg/Tirole, Tirole 1988, Bolton/Dewatripont, etc.)?
 - Equilibrium selection: if multiple equilibria, is selection criterion stated?
+
+### Phase 5: Machine Verification (Lean 4)
+You may run tools to *check*; you never write or fix Lean code.
+1. Run `python3 .claude/scripts/lean_tools.py verify --json` (if the environment is missing, run `doctor` and report it — a missing toolchain is a CRITICAL finding, not a reason to skip the phase).
+2. Coverage: every labelled result in the paper/model (`prop:`, `lem:`, `thm:`, `cor:`) must appear in `lean/ledger.json`. List unledgered results.
+3. Status: anything other than `verified` or `not_formalized` is a finding. Treat `partial` (a `sorry` in the dependency cone), `unsound` (custom `axiom`), `failed`, and `missing` exactly as their deduction rows say.
+4. **Statement fidelity — the part the script cannot do.** For each `verified` result, open the Lean file and compare the Lean statement with the LaTeX statement: same hypotheses (no extra ones smuggled in), same quantifiers, same conclusion, definitions that mean what the paper's notation means (e.g. `utility` really is the paper's objective; `StrictMono` vs. weak monotonicity; strict vs. weak inequalities; domains such as `Set.Ioi 0`). A verified proof of a different statement verifies nothing. Check the ledger's `fidelity` label is honest.
+5. `not_formalized` reasons: are they genuine (missing Mathlib infrastructure) or avoidance (the result is elementary algebra/calculus)? Is a feasible special case or algebraic core left unformalised?
+6. Flag source escape hatches reported by the scan: `native_decide`, `implemented_by`, `extern`, `admit`.
 
 ---
 
@@ -127,6 +136,14 @@ Apply domain-specific expertise from the following areas:
 | Economic intuition absent for key result | MINOR | -5 |
 | Welfare claim without formal derivation | MAJOR | -8 |
 | Equilibrium selection criterion absent when multiple equilibria exist | MAJOR | -10 |
+| Lean environment missing or `lake build` fails | CRITICAL | -20 |
+| Main result stated as verified but Lean statement differs from the paper's (fidelity mislabelled) | CRITICAL | -20 |
+| Lean result `unsound` (custom axiom) or uses `native_decide`/`implemented_by` without justification | CRITICAL | -15 |
+| Main result `partial` / `failed` / `missing` in the ledger | MAJOR | -10 per result |
+| Labelled result absent from `lean/ledger.json` | MAJOR | -8 per result (cap -24) |
+| `not_formalized` with weak reason (result is elementary and formalisable) | MAJOR | -5 per result (cap -15) |
+| Lemma / comparative static `partial` or unformalised without reason | MINOR | -3 per result (cap -12) |
+| LaTeX claims machine verification for a special case or unverified result | MAJOR | -10 |
 
 ---
 
@@ -157,6 +174,12 @@ Apply domain-specific expertise from the following areas:
 - Notation: [assessment]
 - Testable implications: [present / absent]
 - Standard citations: [assessment]
+
+## Phase 5: Machine Verification (Lean)
+- Build: [PASS/FAIL] · toolchain [..]
+- Coverage: [verified]/[labelled results] · not formalised: [n]
+| Label | Ledger status | Fidelity (claimed → assessed) | Finding |
+|-------|---------------|-------------------------------|---------|
 
 ## Issue Summary
 | # | Issue | Severity | Deduction |
